@@ -1,0 +1,274 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+
+use App\Http\Controllers\Admin\SunatController;
+use App\Http\Requests\StoreConsumoRequest;
+use App\Models\Rventa;
+use App\Models\TipoComprobante;
+use App\Models\Afectacion;
+use App\Models\Categoria;
+use App\Models\Ccosto;
+use App\Models\Cliente;
+use App\Models\Cuenta;
+use App\Models\Destino;
+use App\Models\Detraccion;
+use App\Models\Detrventa;
+use App\Models\Kardex;
+use App\Models\Producto;
+use App\Models\Sede;
+use App\Models\Tesoreria;
+use App\Models\Tmpdetsalida;
+use App\Models\Vencimiento;
+
+class ConsumoController extends Controller
+{
+    public function __construct()
+    {
+		$this->middleware('auth');
+		$this->middleware('isadmin');
+		$this->middleware('can:admin.consumos.index')->only('index');
+		$this->middleware('can:admin.consumos.create')->only('create','store');
+		$this->middleware('can:admin.consumos.edit')->only('edit','update');
+		// $this->middleware('can:admin.categorias.permission')->only('editpermission','updatepermission');
+		// $this->middleware('can:admin.categorias.password')->only('editpassword','updatepassword');
+    }
+
+    public function index($periodo = '000000')
+    {
+        if($periodo == '000000'){
+            $periodo = session('periodo');
+        }
+        $rventas = Rventa::with(['cliente','detrventa','ccosto'])
+            ->select('id','fecha','moneda','serie','numero','tipocomprobante_codigo','cliente_id',
+                'total','status','cdr','detdestino_id','ccosto_id')
+            ->where('tipo',2)
+            ->where('periodo',$periodo)
+            ->where('empresa_id',session('empresa'))
+            ->where('sede_id',session('sede'))
+            ->get();
+
+        return view('admin.consumos.index', compact('rventas','periodo'));
+    }
+
+    public function change(Request $request)
+    {
+        $periodo = $request->input('mes').$request->input('año');
+        $rventas = Rventa::with(['cliente'])
+            ->select('id','fecha','moneda','serie','numero','tipocomprobante_codigo','cliente_id','total','status','cdr')
+            ->where('tipo',2)
+            ->where('periodo',$periodo)
+            ->where('empresa_id',session('empresa'))
+            ->where('sede_id',session('sede'))
+            ->get();
+
+            return view('admin.consumos.index', compact('rventas','periodo','impuesto'));
+    }
+
+    public function create()
+    {
+        $moneda = Categoria::where('modulo', 4)->pluck('nombre','codigo');
+        $tipocomprobante = TipoComprobante::wherein('codigo',['00'])->orderBy('codigo')->pluck('nombre','codigo');
+        $key = generateRandomString();
+        $destinos = Destino::where('empresa_id',session('empresa'))->orderBy('nombre')->pluck('nombre','id');
+        $ccosto = Ccosto::where('empresa_id',session('empresa'))->orderBy('nombre')->pluck('nombre','id');
+
+        return view('admin.consumos.create', compact('moneda','tipocomprobante','key','destinos','ccosto'));
+    }
+
+    public function store(StoreConsumoRequest $request)
+    {
+        $data = [
+            'periodo' => $request->input('periodo'),
+            'tipo' => 2,
+            'contable' => 2,
+            'empresa_id' => $request->input('empresa_id'),
+            'sede_id' => $request->input('sede_id'),
+            'tipocomprobante_codigo' => '00',
+            'fecha' => $request->input('fecha'),
+            'moneda' => 'PEN',
+            'tc' => $request->input('tc'),
+            'cliente_id' => 2,
+            'detdestino_id' => $request->input('detdestino_id'),
+            'ccosto_id' => $request->input('ccosto_id'),
+            'detalle' => $request->input('detalle'),
+        ];
+
+        // $cliente = Cliente::find($request->input('cliente_id'));
+        $sede = Sede::find(session('sede'));
+        $correlativo = $sede->consumo_corr + 1;
+        $sede->update([
+            'consumo_corr' => $correlativo
+        ]);
+        $serie = $sede->consumo_serie;
+        $numero = str_pad($correlativo, 8, '0', STR_PAD_LEFT);
+
+        $key = $request->input('key');
+        $total = 0.00;
+        $pagado = 0.00;
+        $saldo = 0.00;
+        $data = array_merge($data, [
+            'serie' => $serie,
+            'numero' => $numero,
+            'status' => 1,
+            'total' => $total,
+            'pagado' => $pagado,
+            'saldo' => $saldo,
+        ]);
+        // Inicio
+        $rventa = Rventa::create($data);
+        // return $rventa;
+        $detalle = Tmpdetsalida::where('user_id',Auth::user()->id)->where('key',$key)->get();
+        foreach($detalle as $det){
+            // Crea registro en Detalle de Comprobante
+            $detVenta = $rventa->detrventa()->create([
+                'producto_id' => $det->producto_id,
+                'adicional' => $det->adicional,
+                'grupo' => 1,
+                'cantidad' => $det->cantidad,
+                'preprom' => $det->preprom,
+                'precio' => $det->precio,
+                'subtotal' => $det->subtotal,
+                'vence' => $det->vence,
+                'lote' => $det->lote,
+            ]);
+
+            $producto = Producto::find($det->producto_id);
+            if ($producto->ctrlstock == 1) {
+                $stock = $producto->stock;
+                $producto->update([
+                    'stock' => $stock - $det->cantidad,
+                ]);
+                Kardex::create([
+                    'periodo' => $rventa->periodo,
+                    'tipo' => 2,
+                    'operacion_id' => $detVenta->id,
+                    'producto_id' => $detVenta->producto_id,
+                    'cliente_id' => $rventa->cliente_id,
+                    'documento' => numDoc($rventa->serie,$rventa->numero),
+                    'proveedor' => $rventa->cliente->razsoc,
+                    'fecha' => $rventa->fecha,
+                    'cant_sal' => $detVenta->cantidad,
+                    'cant_sald' => $stock - $detVenta->cantidad,
+                    'pre_prom' => $detVenta->preprom,
+                    'descrip' => 'CONSUMO TD:' . $rventa->tipocomprobante_codigo . ' ' . numDoc($rventa->serie,$rventa->numero),
+                ]);
+            }
+            if ($producto->lotevencimiento == 1) {
+                $vencimiento_id = Vencimiento::where('producto_id',$detVenta->producto_id)
+                    ->where('lote',$detVenta->lote)->value('id');
+                $vencimiento = Vencimiento::find($vencimiento_id);
+                $vencimientoSalidas = $vencimiento->salidas + $detVenta->cantidad;
+                $vencimientoSaldo = $vencimiento->saldo - $detVenta->cantidad;
+                $vencimiento->update([
+                    'salidas' => $vencimientoSalidas,
+                    'saldo' => $vencimientoSaldo,
+                ]);
+            }
+            Tmpdetsalida::where('user_id',Auth::user()->id)->where('key',$key)->where('tipo',2)->delete();
+        }
+      
+        return response()->json($rventa);
+            // return redirect()->route('admin.rventas.index')->with('store', 'Registro Agregado, Ingrese Productos | Servicios');
+        // }
+    }
+
+    public function show(Rventa $rventa)
+    {
+        
+    }
+
+    public function edit(Rventa $rventa)
+    {
+        // $moneda = Categoria::where('modulo', 4)->pluck('nombre','codigo');
+        $tipocomprobante = TipoComprobante::wherein('codigo',['00'])->orderBy('codigo')->pluck('nombre','codigo');
+        $clientes = Cliente::where('id',$rventa->cliente_id)->get()->pluck('numdoc_razsoc','id');
+        $moneda = $rventa->moneda;
+
+        return view('admin.consumos.edit',
+            compact('rventa','moneda','tipocomprobante','clientes'));
+    }
+
+    public function update(Request $request, Rventa $rventa)
+    {
+        $rules = [
+            // 'fpago' => 'required',
+        ];
+        $data = [
+            'fpago' => $request->input('fpago')
+        ];
+
+        $messages = [
+    		'dias.required' => 'Ingrese Días de Crédito.',
+    		'vencimiento.required' => 'Ingrese Vencimiento del Crédito.',
+    		'mediopago.required' => 'Ingrese Medio de Pago.',
+    		'cuenta_id.required' => 'Ingrese Cuenta.',
+    		'numerooperacion.required' => 'Ingrese Número de Operación.',
+    		'pagacon.required' => 'Ingrese con cuanto Paga el Cliente.',
+    		'detraccion_codigo.required' => 'Seleccione Código de detracción.',
+    		'detraccion_tasa.required' => 'Ingrese Tasa de detracción.',
+    		'detraccion_monto.required' => 'Ingrese Monto de detracción.',
+        ];
+        $validator = Validator::make($request->all(),$rules,$messages);
+    	if ($validator->fails()) {
+            return back()->withErrors($validator)->with('message', 'Se ha producido un error')->with('typealert', 'danger')->withinput();
+        } else {
+            $cliente = Cliente::find($request->input('cliente_id'));
+            $sede = Sede::find(session('sede'));
+            $correlativo = $sede->consumo_corr + 1;
+            return 'Grabo';
+
+        }
+    }
+
+    public function destroy(Rventa $rventa)
+    {
+        //
+    }
+
+    public function additem(Request $request)
+    {
+        Tmpdetsalida::create([
+            'user_id' => Auth::user()->id,
+            'key' => $request->input('keydet'),
+            'tipo' => 2,
+            'producto_id' => $request->input('producto_id'),
+            'adicional' => e($request->input('adicional')),
+            'grupo' => $request->input('grupo'),
+            'cantidad' => $request->input('cantidad'),
+            'preprom' => $request->input('precompra'),
+            'precio' => $request->input('precio'),
+            'subtotal' => $request->input('subtotal'),
+            'lote' => $request->input('lote'),
+            'vence' => $request->input('vence'),
+        ]);
+        return true;
+    }
+
+    public function destroyitem(Tmpdetsalida $tmpdetsalida){
+        $tmpdetsalida->delete();
+        return 1;
+    }
+
+    public function tablaitem($key, $moneda)
+    {
+        Tmpdetsalida::where('user_id',Auth::user()->id)->where('tipo',2)->update(['key'=>$key]);
+        $detalle = Tmpdetsalida::with('Producto')->where('user_id',Auth::user()->id)->where('tipo',2)->where('key',$key)->get();
+        $items = $detalle->count();
+        $subtotal = Tmpdetsalida::where('key',$key)->sum('subtotal');
+        $total = $subtotal;
+        return view('admin.consumos.detalle',compact('detalle','moneda','subtotal','total','items'));
+    }
+
+    public function tablatotales(Rventa $rventa)
+    {
+        // $detventas = Detrventa::with('producto')->where('producto_id',$producto)->get();
+        return view('admin.consumos.totales',compact('rventa'));
+    }
+
+}
