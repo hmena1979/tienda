@@ -15,7 +15,7 @@ return [
     */
 
     'title' => '',
-    'title_prefix' => 'Tienda | ',
+    'title_prefix' => 'Pesquera | ',
     'title_postfix' => '',
 
     /*
@@ -45,12 +45,12 @@ return [
     |
     */
 
-    'logo' => '<b>TP</b> Tiendas',
+    'logo' => 'Pesquera <b>HL</b>',
     'logo_img' => 'static/images/logo.png',
     'logo_img_class' => 'brand-image img-circle elevation-3',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
-    'logo_img_alt' => 'Tienda',
+    'logo_img_alt' => 'Pesquera',
 
     /*
     |--------------------------------------------------------------------------
@@ -283,6 +283,15 @@ return [
                                 ,'admin/ingresos/*/edit'],
                 ],
                 [
+                    'text' => 'Ingresos Materia Prima',
+                    'icon'    => 'fas fa-fish',
+                    'icon_color' => 'cyan',
+                    'route'  => 'admin.materiaprimas.index',
+                    'can'  => 'admin.materiaprimas.index',
+                    'active' => ['admin/materiaprimas','admin/materiaprimas/*','admin/materiaprimas/create'
+                                ,'admin/materiaprimas/*/edit'],
+                ],
+                [
                     'text' => 'Reportes',
                     'icon'    => 'fas fa-print',
                     'icon_color' => 'cyan',
@@ -422,7 +431,7 @@ return [
                     'active' => ['admin/umedidas','admin/umedidas/*','admin/umedidas/create'
                                 ,'admin/umedidas/*/edit'],
                     'can'  => 'admin.umedidas.index',
-                ],                
+                ],
                 [
                     'text' => 'Tipo Producto',
                     'icon'    => 'fas fa-tablets',
@@ -485,6 +494,15 @@ return [
                     'active' => ['admin/transportistas','admin/transportistas/*','admin/transportistas/create'
                                 ,'admin/transportistas/*/edit'],
                     'can'  => 'admin.transportistas.index',
+                ],                
+                [
+                    'text' => 'Embarcaciones',
+                    'icon'    => 'fas fa-anchor',
+                    'icon_color' => 'cyan',
+                    'route'  => 'admin.embarcaciones.index',
+                    'active' => ['admin/embarcaciones','admin/embarcaciones/*','admin/embarcaciones/create'
+                                ,'admin/embarcaciones/*/edit'],
+                    'can'  => 'admin.embarcaciones.index',
                 ],                
                 [
                     'text' => 'Detracciones',

@@ -1,20 +1,22 @@
-<table id= "grid" class="table table-hover table-sm">
+<table id= "gridcamara" class="table table-hover table-sm">
     <thead>
         <tr>
-            <th width="90%">Nombre</th>
-            <th width="10%"></th>
+            <th width="65%">Marca</th>
+            <th width="20%">Placa</th>
+            <th width="15%"></th>
         </tr>
     </thead>
     <tbody>
-        @foreach($destino->detdestinos as $det)
+        @foreach($transportista->camaras as $det)
         <tr>
-            <td>{{ $det->nombre }}</td>
+            <td>{{ $det->marca }}</td>
+            <td>{{ $det->placa }}</td>
             <td>
                 <div class="opts">
-                    <button type="button" class="btn" title="Editar" onclick="edititem('{{ $det->id }}');">
+                    <button type="button" class="btn" title="Editar" onclick="edititemcamara('{{ $det->id }}');">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button type="button" class="btn" title="Eliminar" onclick="destroyitem('{{ $det->id }}');">
+                    <button type="button" class="btn" title="Eliminar" onclick="destroyitemcamara('{{ $det->id }}');">
                         <i class="fas fa-trash-alt"></i>
                     </button>
                     {{-- <a class="" href="{{ route('admin.destinos.edit',$destino) }}"datatoggle="tooltip" data-placement="top" title="Editar"><i class="fas fa-edit"></i></a> --}}
@@ -32,7 +34,7 @@
         </tbody>
 </table>
 <script>
-    $('#grid').DataTable({
+    $('#gridcamara').DataTable({
         "paging":   true,
         "ordering": true,
         "info":     true,

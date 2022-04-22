@@ -56,7 +56,7 @@ class ClienteController extends Controller
 
     public function store(Request $request)
     {
-        if($request->input('tipdoc_id') == '6'){
+        if($request->input('tipdoc_id') == '6' || $request->input('tipdoc_id') == '0'){
             $rules = [
                 'numdoc' => 'required|unique:clientes',
                 'razsoc' => 'required',
@@ -117,7 +117,7 @@ class ClienteController extends Controller
     
     public function update(Request $request, Cliente $cliente)
     {
-        if($request->input('tipdoc_id') == '6'){
+        if($request->input('tipdoc_id') == '6' || $request->input('tipdoc_id') == '0'){
             $rules = [
                 'numdoc' => "required|unique:clientes,numdoc,$cliente->id",
                 'razsoc' => 'required',

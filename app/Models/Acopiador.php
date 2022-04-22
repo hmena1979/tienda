@@ -18,4 +18,9 @@ class Acopiador extends Model
     public function empacopiadora(){
         return $this->belongsTo('App\Models\Empacopiadora');
     }
+
+    public function materiaprima()
+    {
+        return $this->hasOne('App\Models\Materiaprima');
+    }
 }

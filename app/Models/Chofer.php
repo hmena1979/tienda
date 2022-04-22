@@ -18,4 +18,9 @@ class Chofer extends Model
     public function transportista(){
         return $this->belongsTo('App\Models\Transportista');
     }
+
+    public function materiaprima()
+    {
+        return $this->hasOne('App\Models\Materiaprima');
+    }
 }

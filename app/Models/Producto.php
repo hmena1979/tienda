@@ -35,4 +35,9 @@ class Producto extends Model
     public function umedida(){
         return $this->belongsTo('App\Models\Umedida', 'umedida_id', 'codigo');
     }
+
+    public function materiaprima()
+    {
+        return $this->hasOne('App\Models\Materiaprima');
+    }
 }

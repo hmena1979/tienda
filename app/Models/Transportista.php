@@ -24,4 +24,9 @@ class Transportista extends Model
     {
         return $this->hasMany('App\Models\Camara');
     }
+
+    public function materiaprima()
+    {
+        return $this->hasOne('App\Models\Materiaprima');
+    }
 }

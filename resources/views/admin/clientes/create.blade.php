@@ -35,15 +35,15 @@
 						<div class="row">
 							<div class="col-md-4 form-group">
                                 {!! Form::label('ape_pat', 'Apellido Paterno:') !!}
-								{!! Form::text('ape_pat', null, ['class'=>'form-control','autocomplete'=>'off']) !!}
+								{!! Form::text('ape_pat', null, ['class'=>'form-control','autocomplete'=>'off', 'disabled']) !!}
 							</div>
 							<div class="col-md-4 form-group">
                                 {!! Form::label('ape_mat', 'Apellido Materno:') !!}
-								{!! Form::text('ape_mat', null, ['class'=>'form-control','autocomplete'=>'off']) !!}
+								{!! Form::text('ape_mat', null, ['class'=>'form-control','autocomplete'=>'off', 'disabled']) !!}
 							</div>
 							<div class="col-md-4 form-group">
                                 {!! Form::label('nombres', 'Nombres:') !!}
-								{!! Form::text('nombres', null, ['class'=>'form-control','autocomplete'=>'off']) !!}
+								{!! Form::text('nombres', null, ['class'=>'form-control','autocomplete'=>'off', 'disabled']) !!}
 							</div>
 							{{-- <div class="col-md-3 form-group">
                                 {!! Form::label('nombre2', '2do Nombre:') !!}
@@ -61,11 +61,11 @@
 							</div>
 							<div class="col-md-2 form-group">
                                 {!! Form::label('sexo_id', 'Sexo:') !!}
-                                {!! Form::select('sexo_id',$sexo,null,['class'=>'custom-select','placeholder'=>'']) !!}
+                                {!! Form::select('sexo_id',$sexo,null,['class'=>'custom-select','placeholder'=>'', 'disabled']) !!}
 							</div>
 							<div class="col-md-2 form-group">
                                 {!! Form::label('estciv_id', 'Estado Civil:') !!}
-                                {!! Form::select('estciv_id',$estciv,null,['class'=>'custom-select','placeholder'=>'']) !!}
+                                {!! Form::select('estciv_id',$estciv,null,['class'=>'custom-select','placeholder'=>'', 'disabled']) !!}
 							</div>
 						</div>
 						<div class="row">							
@@ -103,11 +103,37 @@
     var url_global='{{url("/")}}';
     $(document).ready(function(){
         document.getElementById('guardar').addEventListener("click",function(){
-            document.getElementById("razsoc").disabled = false;
-            document.getElementById("ape_pat").disabled = false;
-            document.getElementById("ape_mat").disabled = false;
-            document.getElementById("nombres").disabled = false;
+            $("#ape_pat").prop('disabled', false);
+            $("#ape_mat").prop('disabled', false);
+            $("#nombres").prop('disabled', false);
+            $("#razsoc").prop('disabled', false);
+            $("#sexo_id").prop('disabled', false);
+            $("#estciv_id").prop('disabled', false);
             // document.getElementById("nombre2").disabled = false;
+        });
+
+        $('#tipdoc_id').change(function(){
+            $('#numdoc').val(null);
+            $("#razsoc").val(null);
+            $("#ape_pat").val(null);
+            $("#ape_mat").val(null);
+            $("#nombres").val(null);
+            $("#nomcomercial").val(null);
+            if (this.value == '6' || this.value == '0') {
+                $("#ape_pat").prop('disabled', true);
+                $("#ape_mat").prop('disabled', true);
+                $("#nombres").prop('disabled', true);
+                $("#razsoc").prop('disabled', false);
+                $("#sexo_id").prop('disabled', true);
+                $("#estciv_id").prop('disabled', true);
+            } else {
+                $("#ape_pat").prop('disabled', false);
+                $("#ape_mat").prop('disabled', false);
+                $("#nombres").prop('disabled', false);
+                $("#razsoc").prop('disabled', true);
+                $("#sexo_id").prop('disabled', false);
+                $("#estciv_id").prop('disabled', false);
+            }
         });
 
         $('#numdoc').blur(function(e){

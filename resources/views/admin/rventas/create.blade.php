@@ -124,20 +124,6 @@
                                         {!! Form::select('detraccion',[1=>'SI',2=>'NO'],2,['class'=>'custom-select activo']) !!}
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-4 form-group detraccion">
-                                        {!! Form::label('detraccion_codigo', 'Código Detracción:') !!}
-                                        {!! Form::select('detraccion_codigo',$detraccions,null,['class'=>'custom-select activo','placeholder'=>'']) !!}
-                                    </div>
-                                    <div class="col-md-3 form-group detraccion">
-                                        {!! Form::label('detraccion_tasa', 'Tasa:') !!}
-                                        {!! Form::text('detraccion_tasa', null, ['class'=>'form-control decimal activo','autocomplete'=>'off']) !!}
-                                    </div>
-                                    <div class="col-md-3 form-group detraccion">
-                                        {!! Form::label('detraccion_monto', 'Monto S/:') !!}
-                                        {!! Form::text('detraccion_monto', null, ['class'=>'form-control decimal activo','autocomplete'=>'off']) !!}
-                                    </div>
-                                </div>
                             </div>
                             <div class="col-md-5">
                                 <table class="table table-responsive-md table-bordered table-estrecha-ventas">
@@ -162,6 +148,24 @@
                                         </tr>
                                     </tbody>
                                 </table>
+                            </div>
+                        </div>
+                        <div class="row finalizar">
+                            <div class="col-md-6 form-group">
+                                {!! Form::label('detalle', 'Observaciones:') !!}
+                                {!! Form::text('detalle', null, ['class'=>'form-control activo','autocomplete'=>'off']) !!}
+                            </div>
+                            <div class="col-md-3 form-group detraccion">
+                                {!! Form::label('detraccion_codigo', 'Código Detracción:') !!}
+                                {!! Form::select('detraccion_codigo',$detraccions,null,['class'=>'custom-select activo','placeholder'=>'']) !!}
+                            </div>
+                            <div class="col-md-1 form-group detraccion">
+                                {!! Form::label('detraccion_tasa', 'Tasa:') !!}
+                                {!! Form::text('detraccion_tasa', null, ['class'=>'form-control decimal activo','autocomplete'=>'off']) !!}
+                            </div>
+                            <div class="col-md-2 form-group detraccion">
+                                {!! Form::label('detraccion_monto', 'Monto S/:') !!}
+                                {!! Form::text('detraccion_monto', null, ['class'=>'form-control decimal activo','autocomplete'=>'off']) !!}
                             </div>
                         </div>
 					</div>				

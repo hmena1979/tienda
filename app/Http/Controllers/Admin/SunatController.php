@@ -379,6 +379,30 @@ class SunatController extends Controller
                         ->setTotalImpuestos(0)
                         ->setMtoPrecioUnitario(0);
                 }
+                // Exportación
+                if ($det->afectacion_id >= '40' && $det->afectacion_id <= '49') {
+                    $mtoValorUnitario = $det->precio; // Sin Impuestos Unitario
+                    $mtoValorGratuito = $det->precio; // Con Impuestos Unitario
+                    $mtoValorVenta = $det->subtotal;
+                    $mtoBaseIgv = $mtoValorVenta;
+                    $mtoPrecioUnitario = $det->precio;
+                    $igv = 0;
+
+                    $item = (new SaleDetail())
+                        ->setCodProducto(str_pad($det->producto_id, 5, '0', STR_PAD_LEFT))
+                        ->setCodProdSunat($det->producto->codigobarra) // Codigo Producto Sunat, requerido.
+                        ->setUnidad($det->producto->umedida_id)
+                        ->setDescripcion($det->producto->nombre)
+                        ->setCantidad($det->cantidad)
+                        ->setMtoValorUnitario($mtoValorUnitario)
+                        ->setMtoValorVenta($mtoValorVenta)
+                        ->setMtoBaseIgv($mtoBaseIgv)
+                        ->setPorcentajeIgv(0)
+                        ->setIgv($igv)
+                        ->setTipAfeIgv($det->afectacion_id) // Catalog 07: Inafecto - Retiro,
+                        ->setTotalImpuestos(0)
+                        ->setMtoPrecioUnitario($mtoPrecioUnitario);
+                }
             }
             // $detalle = array_merge($detalle, $item);
             // dd($item);

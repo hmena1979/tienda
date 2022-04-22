@@ -23,7 +23,7 @@ class StoreClienteRequest extends FormRequest
      */
     public function rules()
     {
-        if ($this->request->get('tipdoc_id') == '6') {
+        if ($this->request->get('tipdoc_id') == '6' || $this->request->get('tipdoc_id') == '0') {
             return [
                 'numdoc' => 'required|unique:clientes',
                 'razsoc' => 'required',

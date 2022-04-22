@@ -145,7 +145,7 @@ class TransportistaController extends Controller
     public function listdetalle(Request $request, $transportista)
     {
         if($request->ajax()){
-            $chofer = Chofer::select('id','nombre')
+            $chofer = Chofer::select('id','nombre','licencia')
                 ->where('transportista_id',$transportista)
                 ->get();
             return response()->json($chofer);
@@ -225,4 +225,5 @@ class TransportistaController extends Controller
     {
         $camara->delete();
     }
+
 }

@@ -165,6 +165,7 @@ class ProductoController extends Controller
                 'preventamin_usd' => $request->input('preventamin_usd'),
                 'preventa_pen' => $request->input('preventa_pen'),
                 'preventa_usd' => $request->input('preventa_usd'),
+                'codigobarra' => $request->input('codigobarra'),
                 ]);
             return redirect()->route('admin.productos.index')->with('update', 'Producto | Servicio Actualizado');
         }

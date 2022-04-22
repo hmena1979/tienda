@@ -6,19 +6,22 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Camara extends Model
+class Embarcacion extends Model
 {
     use HasFactory;
     use SoftDeletes;
     protected $dates = ['deteted_at'];
-    protected $table = 'camaras';
+    protected $table = 'embarcacions';
     protected $hidden = ['created_at','updated_at'];
     protected $guarded = [];
+    protected $appends = ['nombre_matricula'];
 
-    public function transportista(){
-        return $this->belongsTo('App\Models\Transportista');
+    public function getNombreMatriculaAttribute()
+    {
+        return $this->nombre.' | '.$this->matricula;
     }
 
+    
     public function materiaprima()
     {
         return $this->hasOne('App\Models\Materiaprima');

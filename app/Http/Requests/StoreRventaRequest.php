@@ -39,8 +39,17 @@ class StoreRventaRequest extends FormRequest
             'detraccion_monto' => 'required_if:detraccion,1',
             'cliente_id' => ['required',function($attribute, $value, $fail){
                 $cliente = Cliente::find($value);
-                if ($cliente->tipdoc_id <> '6' && $this->request->get('tipocomprobante_codigo') == '01') {
-                    $fail(__('No se puede emitir Factura en Cliente sin RUC'));
+                if ($this->request->get('tipocomprobante_codigo') == '01') {
+                    if ($cliente->tipdoc_id == '0' || $cliente->tipdoc_id == '6') {
+                        if ($cliente->numdoc == '00000000') {
+                            $fail(__('No se puede emitir Factura en Cliente sin RUC'));
+                        }
+                    } else {
+                        $fail(__('No se puede emitir Factura en Cliente sin RUC'));
+                    }
+                    // if (!strpos('0_6', $cliente->tipdoc_id)){
+                    //     $fail(__('No se puede emitir Factura en Cliente sin RUC'));
+                    // }
                 }
             }]
         ];

@@ -17,8 +17,10 @@ use App\Http\Controllers\Admin\UMedidaController;
 use App\Http\Controllers\Admin\ProductoController;
 use App\Http\Controllers\Admin\TipoComprobanteController;
 use App\Http\Controllers\Admin\DetraccionController;
+use App\Http\Controllers\Admin\EmbarcacionController;
 use App\Http\Controllers\Admin\EmpAcopiadoraController;
 use App\Http\Controllers\Admin\IngresoController;
+use App\Http\Controllers\Admin\MateriaPrimaController;
 use App\Http\Controllers\Admin\ParametroController;
 use App\Http\Controllers\Admin\PDFController;
 // use App\Http\Controllers\Admin\RegistroCompraController;
@@ -112,11 +114,20 @@ Route::get('/empacopiadoras/{empacopiadora}/listdetalle', [EmpAcopiadoraControll
 Route::resource('empacopiadoras', EmpAcopiadoraController::class)->names('admin.empacopiadoras');
 
 Route::get('/transportistas/{envio}/aedet', [TransportistaController::class, 'aedet'])->name('admin.transportistas.aedet');
+Route::get('/transportistas/{envio}/aedetcamara', [TransportistaController::class, 'aedetcamara'])->name('admin.transportistas.aedetcamara');
 Route::get('/transportistas/{transportista}/tablaitem', [TransportistaController::class,'tablaitem'])->name('admin.transportistas.tablaitem');
+Route::get('/transportistas/{transportista}/tablaitemcamara', [TransportistaController::class,'tablaitemcamara'])->name('admin.transportistas.tablaitemcamara');
 Route::get('/transportistas/{chofer}/chofer', [TransportistaController::class,'chofer'])->name('admin.transportistas.chofer');
+Route::get('/transportistas/{camara}/camara', [TransportistaController::class,'camara'])->name('admin.transportistas.camara');
 Route::get('/transportistas/{chofer}/destroyitem', [TransportistaController::class,'destroyitem'])->name('admin.transportistas.destroyitem');
+Route::get('/transportistas/{camara}/destroyitemcamara', [TransportistaController::class,'destroyitemcamara'])->name('admin.transportistas.destroyitemcamara');
 Route::get('/transportistas/{transportista}/listdetalle', [TransportistaController::class,'listdetalle'])->name('admin.transportistas.listdetalle');
+Route::get('/transportistas/{transportista}/listdetallecamara', [TransportistaController::class,'listdetallecamara'])->name('admin.transportistas.listdetallecamara');
 Route::resource('transportistas', TransportistaController::class)->names('admin.transportistas');
+
+Route::resource('/embarcaciones', EmbarcacionController::class)->names('admin.embarcaciones');
+
+Route::resource('/materiaprimas', MateriaPrimaController::class)->names('admin.materiaprimas');
 
 Route::resource('ccostos', CcostoController::class)->names('admin.ccostos');
 

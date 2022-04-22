@@ -50,7 +50,7 @@
 								{!! Form::label('icbper', 'ICBPER:') !!}
 								{!! Form::select('icbper',[1=>'SI',2=>'NO'],null,['class'=>'custom-select','title'=>'Controla Vencimiento y Lote']) !!}
 							</div>
-							<div class="col-md-5">
+							<div class="col-md-5 producto">
 								<div class="row">
 									<div class="col-md-3 form-group producto">
 										{!! Form::label('lotevencimiento', 'Vence:',['title'=>'Controla Vencimiento y Lote']) !!}
@@ -69,6 +69,10 @@
 										{!! Form::text('stock', null, ['class'=>'form-control decimal','autocomplete'=>'off','disabled']) !!}
 									</div>
 								</div>
+							</div>
+							<div class="col-md-2">
+								{!! Form::label('codigobarra', 'Código Barra|Sunat:') !!}
+								{!! Form::text('codigobarra', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
 							</div>
 						</div>
 						

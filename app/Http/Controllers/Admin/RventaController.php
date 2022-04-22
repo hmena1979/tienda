@@ -122,6 +122,7 @@ class RventaController extends Controller
             'cliente_id' => $request->input('cliente_id'),
             'direccion' => $request->input('direccion'),
             'fpago' => $request->input('fpago'),
+            'detalle' => $request->input('detalle'),
             'detraccion' => $request->input('detraccion'),
         ];
 

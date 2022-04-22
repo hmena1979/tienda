@@ -1,9 +1,9 @@
 <table id= "grid" class="table table-hover table-sm">
     <thead>
         <tr>
-            <th width="15%">Licencia</th>
-            <th width="75%">Nombre</th>
-            <th width="10%"></th>
+            <th width="20%">Licencia</th>
+            <th width="65%">Nombre</th>
+            <th width="15%"></th>
         </tr>
     </thead>
     <tbody>
