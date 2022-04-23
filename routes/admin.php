@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\TipoComprobanteController;
 use App\Http\Controllers\Admin\DetraccionController;
 use App\Http\Controllers\Admin\EmbarcacionController;
 use App\Http\Controllers\Admin\EmpAcopiadoraController;
+use App\Http\Controllers\Admin\ExcelController;
 use App\Http\Controllers\Admin\IngresoController;
 use App\Http\Controllers\Admin\MateriaPrimaController;
 use App\Http\Controllers\Admin\ParametroController;
@@ -208,6 +209,9 @@ Route::get('/sunat/{rventa}/ventas', [SunatController::class, 'ventas'])->name('
 Route::get('/pdf/{rventa}/facturacion', [PDFController::class,'facturacion'])->name('admin.pdf.facturacion');
 Route::get('/pdf/{rcompra}/ingresos', [PDFController::class,'ingresos'])->name('admin.pdf.ingresos');
 Route::get('/pdf/{tesoreria}/tesoreria', [PDFController::class,'tesoreria'])->name('admin.pdf.tesoreria');
+
+//EXCEL
+Route::get('/excel/{desde}/{hasta}/materiaprima', [ExcelController::class,'materiaprima'])->name('admin.excel.materiaprima');
 
 //Modulo importaciones
 Route::get('/import', [ImportController::class,'index'])->name('admin.imports.index');

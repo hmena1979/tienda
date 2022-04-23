@@ -14,6 +14,12 @@ class Chofer extends Model
     protected $table = 'chofers';
     protected $hidden = ['created_at','updated_at'];
     protected $guarded = [];
+    protected $appends = ['nombre_licencia'];
+
+    public function getNombreLicenciaAttribute()
+    {
+        return $this->nombre.' | '.$this->licencia;
+    }
 
     public function transportista(){
         return $this->belongsTo('App\Models\Transportista');

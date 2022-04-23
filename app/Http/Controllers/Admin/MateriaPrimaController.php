@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Acopiador;
 use App\Models\Camara;
 use App\Models\Chofer;
+use App\Models\Cliente;
 use App\Models\Embarcacion;
 use App\Models\Empacopiadora;
 use Illuminate\Support\Facades\Validator;
@@ -35,12 +37,14 @@ class MateriaPrimaController extends Controller
 
     public function create()
     {
-        $embarcacion = Embarcacion::orderBy('nombre')->get()->pluck('nombre_matricula','id');
-        $transportistas = Transportista::orderBy('nombre')->pluck('nombre','id');
+        $embarcacion = Embarcacion::where('empresa_id',session('empresa'))
+            ->orderBy('nombre')->get()->pluck('nombre_matricula','id');
+        $transportistas = Transportista::where('empresa_id',session('empresa'))
+            ->orderBy('nombre')->pluck('nombre','id');
         $chofer = Chofer::orderBy('nombre')->pluck('nombre','id');
         $camara = Camara::orderBy('marca')->pluck('marca','id');
-        $empAcopiadora = Empacopiadora::orderBy('nombre')->pluck('nombre','id');
-        $producto = Producto::where('grupo',3)->orderBy('nombre')->pluck('nombre','id');
+        $empAcopiadora = Empacopiadora::where('empresa_id',session('empresa'))->orderBy('nombre')->pluck('nombre','id');
+        $producto = Producto::where('empresa_id',session('empresa'))->where('grupo',3)->orderBy('nombre')->pluck('nombre','id');
         return view('admin.materiaprimas.create',
         compact('transportistas','chofer','camara','empAcopiadora','producto','embarcacion'));
     }
@@ -105,7 +109,37 @@ class MateriaPrimaController extends Controller
 
     public function edit(Materiaprima $materiaprima)
     {
-        return view('admin.materiaprimas.edit', compact('materiaprimas'));
+        $clientes = Cliente::where('id',$materiaprima->cliente_id)->get()->pluck('numdoc_razsoc','id');
+        $embarcacion = Embarcacion::where('empresa_id',session('empresa'))
+            ->orderBy('nombre')
+            ->get()
+            ->pluck('nombre_matricula','id');
+        $transportistas = Transportista::where('empresa_id',session('empresa'))
+            ->orderBy('nombre')
+            ->pluck('nombre','id');
+        $chofer = Chofer::where('id',$materiaprima->chofer_id)->get()->pluck('nombre_licencia','id');
+        $camara = Camara::where('id',$materiaprima->camara_id)->get()->pluck('marca_placa','id');
+        $empAcopiadora = Empacopiadora::where('empresa_id',session('empresa'))
+            ->orderBy('nombre')
+            ->pluck('nombre','id');
+        $acopiador = Acopiador::where('id',$materiaprima->acopiador_id)->pluck('nombre','id');
+        $producto = Producto::where('empresa_id',session('empresa'))
+            ->where('grupo',3)
+            ->orderBy('nombre')
+            ->pluck('nombre','id');
+        return view('admin.materiaprimas.edit',
+            compact(
+                'materiaprima',
+                'clientes',
+                'embarcacion',
+                'empAcopiadora',
+                'acopiador',
+                'transportistas',
+                'chofer',
+                'camara',
+                'producto',
+            )
+        );
     }
 
     public function update(Request $request, Materiaprima $materiaprima)
@@ -128,8 +162,6 @@ class MateriaPrimaController extends Controller
             'precio' => 'required',
             'lugar' => 'required',
             'producto_id' => 'required',
-            'destare' => 'required',
-            'observaciones' => 'required',
         ];
         $messages = [
     		'cliente_id.required' => 'Seleccione Proveedor.',

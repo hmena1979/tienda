@@ -22,6 +22,11 @@
 									Agregar registro
 								</a>
 							</li>
+							<li>
+								{{-- <a class="" href="{{ route('admin.pdf.facturacion',1) }}" target="_blank" datatoggle="tooltip" data-placement="top" title="Imprimir"><i class="fas fa-print"></i></a> --}}
+
+								<button class="btn btn-convertir" type="button" id="btnprint" data-toggle="modal" data-target="#print" onclick="limpia()"><i class="fas fa-print"></i></button>
+							</li>
 							@endcan
 						</ul>
 					</div>
@@ -29,26 +34,26 @@
 						<table id= "grid" class="table table-bordered table-responsive table-hover table-sm table-materia-prima">
 							<thead>
 								<tr>
-									<th width='5%'>Ingreso <br> Planta</th>
-									<th width='5%'>Chofer</th>
-									<th width='5%'>Empresa Transportista</th>
-									<th width='5%'>Empresa Acopiadora</th>
-									<th width='5%'>Acopiador</th>
-									<th width='5%'>Marca</th>
-									<th width='5%'>Placa</th>
-									<th width='5%'>Lote</th>
-									<th width='5%'>Cajas <br> Declaradas</th>
-									<th width='5%'>Peso <br> Planta KG</th>
-									<th width='5%'>Fecha <br> Partida</th>
-									<th width='5%'>Fecha <br> Llegada</th>
-									<th width='5%'>Hora <br> Descarga</th>
-									<th width='5%'>Proveedor</th>
-									<th width='5%'>Precio</th>
-									<th width='5%'>Lugar</th>
-									<th width='5%'>Tipo Producto</th>
-									<th width='5%'>Destare KG</th>
-									<th width='5%'>Observaciones</th>
-									<th width='5%'></th>
+									<th class="align-middle">Ingreso <br> Planta</th>
+									<th class="align-middle">Chofer</th>
+									<th class="align-middle">Empresa Transportista</th>
+									<th class="align-middle">Empresa Acopiadora</th>
+									<th class="align-middle">Acopiador</th>
+									<th class="align-middle">Marca</th>
+									<th class="align-middle">Placa</th>
+									<th class="align-middle">Lote</th>
+									<th class="align-middle">Cajas <br> Declaradas</th>
+									<th class="align-middle">Peso <br> Planta KG</th>
+									<th class="align-middle">Fecha <br> Partida</th>
+									<th class="align-middle">Fecha <br> Llegada</th>
+									<th class="align-middle">Hora <br> Descarga</th>
+									<th class="align-middle">Proveedor</th>
+									<th class="align-middle">Precio</th>
+									<th class="align-middle">Lugar</th>
+									<th class="align-middle">Tipo Producto</th>
+									<th class="align-middle">Destare KG</th>
+									<th class="align-middle">Observaciones</th>
+									<th class="align-middle"></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -93,6 +98,33 @@
 								@endforeach
 								</tbody>
 						</table>
+						<!-- Modal -->
+                        <div class="modal fade" id="print" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+									<div class="modal-header">
+										<strong>Ingreso a Planta</strong>
+									</div>
+									<div class="modal-body">
+										<div class="row">
+											<div class="col-md-6 form-group">
+												{!! Form::label('finicio', 'Desde:') !!}
+												{!! Form::date('finicio', null, ['class'=>'form-control']) !!}
+											</div>
+											<div class="col-md-6 form-group">
+												{!! Form::label('ffin', 'Hasta:') !!}
+												{!! Form::date('ffin', null, ['class'=>'form-control']) !!}
+											</div>
+										</div>
+									</div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-convertir" id='btnexcel'>Mostrar</button>
+                                        <button type="button" class="btn btn-convertir" data-dismiss='modal'>Salir</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Fin Modal -->
 					</div>				
 				</div>
 			</div>
@@ -104,3 +136,17 @@
 {{-- @section('css')
     <link rel="stylesheet" href="{{ url('/static/css/admin.css?v='.time()) }}">
 @stop --}}
+@section('script')
+<script>
+	var url_global='{{url("/")}}';
+	$(document).ready(function(){
+		$('#btnexcel').click(function(){
+			let desde = $('#finicio').val();
+			let hasta = $('#ffin').val();
+			let url = url_global + '/admin/excel/' + desde + '/' + hasta +'/materiaprima';
+			window.open(url,'_blank');
+			$('#print').modal('hide')
+		});
+	});
+</script>
+@endsection

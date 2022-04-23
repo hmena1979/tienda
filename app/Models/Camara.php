@@ -14,6 +14,12 @@ class Camara extends Model
     protected $table = 'camaras';
     protected $hidden = ['created_at','updated_at'];
     protected $guarded = [];
+    protected $appends = ['marca_placa'];
+
+    public function getMarcaPlacaAttribute()
+    {
+        return $this->marca.' '.$this->placa;
+    }
 
     public function transportista(){
         return $this->belongsTo('App\Models\Transportista');

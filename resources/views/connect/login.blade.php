@@ -1,5 +1,5 @@
 @extends('connect.master')
-@section('title','Tienda - Ingreso')
+@section('title','Pesquera - Ingreso')
 
 @section('content')
 <div class="box box_login shadow">
