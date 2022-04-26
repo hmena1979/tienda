@@ -46,7 +46,7 @@
                             </div>
                             <div class="col-md-2 form-group">
                                 {!! Form::label('motivotraslado_id', 'Motivo Traslado:') !!}
-                                {!! Form::select('motivotraslado_id',$motivoTraslado,null,['class'=>'custom-select activo','placeholder'=>'Elija Comprobante']) !!}
+                                {!! Form::select('motivotraslado_id',$motivoTraslado,null,['class'=>'custom-select activo','placeholder'=>'Elija Motivo de Traslado']) !!}
                             </div>
                             <div class="col-md-3 form-group">
                                 {!! Form::label('tipdoc_relacionado_id', 'Tipo Documento Relacionado:') !!}
@@ -76,15 +76,15 @@
                             </div>
                             <div class="col-md-2 form-group publico">
                                 {!! Form::label('numdoctransportista', 'N.Doc Transportista:') !!}
-                                {!! Form::text('numdoctransportista', null, ['class'=>'form-control','autocomplete'=>'off','maxlength'=>'15']) !!}
+                                {!! Form::text('numdoctransportista', null, ['class'=>'form-control mayuscula','autocomplete'=>'off','maxlength'=>'15']) !!}
                             </div>
                             <div class="col-md-2 form-group publico">
                                 {!! Form::label('razsoctransportista', 'R.Social Transportista:') !!}
-                                {!! Form::text('razsoctransportista', null, ['class'=>'form-control','autocomplete'=>'off','maxlength'=>'60']) !!}
+                                {!! Form::text('razsoctransportista', null, ['class'=>'form-control mayuscula','autocomplete'=>'off','maxlength'=>'60']) !!}
                             </div>
                             <div class="col-md-2 form-group privado">
                                 {!! Form::label('placa', 'Placa:') !!}
-                                {!! Form::text('placa', null, ['class'=>'form-control','autocomplete'=>'off','maxlength'=>'10']) !!}
+                                {!! Form::text('placa', null, ['class'=>'form-control mayuscula','autocomplete'=>'off','maxlength'=>'10']) !!}
                             </div>
                             <div class="col-md-2 form-group privado">
                                 {!! Form::label('tipodocchofer_id', 'TD Chofer:') !!}
@@ -92,7 +92,7 @@
                             </div>
                             <div class="col-md-2 form-group privado">
                                 {!! Form::label('documentochofer', 'N.Doc Chofer:') !!}
-                                {!! Form::text('documentochofer', null, ['class'=>'form-control','autocomplete'=>'off','maxlength'=>'15']) !!}
+                                {!! Form::text('documentochofer', null, ['class'=>'form-control mayuscula','autocomplete'=>'off','maxlength'=>'15']) !!}
                             </div>
                         </div>
                         <div class="row">
@@ -670,7 +670,7 @@
                         let alto = 800;
                         let x = parseInt((window.screen.width/2) - (ancho / 2));
                         let y = parseInt((window.screen.height/2) - (alto / 2));
-                        let url = url_global + '/admin/pdf/' + respuesta['id'] + '/facturacion';
+                        let url = url_global + '/admin/pdf/' + respuesta['id'] + '/guia';
                         let option = "left=" + x + ", top=" + y + ", height=" + alto + ", width=" + ancho + 
                             " ,scrollbar=si, location=no, resizable=si, menubar=no";
                         // window.open(url,'Comprobante',option);

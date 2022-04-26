@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Categoria;
 use App\Models\Empresa;
+use App\Models\Guia;
 use Illuminate\Http\Request;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Luecano\NumeroALetras\NumeroALetras;
@@ -69,6 +70,48 @@ class PDFController extends Controller
         //     $pdf = PDF::loadView('pdf.boleta', $data)->setPaper('A4', 'portrait');
         // }
         return $pdf->stream($rventa->cliente->numdoc.'-'.$rventa->tipocomprobante_codigo.'-'.$rventa->serie.'-'.$rventa->numero.'.pdf', array('Attachment'=>false));
+        
+        //$pdf->stream($parametro->ruc.'-'.$factura->comprobante_id.'-'.$factura->serie.'-'.$factura->numero.'.pdf', array('Attachment'=>false));
+        //return redirect('/admin/factura/'.$factura->id.'/edit')->with('message', 'Factura generada')->with('typealert', 'success');
+        
+        // return view('pdf.boleta', $data);
+    }
+
+    public function guia(Guia $guia)
+    {
+        // $moneda = ['PEN' => 'SOLES', 'USD' => 'DOLARES'];
+        // $mediopago = Categoria::where('modulo', 5)->pluck('nombre','codigo');
+        //$comprobante = Comprobante::where('activo',1)->pluck('nombre','codigo');
+        //$doctor = Doctor::orderBy('nombre','asc')->pluck('nombre','id');
+        //$afectacion = Afectacion::pluck('nombre','codigo');
+        $tipdoc = Categoria::where('modulo', 1)->orderBy('codigo')->pluck('nombre','codigo');
+        $empresa = Empresa::findOrFail(session('empresa'));
+        $sede = Sede::findOrFail(session('sede'));
+        $qtext = $empresa->ruc.'|'
+            .$guia->tipocomprobante_codigo.'|'
+            .$guia->serie.'|'
+            .$guia->numero.'|'
+            .$guia->igv.'|'
+            .$guia->total.'|'
+            .$guia->fecha.'|'
+            .$guia->cliente->tipdoc_id.'|'
+            .$guia->cliente->numdoc;
+
+        $qrcode = base64_encode(QrCode::format('svg')->size(90)->errorCorrection('H')->generate($qtext));
+        $data = [
+            'guia' => $guia,
+            'empresa' => $empresa,
+            'sede' => $sede,
+            'qrcode' => $qrcode,
+            'tipdoc' => $tipdoc
+        ];
+        $pdf = PDF::loadView('pdf.guia', $data)->setPaper('A4', 'portrait');
+        // if($rventa->tipocomprobante_codigo=='01'){
+        //     $pdf = PDF::loadView('pdf.factura', $data)->setPaper('A4', 'portrait');
+        // }else{
+        //     $pdf = PDF::loadView('pdf.boleta', $data)->setPaper('A4', 'portrait');
+        // }
+        return $pdf->stream($guia->cliente->numdoc.'-'.$guia->tipocomprobante_codigo.'-'.$guia->serie.'-'.$guia->numero.'.pdf', array('Attachment'=>false));
         
         //$pdf->stream($parametro->ruc.'-'.$factura->comprobante_id.'-'.$factura->serie.'-'.$factura->numero.'.pdf', array('Attachment'=>false));
         //return redirect('/admin/factura/'.$factura->id.'/edit')->with('message', 'Factura generada')->with('typealert', 'success');

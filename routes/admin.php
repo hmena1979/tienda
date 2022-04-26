@@ -217,6 +217,7 @@ Route::get('/sunat/{guia}/guias', [SunatController::class, 'guias'])->name('admi
 
 //PDF
 Route::get('/pdf/{rventa}/facturacion', [PDFController::class,'facturacion'])->name('admin.pdf.facturacion');
+Route::get('/pdf/{guia}/guia', [PDFController::class,'guia'])->name('admin.pdf.guia');
 Route::get('/pdf/{rcompra}/ingresos', [PDFController::class,'ingresos'])->name('admin.pdf.ingresos');
 Route::get('/pdf/{tesoreria}/tesoreria', [PDFController::class,'tesoreria'])->name('admin.pdf.tesoreria');
 

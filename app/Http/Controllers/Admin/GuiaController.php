@@ -131,18 +131,20 @@ class GuiaController extends Controller
         $detalle = Tmpdetguia::where('user_id',Auth::user()->id)->where('key',$key)->get();
         foreach($detalle as $det){
             // Crea registro en Detalle de Comprobante
-            $detguia = $guia->detguia()->create([
+            $detguia = $guia->detguias()->create([
                 'producto_id' => $det->producto_id,
                 'adicional' => $det->adicional,
                 'cantidad' => $det->cantidad,
             ]);
         }
 
-        // Envío a servidor de Sunat en caso sea Factura
+        // Envío a servidor de Sunat en caso sea Guía
         if ($guia->tipocomprobante_codigo == '09') {
             $sunat = new SunatController();
             $msm = $sunat->guias($guia);
             // $var = $this->sunat($rventa);
+            //------------------------------------------------------------------------------------------//
+            //------------------------------------------------------------------------------------------//
         }
         if ($guia->status <> 3) {
     

@@ -276,10 +276,10 @@ class DashboardController extends Controller
 		// $this->agregar_permiso('24','EMBARCACIONES','admin.embarcaciones.edit','Puede editar Embarcaciones');
 		// $this->agregar_permiso('24','EMBARCACIONES','admin.embarcaciones.destroy','Puede eliminar Embarcaciones');
 		
-		$this->agregar_permiso('25','GUÍA DE REMISIÓN','admin.guias.index','Puede ver listado Guía de Remisión');
-		$this->agregar_permiso('25','GUÍA DE REMISIÓN','admin.guias.create','Puede agregar Guía de Remisión');
-		$this->agregar_permiso('25','GUÍA DE REMISIÓN','admin.guias.edit','Puede editar Guía de Remisión');
-		$this->agregar_permiso('25','GUÍA DE REMISIÓN','admin.guias.destroy','Puede eliminar Guía de Remisión');
+		// $this->agregar_permiso('25','GUÍA DE REMISIÓN','admin.guias.index','Puede ver listado Guía de Remisión');
+		// $this->agregar_permiso('25','GUÍA DE REMISIÓN','admin.guias.create','Puede agregar Guía de Remisión');
+		// $this->agregar_permiso('25','GUÍA DE REMISIÓN','admin.guias.edit','Puede editar Guía de Remisión');
+		// $this->agregar_permiso('25','GUÍA DE REMISIÓN','admin.guias.destroy','Puede eliminar Guía de Remisión');
 
 		// return redirect()->route('admin.inicio')->with('update', 'Permisos Agregados');
 		// return redirect()->route('admin.inicio')->with('update', 'Registro Actualizado');		

@@ -22,6 +22,7 @@ use Greenter\Model\Sale\Cuota;
 use Greenter\Model\Sale\Invoice;
 use Greenter\Model\Sale\Document;
 use Greenter\Xml\Builder\InvoiceBuilder;
+use Greenter\Xml\Builder\DespatchBuilder;
 use Greenter\Model\Sale\SaleDetail;
 use Greenter\Model\Sale\Legend;
 use Greenter\Model\Despatch\Transportist;
@@ -642,8 +643,8 @@ class SunatController extends Controller
             ->setPartida(new Direction($guia->ubigeo_partida, $guia->punto_partida))
             ->setTransportista($transp);
         
-            $despatch = new Despatch();
-            $despatch->setTipoDoc($guia->tipocomprobante_codigo)
+            $despatch = (new Despatch())
+                ->setTipoDoc($guia->tipocomprobante_codigo)
                 ->setSerie($guia->serie)
                 ->setCorrelativo($guia->numero)
                 ->setFechaEmision(new DateTime($guia->fecha))
@@ -669,7 +670,7 @@ class SunatController extends Controller
         // dd($detalle);
         $despatch->setDetails($detalle);
 
-        $builder = new InvoiceBuilder();
+        $builder = new DespatchBuilder();
         $xml = $builder->build($despatch);
         $archivo = $guia->cliente->numdoc .'/'. 
                 $empresa->ruc . '-' . 
@@ -691,7 +692,8 @@ class SunatController extends Controller
         Storage::disk('invoice')->put($archivo, $xmlSigned);
         $user = $empresa->ruc.$empresa->usuario;
         $pass = $empresa->clave;
-        $urlService = $empresa->servidor;
+        // $urlService = $empresa->servidor;
+        $urlService = "https://e-beta.sunat.gob.pe/ol-ti-itemision-guia-gem-beta/billService";
 
         $soap = new SoapClient();
         $soap->setService($urlService);
@@ -715,10 +717,10 @@ class SunatController extends Controller
                 'cdr' => $mensaje,
                 'status' => $status,
             ]);
-            $guia->detrventa()->delete();
+            $guia->detguias()->delete();
     
             return true;
-            // return 'Error de conexión';
+            // return $abc;
         }
 
         $cdr = $result->getCdrResponse();
@@ -743,14 +745,14 @@ class SunatController extends Controller
         } else if ($code >= 2000 && $code <= 3999) {
             $mensaje = 'ESTADO: RECHAZADA | CÓDIGO: '. $code;
             $status = 3;
-            $guia->detrventa()->delete();
+            $guia->detguias()->delete();
         
         } else {
             /* Esto no debería darse, pero si ocurre, es un CDR inválido que debería tratarse como un error-excepción. */
             /*code: 0100 a 1999 */
             $mensaje .= 'EXCEPCIÓN | CÓDIGO: '. $code;
             $status = 3;
-            $guia->detrventa()->delete();
+            $guia->detguias()->delete();
         }
         
         $mensaje .= $cdr->getDescription();

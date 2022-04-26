@@ -65,8 +65,8 @@
 											{{-- @can('admin.rventas.edit')
 											<a class="" href="{{ route('admin.rventas.edit',$rventa) }}"datatoggle="tooltip" data-placement="top" title="Editar"><i class="fas fa-edit"></i></a>
 											@endcan --}}
-											<a class="" href="{{ route('admin.pdf.facturacion',$guia) }}" target="_blank" datatoggle="tooltip" data-placement="top" title="Imprimir"><i class="fas fa-print"></i></a>
-											{{-- <a class="" href="{{ route('admin.sunat.ventas',$rventa) }}" target="_blank" datatoggle="tooltip" data-placement="top" title="XML"><i class="fas fa-print"></i></a> --}}
+											<a class="" href="{{ route('admin.pdf.guia',$guia) }}" target="_blank" datatoggle="tooltip" data-placement="top" title="Imprimir"><i class="fas fa-print"></i></a>
+											<a class="" href="{{ route('admin.sunat.guias',$guia) }}" target="_blank" datatoggle="tooltip" data-placement="top" title="XML"><i class="fas fa-print"></i></a>
 										</div>
 									</td>
 								</tr>
