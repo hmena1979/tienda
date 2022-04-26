@@ -20,9 +20,14 @@ use Greenter\Model\Sale\FormaPagos\FormaPagoContado;
 use Greenter\Model\Sale\FormaPagos\FormaPagoCredito;
 use Greenter\Model\Sale\Cuota;
 use Greenter\Model\Sale\Invoice;
+use Greenter\Model\Sale\Document;
 use Greenter\Xml\Builder\InvoiceBuilder;
 use Greenter\Model\Sale\SaleDetail;
 use Greenter\Model\Sale\Legend;
+use Greenter\Model\Despatch\Transportist;
+use Greenter\Model\Despatch\Direction;
+use Greenter\Model\Despatch\Shipment;
+use Greenter\Model\Despatch\Despatch;
 use DateTime;
 use Greenter\Ws\Services\SoapClient;
 use Greenter\Ws\Services\BillSender;
@@ -30,6 +35,7 @@ use Greenter\Ws\Services\BillSender;
 use App\Models\Rventa;
 use App\Models\Detrventa;
 use App\Models\Empresa;
+use App\Models\Guia;
 use App\Models\Sede;
 use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Round;
 
@@ -565,6 +571,193 @@ class SunatController extends Controller
             'total' => $total,
             'pagado' => $pagado,
             'saldo' => $saldo,
+        ]);
+
+        return true;
+    }
+
+    public function guias(Guia $guia)
+    {
+        $porcentajeIgv = session('igv');
+        
+        // Destinatario
+        $destinatario = new Client();
+        $destinatario->setTipoDoc($guia->cliente->tipdoc_id)
+            ->setNumDoc($guia->cliente->numdoc)
+            ->setRznSocial($guia->cliente->razsoc);
+        // $tercero = new Client();
+        // $tercero->setTipoDoc($guia->cliente->tipdoc_id)
+        //     ->setNumDoc($guia->cliente->numdoc)
+        //     ->setRznSocial($guia->cliente->razsoc);
+        
+        // Emisor
+        $sede = Sede::find($guia->sede_id);
+        $address = new Address();
+        $address->setUbigueo($sede->ubigeo)
+            ->setDepartamento($sede->departamento)
+            ->setProvincia($sede->provincia)
+            ->setDistrito($sede->distrito)
+            ->setUrbanizacion($sede->urbanizacion)
+            ->setDireccion($sede->direccion);
+        
+        $company = new Company();
+        $empresa = Empresa::find($guia->empresa_id);
+        $domFiscal = Sede::where('id',$guia->sede_id)->where('principal',1)->value('direccion');
+        $company->setRuc($empresa->ruc)
+            ->setRazonSocial($empresa->razsoc)
+            ->setNombreComercial($empresa->razsoc)
+            ->setAddress((new Address())
+                ->setDepartamento($sede->departamento)
+                ->setProvincia($sede->provincia)
+                ->setDistrito($sede->distrito)
+                ->setUbigueo($sede->ubigeo)
+                ->setUrbanizacion($sede->urbanizacion)
+                ->setDireccion($domFiscal)
+            );
+
+        $rel = new Document();
+        $rel->setTipoDoc($guia->tipdoc_relacionado_id) // Cat. 21 - Numero de Orden de Entrega
+            ->setNroDoc($guia->numdoc_relacionado);
+        
+        $transp = new Transportist();
+        $transp->setTipoDoc($guia->tipodoctransportista_id)
+            ->setNumDoc($guia->numdoctransportista)
+            ->setRznSocial($guia->razsoctransportista)
+            ->setPlaca($guia->placa)
+            ->setChoferTipoDoc($guia->tipodocchofer_id)
+            ->setChoferDoc($guia->documentochofer);
+        
+        $envio = new Shipment();
+        $envio->setCodTraslado($guia->motivotraslado_id) // Cat.20
+            ->setDesTraslado($guia->motivotraslado->nombre)
+            ->setModTraslado($guia->modalidadtraslado_id)  // Cat.18 
+            ->setFecTraslado(new DateTime($guia->fechatraslado))
+            ->setCodPuerto($guia->puerto)
+            ->setIndTransbordo($guia->transbordo)
+            ->setPesoTotal($guia->pesototal)
+            ->setUndPesoTotal('KGM')
+        //    ->setNumBultos(2) // Solo válido para importaciones
+            // ->setNumContenedor('XD-2232')
+            ->setLlegada(new Direction($guia->ubigeo_llegada, $guia->punto_llegada))
+            ->setPartida(new Direction($guia->ubigeo_partida, $guia->punto_partida))
+            ->setTransportista($transp);
+        
+            $despatch = new Despatch();
+            $despatch->setTipoDoc($guia->tipocomprobante_codigo)
+                ->setSerie($guia->serie)
+                ->setCorrelativo($guia->numero)
+                ->setFechaEmision(new DateTime($guia->fecha))
+                ->setCompany($company)
+                ->setDestinatario($destinatario)
+                ->setObservacion('NOTA GUIA')
+                ->setRelDoc($rel)
+                ->setEnvio($envio);
+
+        //Detalles de Comprobante de Pago
+        $detalle = array();
+        foreach ($guia->detguias as $det) {
+            $item = (new SaleDetail())
+                ->setCantidad($det->cantidad)
+                ->setUnidad($det->producto->umedida_id)
+                ->setDescripcion($det->producto->nombre)
+                ->setCodProducto(str_pad($det->producto_id, 5, '0', STR_PAD_LEFT));
+            }
+            // $detalle = array_merge($detalle, $item);
+            // dd($item);
+        array_push($detalle, $item);
+        
+        // dd($detalle);
+        $despatch->setDetails($detalle);
+
+        $builder = new InvoiceBuilder();
+        $xml = $builder->build($despatch);
+        $archivo = $guia->cliente->numdoc .'/'. 
+                $empresa->ruc . '-' . 
+                $guia->tipocomprobante_codigo . '-' . 
+                $guia->serie . '-' .
+                $guia->numero.'.xml';
+        $content = $xml;
+        Storage::disk('invoice')->makeDirectory($guia->cliente->numdoc);
+        //file_put_contents($archivo, $content);
+        Storage::disk('invoice')->put($archivo, $content);
+        
+        $certPath = 'certificate.pem';
+
+        $signer = new SignedXml();
+        $signer->setCertificateFromFile($certPath);
+        //$xmlSigned = $signer->signFromFile(url('/').'/invoice/'.$archivo);
+        $xmlSigned = $signer->signXml($content);
+        //file_put_contents($archivo, $xmlSigned);
+        Storage::disk('invoice')->put($archivo, $xmlSigned);
+        $user = $empresa->ruc.$empresa->usuario;
+        $pass = $empresa->clave;
+        $urlService = $empresa->servidor;
+
+        $soap = new SoapClient();
+        $soap->setService($urlService);
+        $soap->setCredentials($user, $pass);
+        $sender = new BillSender();
+        $sender->setClient($soap);
+
+        $xml = Storage::disk('invoice')->get($archivo);        
+        $envio = $empresa->ruc.'-'.$guia->tipocomprobante_codigo.'-'.$guia->serie.'-'.$guia->numero;
+        $result = $sender->send($envio, $xml);
+        $mensaje = '';
+        $status = 0;
+        if (!$result->isSuccess()) {
+            // Error en la conexion con el servicio de SUNAT
+            $abc1 = $result->getError();
+            $abc = (array)$abc1;
+            $mensaje = 'ERROR:' . ' ' . $abc["\x00*\x00message"];
+            $status = 3;
+
+            $guia->update([
+                'cdr' => $mensaje,
+                'status' => $status,
+            ]);
+            $guia->detrventa()->delete();
+    
+            return true;
+            // return 'Error de conexión';
+        }
+
+        $cdr = $result->getCdrResponse();
+        //file_put_contents('invoice/'.$factura->ruc.'/'.'R-'.$envio.'.zip', $result->getCdrZip());
+        $arcresul = $guia->cliente->numdoc.'/'.'R-'.$envio.'.zip';
+        Storage::disk('invoice')->put($arcresul, $result->getCdrZip());
+
+        // Verificar CDR (Factura aceptada o rechazada)
+        $code = (int)$cdr->getCode();
+
+        if ($code === 0) {
+            $mensaje = 'ESTADO: ACEPTADA. | ';
+            $status = 2;
+            if (count($cdr->getNotes()) > 0) {
+                $mensaje .= ' INCLUYE OBSERVACIONES: ';
+                // Mostrar observaciones
+                foreach ($cdr->getNotes() as $obs) {
+                    $mensaje .= 'OBS: '.$obs.', ';
+                }
+            }
+        
+        } else if ($code >= 2000 && $code <= 3999) {
+            $mensaje = 'ESTADO: RECHAZADA | CÓDIGO: '. $code;
+            $status = 3;
+            $guia->detrventa()->delete();
+        
+        } else {
+            /* Esto no debería darse, pero si ocurre, es un CDR inválido que debería tratarse como un error-excepción. */
+            /*code: 0100 a 1999 */
+            $mensaje .= 'EXCEPCIÓN | CÓDIGO: '. $code;
+            $status = 3;
+            $guia->detrventa()->delete();
+        }
+        
+        $mensaje .= $cdr->getDescription();
+
+        $guia->update([
+            'cdr' => $mensaje,
+            'status' => $status,
         ]);
 
         return true;

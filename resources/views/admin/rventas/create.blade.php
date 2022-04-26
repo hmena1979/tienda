@@ -21,7 +21,7 @@
 						<h2 class="title"><i class="fas fa-cash-register"></i> Registro de Ventas</h2>
 						<ul>
                             <li>
-                                {!! Form::submit('Generar Comnprobante', ['class'=>'btn btn-convertir mt-2 oculto', 'id'=>'guardar']) !!}
+                                {!! Form::submit('Generar Comprobante', ['class'=>'btn btn-convertir mt-2 oculto', 'id'=>'guardar']) !!}
                             </li>
                             <li>
                                 <button type="button" id='finalizar' class="btn btn-convertir mt-2">Finalizar</button>

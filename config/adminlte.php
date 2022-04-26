@@ -325,6 +325,15 @@ return [
                                 ,'admin/consumos/*/edit'],
                 ],
                 [
+                    'text' => 'Guías de Remisión',
+                    'icon'    => 'fas fa-receipt',
+                    'icon_color' => 'cyan',
+                    'route'  => 'admin.guias.index',
+                    'can'  => 'admin.guias.index',
+                    'active' => ['admin/guias','admin/guias/*','admin/guias/create'
+                                ,'admin/guias/*/edit'],
+                ],
+                [
                     'text' => 'Nota Débito/Crédito',
                     'icon'    => 'fas fa-window-restore',
                     'icon_color' => 'cyan',

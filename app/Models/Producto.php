@@ -27,9 +27,17 @@ class Producto extends Model
     public function detrventa(){
         return $this->hasOne('App\Models\Detrventa');
     }
+
+    public function detguia(){
+        return $this->hasOne('App\Models\Detguia');
+    }
     
     public function tmpdetsalida(){
         return $this->hasOne('App\Models\Tmpdetsalida');
+    }
+    
+    public function tmpdetguia(){
+        return $this->hasOne('App\Models\Tmpdetguia');
     }
 
     public function umedida(){

@@ -13,6 +13,9 @@ use App\Imports\CatproductoImport;
 use App\Imports\UMedidaImport;
 use App\Imports\TipoComprobanteImport;
 use App\Imports\DetraccionImport;
+use App\Imports\DepartamentoImport;
+use App\Imports\ProvinciaImport;
+use App\Imports\UbigeoImport;
 
 class ImportController extends Controller
 {
@@ -147,6 +150,66 @@ class ImportController extends Controller
     		return redirect('/admin/import')->with('message', 'Archivo importado')->with('typealert', 'success');
     	endif;
 	}
+
+	public function Departamento(Request $request)
+    {
+    	$rules = [
+			'archivo' => 'required'
+    	];
+    	$messages = [
+			'archivo.required' => 'No ha selecionado archivo Departamento.xlsx'
+    	];
+
+    	$validator = validator::make($request->all(), $rules, $messages);
+    	if($validator->fails()):
+    		return back()->withErrors($validator)->with('message', 'Se ha producido un error')->with('typealert', 'danger')->withinput();
+		else:
+    		$file = $request->file('archivo');
+    		Excel::import(new DepartamentoImport, $file);
+
+    		return redirect('/admin/import')->with('message', 'Archivo importado')->with('typealert', 'success');
+    	endif;
+    }
+
+    public function Provincia(Request $request)
+    {
+    	$rules = [
+			'archivo' => 'required'
+    	];
+    	$messages = [
+			'archivo.required' => 'No ha selecionado archivo Provincia.xlsx'
+    	];
+
+    	$validator = validator::make($request->all(), $rules, $messages);
+    	if($validator->fails()):
+    		return back()->withErrors($validator)->with('message', 'Se ha producido un error')->with('typealert', 'danger')->withinput();
+		else:
+    		$file = $request->file('archivo');
+    		Excel::import(new ProvinciaImport, $file);
+
+    		return redirect('/admin/import')->with('message', 'Archivo importado')->with('typealert', 'success');
+    	endif;
+    }
+
+    public function Ubigeo(Request $request)
+    {
+    	$rules = [
+			'archivo' => 'required'
+    	];
+    	$messages = [
+			'archivo.required' => 'No ha selecionado archivo Ubigeo.xlsx'
+    	];
+
+    	$validator = validator::make($request->all(), $rules, $messages);
+    	if($validator->fails()):
+    		return back()->withErrors($validator)->with('message', 'Se ha producido un error')->with('typealert', 'danger')->withinput();
+		else:
+    		$file = $request->file('archivo');
+    		Excel::import(new UbigeoImport, $file);
+
+    		return redirect('/admin/import')->with('message', 'Archivo importado')->with('typealert', 'success');
+    	endif;
+    }
 
     // public function postImportComprobante(Request $request)
     // {

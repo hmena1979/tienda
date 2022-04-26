@@ -33,6 +33,11 @@ class Cliente extends Model
     	return $this->hasMany('App\Models\Rventa');
     }
 
+    public function guia()
+    {
+    	return $this->hasOne('App\Models\Guia');
+    }
+
     public function transferencias()
     {
     	return $this->hasMany('App\Models\Transferencia');

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\BusquedaController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UsuarioController;
@@ -20,6 +21,7 @@ use App\Http\Controllers\Admin\DetraccionController;
 use App\Http\Controllers\Admin\EmbarcacionController;
 use App\Http\Controllers\Admin\EmpAcopiadoraController;
 use App\Http\Controllers\Admin\ExcelController;
+use App\Http\Controllers\Admin\GuiaController;
 use App\Http\Controllers\Admin\IngresoController;
 use App\Http\Controllers\Admin\MateriaPrimaController;
 use App\Http\Controllers\Admin\ParametroController;
@@ -160,6 +162,13 @@ Route::get('/rventas/{tmpdetsalida}/destroyitem', [RventaController::class,'dest
 Route::resource('rventas', RventaController::class)->names('admin.rventas');
 Route::get('/rventas/{periodo?}', [RventaController::class,'index'])->name('admin.rventas.index');
 
+Route::post('/guias/change', [GuiaController::class,'change'])->name('admin.guias.change');
+Route::post('/guias/additem', [GuiaController::class,'additem'])->name('admin.guias.additem');
+Route::get('/guias/{key}/tablaitem', [GuiaController::class,'tablaitem'])->name('admin.guias.tablaitem');
+Route::get('/guias/{tmpdetguia}/destroyitem', [GuiaController::class,'destroyitem'])->name('admin.guias.destroyitem');
+Route::resource('guias', GuiaController::class)->names('admin.guias');
+Route::get('/guias/{periodo?}', [GuiaController::class,'index'])->name('admin.guias.index');
+
 Route::post('/consumos/change', [ConsumoController::class,'change'])->name('admin.consumos.change');
 Route::post('/consumos/additem', [ConsumoController::class,'additem'])->name('admin.consumos.additem');
 Route::get('/consumos/{key}/{moneda}/tablaitem', [ConsumoController::class,'tablaitem'])->name('admin.consumos.tablaitem');
@@ -204,6 +213,7 @@ Route::get('/parametros/{empresa?}', [ParametroController::class,'index'])->name
 
 //Sunat
 Route::get('/sunat/{rventa}/ventas', [SunatController::class, 'ventas'])->name('admin.sunat.ventas');
+Route::get('/sunat/{guia}/guias', [SunatController::class, 'guias'])->name('admin.sunat.guias');
 
 //PDF
 Route::get('/pdf/{rventa}/facturacion', [PDFController::class,'facturacion'])->name('admin.pdf.facturacion');
@@ -221,3 +231,11 @@ Route::post('/import/umedida', [ImportController::class,'umedida'])->name('admin
 Route::post('/import/tipocomprobante', [ImportController::class,'tipocomprobante'])->name('admin.imports.tipocomprobante');
 Route::post('/import/detraccion', [ImportController::class,'detraccion'])->name('admin.imports.detraccion');
 Route::post('/import/afectacion', [ImportController::class,'afectacion'])->name('admin.imports.afectacion');
+Route::post('/import/departamento', [ImportController::class,'departamento'])->name('admin.imports.departamento');
+Route::post('/import/provincia', [ImportController::class,'provincia'])->name('admin.imports.provincia');
+Route::post('/import/ubigeo', [ImportController::class,'ubigeo'])->name('admin.imports.ubigeo');
+
+//Modulo Busquedas
+Route::get('/busquedas/departamento', [BusquedaController::class,'departamento'])->name('admin.busquedas.departamento');
+Route::get('/busquedas/{departamento}/provincia', [BusquedaController::class,'provincia'])->name('admin.busquedas.provincia');
+Route::get('/busquedas/{provincia}/ubigeo', [BusquedaController::class,'ubigeo'])->name('admin.busquedas.ubigeo');

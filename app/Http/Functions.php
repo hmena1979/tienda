@@ -1,13 +1,16 @@
 <?php 
 	function getModulosArray(){
 		$a = [
-			'1' => 'Tipo documento',
+			'1' => 'Tipo de Documento',
 			'2' => 'Sexo',
-			'3' => 'Estado civil',
+			'3' => 'Estado Civil',
 			'4' => 'Moneda',
-			'5' => 'Medio de pago',
-			'6' => 'Status comprobante electrónico',
-			'7' => 'Tipo de Operación'
+			'5' => 'Medio de Pago',
+			'6' => 'Status Comprobante Electrónico',
+			'7' => 'Tipo de Operación',
+			'8' => 'Documentos Relacionados Guía de Remisión',
+			'9' => 'Motivos de Traslado',
+			'10' => 'Modalidad de Traslado',
 		];
 		return $a;
 	}

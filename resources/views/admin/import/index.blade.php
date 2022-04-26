@@ -175,6 +175,81 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row mtop16">
+                            <div class="card w-100 ml-2">
+                                <div class="card-header">
+                                    <h2 class="title">Importar Departamento</h2>
+                                </div>
+                                <div class="card-body">
+                                    {!! Form::open(['url'=>'/admin/import/departamento', 'files' => true]) !!}
+                                        {{-- @csrf --}}
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label for="archivo" class="">Archivo:</label>
+                                                <div class="custom-file">
+                                                    {!! Form::file('archivo', ['class'=>'custom-file-input','id'=>'customFile', 'accept'=>'.xlsx']) !!}
+                                                    <label class="custom-file-label" for="customFile" data-browse="Buscar">Buscar archivo Departamento.xlsx</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                {!! Form::submit('Importar', ['class'=>'btn btn-convertir mtop25']) !!}
+
+                                            </div>
+                                        </div>
+                                        {!! Form::close() !!}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mtop16">
+                            <div class="card w-100 ml-2">
+                                <div class="card-header">
+                                    <h2 class="title">Importar Provincia</h2>
+                                </div>
+                                <div class="card-body">
+                                    {!! Form::open(['url'=>'/admin/import/provincia', 'files' => true]) !!}
+                                        {{-- @csrf --}}
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label for="archivo" class="">Archivo:</label>
+                                                <div class="custom-file">
+                                                    {!! Form::file('archivo', ['class'=>'custom-file-input','id'=>'customFile', 'accept'=>'.xlsx']) !!}
+                                                    <label class="custom-file-label" for="customFile" data-browse="Buscar">Buscar archivo Provincia.xlsx</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                {!! Form::submit('Importar', ['class'=>'btn btn-convertir mtop25']) !!}
+
+                                            </div>
+                                        </div>
+                                        {!! Form::close() !!}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mtop16">
+                            <div class="card w-100 ml-2">
+                                <div class="card-header">
+                                    <h2 class="title">Importar Ubigeo</h2>
+                                </div>
+                                <div class="card-body">
+                                    {!! Form::open(['url'=>'/admin/import/ubigeo', 'files' => true]) !!}
+                                        {{-- @csrf --}}
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label for="archivo" class="">Archivo:</label>
+                                                <div class="custom-file">
+                                                    {!! Form::file('archivo', ['class'=>'custom-file-input','id'=>'customFile', 'accept'=>'.xlsx']) !!}
+                                                    <label class="custom-file-label" for="customFile" data-browse="Buscar">Buscar archivo Ubigeo.xlsx</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                {!! Form::submit('Importar', ['class'=>'btn btn-convertir mtop25']) !!}
+
+                                            </div>
+                                        </div>
+                                        {!! Form::close() !!}
+                                </div>
+                            </div>
+                        </div>
 
                         {{-- <div class="row mtop16">
                             <div class="col-md-12">
