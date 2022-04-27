@@ -368,6 +368,15 @@ return [
                     //             ,'admin/rcompras/*/edit'],
                 ],
                 [
+                    'text' => 'Pagos Masivos',
+                    'icon'    => 'fas fa-file-invoice-dollar',
+                    'icon_color' => 'cyan',
+                    'route'  => 'admin.masivos.index',
+                    'can'  => 'admin.masivos.index',
+                    'active' => ['admin/masivos','admin/masivos/*','admin/masivos/create'
+                                ,'admin/masivos/*/edit'],
+                ],
+                [
                     'text' => 'Transferencias entre Cuenta',
                     'icon'    => 'fas fa-money-bill-wave',
                     'icon_color' => 'cyan',

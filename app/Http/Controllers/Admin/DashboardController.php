@@ -280,6 +280,11 @@ class DashboardController extends Controller
 		// $this->agregar_permiso('25','GUÍA DE REMISIÓN','admin.guias.create','Puede agregar Guía de Remisión');
 		// $this->agregar_permiso('25','GUÍA DE REMISIÓN','admin.guias.edit','Puede editar Guía de Remisión');
 		// $this->agregar_permiso('25','GUÍA DE REMISIÓN','admin.guias.destroy','Puede eliminar Guía de Remisión');
+		
+		$this->agregar_permiso('26','PAGOS MASIVOS','admin.masivos.index','Puede ver listado Pagos Masivos');
+		$this->agregar_permiso('26','PAGOS MASIVOS','admin.masivos.create','Puede agregar Pagos Masivos');
+		$this->agregar_permiso('26','PAGOS MASIVOS','admin.masivos.edit','Puede editar Pagos Masivos');
+		$this->agregar_permiso('26','PAGOS MASIVOS','admin.masivos.destroy','Puede eliminar Pagos Masivos');
 
 		// return redirect()->route('admin.inicio')->with('update', 'Permisos Agregados');
 		// return redirect()->route('admin.inicio')->with('update', 'Registro Actualizado');		

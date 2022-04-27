@@ -25,6 +25,11 @@ class Rcompra extends Model
         return $this->hasMany('App\Models\Detrcompra');
     }
 
+    public function detmasivo()
+    {
+        return $this->hasOne('App\Models\Detmasivo');
+    }
+
     // Relaciones Uno a Muchos Inversa
     public function cliente()
     {

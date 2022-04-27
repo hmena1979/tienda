@@ -6,28 +6,24 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Cuenta extends Model
+class Masivo extends Model
 {
     use HasFactory;
     use SoftDeletes;
     protected $dates = ['deteted_at'];
-    protected $table = 'cuentas';
+    protected $table = 'masivos';
     protected $hidden = ['created_at','updated_at'];
     protected $guarded = [];
 
-    // Relación Uno a Muchos
-    public function tesorerias()
+    public function detmasivos()
     {
-    	return $this->hasMany('App\Models\Tesoreria');
+        return $this->hasMany('App\Models\Detmasivo');
     }
 
-    public function masivo()
+    public function cuenta()
     {
-    	return $this->hasOne('App\Models\Masivo');
+    	return $this->belongsTo('App\Models\Cuenta');
     }
 
-    public function banco()
-    {
-    	return $this->belongsTo('App\Models\Banco');
-    }
+
 }

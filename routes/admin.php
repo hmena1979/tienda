@@ -23,6 +23,7 @@ use App\Http\Controllers\Admin\EmpAcopiadoraController;
 use App\Http\Controllers\Admin\ExcelController;
 use App\Http\Controllers\Admin\GuiaController;
 use App\Http\Controllers\Admin\IngresoController;
+use App\Http\Controllers\Admin\MasivoController;
 use App\Http\Controllers\Admin\MateriaPrimaController;
 use App\Http\Controllers\Admin\ParametroController;
 use App\Http\Controllers\Admin\PDFController;
@@ -161,6 +162,12 @@ Route::get('/rventas/{rventa}/tablatotales', [RventaController::class,'tablatota
 Route::get('/rventas/{tmpdetsalida}/destroyitem', [RventaController::class,'destroyitem'])->name('admin.rventas.destroyitem');
 Route::resource('rventas', RventaController::class)->names('admin.rventas');
 Route::get('/rventas/{periodo?}', [RventaController::class,'index'])->name('admin.rventas.index');
+
+Route::post('/masivos/change', [MasivoController::class,'change'])->name('admin.masivos.change');
+Route::get('/masivos/{masivo}/tablaitem', [MasivoController::class,'tablaitem'])->name('admin.masivos.tablaitem');
+Route::get('/masivos/pendientes', [MasivoController::class,'pendientes'])->name('admin.masivos.pendientes');
+Route::resource('masivos', MasivoController::class)->names('admin.masivos');
+Route::get('/masivos/{periodo?}', [MasivoController::class,'index'])->name('admin.masivos.index');
 
 Route::post('/guias/change', [GuiaController::class,'change'])->name('admin.guias.change');
 Route::post('/guias/additem', [GuiaController::class,'additem'])->name('admin.guias.additem');
