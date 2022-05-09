@@ -7,6 +7,7 @@ use App\Models\Acopiador;
 use App\Models\Camara;
 use App\Models\Chofer;
 use App\Models\Cliente;
+use App\Models\Detmateriaprima;
 use App\Models\Embarcacion;
 use App\Models\Empacopiadora;
 use Illuminate\Support\Facades\Validator;
@@ -218,6 +219,77 @@ class MateriaPrimaController extends Controller
     public function destroy(Materiaprima $materiaprima)
     {
         $materiaprima->delete();
-        return redirect()->route('admin.embarcaciones.index')->with('destroy', 'Materia Prima Eliminada');
+        return redirect()->route('admin.materiaprimas.index')->with('destroy', 'Materia Prima Eliminada');
+    }
+
+    public function tablaitem(Materiaprima $materiaprima)
+    {
+        return view('admin.materiaprimas.detalle',compact('materiaprima'));
+    }
+
+    public function aedet (Request $request, $envio)
+    {
+        if ($request->ajax()) {
+            $det = json_decode($envio);
+            if ($det->tipo == 1) {
+                $pesada = Detmateriaprima::where('materiaprima_id',$det->id)->count();
+                Detmateriaprima::create([
+                    'materiaprima_id' => $det->id,
+                    'pesada' => $pesada + 1,
+                    'pesobruto' => $det->pesobruto,
+                    'tara' => $det->tara,
+                    'pesoneto' => $det->pesoneto,
+                ]);
+                $suma = Detmateriaprima::where('materiaprima_id',$det->id)->sum('pesoneto');
+                Materiaprima::where('id', $det->id)->update([
+                    'pplanta' => $suma,
+                    'batch' => $pesada + 1,
+                ]);
+                $result = [
+                    'pplanta' => $suma,
+                    'batch' => $pesada + 1,
+                ];
+            } else {
+                $detalle = Detmateriaprima::findOrFail($det->id);
+                $detalle->update([
+                    'pesobruto' => $det->pesobruto,
+                    'tara' => $det->tara,
+                    'pesoneto' => $det->pesoneto,
+                ]);
+                $suma = Detmateriaprima::where('materiaprima_id',$det->id)->sum('pesoneto');
+                Materiaprima::where('id', $det->id)->update([
+                    'pplanta' => $suma,
+                ]);
+                $pesada = Detmateriaprima::where('materiaprima_id',$det->id)->count();
+                $result = [
+                    'pplanta' => $suma,
+                    'batch' => $pesada,
+                ];
+            }
+            // return true;
+            return response()->json($result);
+        }
+    }
+
+    public function detmateriaprima(Detmateriaprima $detmateriaprima)
+    {
+        return response()->json($detmateriaprima);
+    }
+
+    public function destroyitem(Detmateriaprima $detmateriaprima)
+    {
+        $materiaprima_id = $detmateriaprima->materiaprima_id;
+        $detmateriaprima->delete();
+        $pesada = Detmateriaprima::where('materiaprima_id',$materiaprima_id)->count();
+        $suma = Detmateriaprima::where('materiaprima_id',$materiaprima_id)->sum('pesoneto');
+        Materiaprima::where('id', $materiaprima_id)->update([
+            'pplanta' => $suma,
+            'batch' => $pesada,
+        ]);
+        $result = [
+            'pplanta' => $suma,
+            'batch' => $pesada,
+        ];
+        return response()->json($result);
     }
 }

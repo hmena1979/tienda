@@ -137,6 +137,10 @@ Route::resource('/embarcaciones', EmbarcacionController::class)->names('admin.em
 
 Route::resource('/muelles', MuelleController::class)->names('admin.muelles');
 
+Route::get('/materiaprimas/{materiaprima}/tablaitem', [MateriaPrimaController::class,'tablaitem'])->name('admin.materiaprimas.tablaitem');
+Route::get('/materiaprimas/{envio}/aedet', [MateriaPrimaController::class, 'aedet'])->name('admin.materiaprimas.aedet');
+Route::get('/materiaprimas/{detmateriaprima}/detmateriaprima', [MateriaPrimaController::class,'detmateriaprima'])->name('admin.materiaprimas.detmateriaprima');
+Route::get('/materiaprimas/{detmateriaprima}/destroyitem', [MateriaPrimaController::class,'destroyitem'])->name('admin.materiaprimas.destroyitem');
 Route::resource('/materiaprimas', MateriaPrimaController::class)->names('admin.materiaprimas');
 
 Route::resource('ccostos', CcostoController::class)->names('admin.ccostos');

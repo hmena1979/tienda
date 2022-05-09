@@ -26,6 +26,7 @@
 								<div class="col-md-2 form-group">
 									{!! Form::hidden('empresa_id', session('empresa')) !!}
 									{!! Form::hidden('periodo', session('periodo')) !!}
+									{!! Form::hidden('id', null, ['id'=>'id']) !!}
 									{!! Form::label('lote', 'Lote:') !!}
 									{!! Form::text('lote', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
 								</div>
@@ -41,20 +42,24 @@
 									{!! Form::label('ticket_balanza', 'Ticket Balanza:') !!}
 									{!! Form::text('ticket_balanza', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
 								</div>
+								@can('admin.materiaprimas.comprobante')
 								<div class="col-md-2 form-group">
 									{!! Form::label('certprocedencia', 'Certif. Procedencia:') !!}
 									{!! Form::text('certprocedencia', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
 								</div>
+								@endcan
 							</div>
 							<div class="row">
 								<div class="col-md-4 form-group">
 									{!! Form::label('cliente_id', 'Proveedor:') !!}
 									{!! Form::select('cliente_id',$clientes,null,['class'=>'custom-select activo','id'=>'cliente_id','placeholder'=>'']) !!}
 								</div>
+								@can('admin.materiaprimas.comprobante')
 								<div class="col-md-2 form-group">
 									{!! Form::label('rcompra_id', 'Comprobante de Pago:') !!}
 									{!! Form::select('rcompra_id',$rcompra,null,['class'=>'custom-select activo','placeholder'=>'']) !!}
 								</div>
+								@endcan
 								<div class="col-md-3 form-group">
 									{!! Form::label('embarcacion_id', 'Embarcación:') !!}
 									{!! Form::select('embarcacion_id',$embarcacion,null,['class'=>'custom-select activo','placeholder'=>'']) !!}
@@ -124,10 +129,12 @@
 									{!! Form::label('batch', 'Batch:') !!}
 									{!! Form::text('batch', null, ['class'=>'form-control decimal','autocomplete'=>'off', 'disabled']) !!}
 								</div>
+								@can('admin.materiaprimas.precio')
 								<div class="col-md-2 form-group">
 									{!! Form::label('precio', 'Precio:') !!}
 									{!! Form::text('precio', null, ['class'=>'form-control decimal','autocomplete'=>'off']) !!}
 								</div>
+								@endcan
 							</div>
 							<div class="row">
 								<div class="col-md-2 form-group">
@@ -151,8 +158,59 @@
 					{!! Form::close() !!}
 				</div>
 			</div>
-
-		</div>		
+		</div>
+		<div class="row mtop16" id="formpeso">
+			<div class="col-md-12">
+				<div class="panelprin shadow">
+					<div class="inside">
+                        <div class="row">
+							<div class="col-md-2 form-group">
+								{!! Form::hidden('idd', null, ['id'=> 'idd']) !!}
+								{!! Form::hidden('tipo', 1, ['id' => 'tipo']) !!}
+								{!! Form::label('pesobruto', 'Bruto:') !!}
+								{!! Form::text('pesobruto', null, ['class'=>'form-control decimal','autocomplete'=>'off']) !!}
+							</div>
+							<div class="col-md-2 form-group">
+								{!! Form::label('tara', 'Tara:') !!}
+								{!! Form::text('tara', null, ['class'=>'form-control decimal','autocomplete'=>'off']) !!}
+							</div>
+							<div class="col-md-2 form-group">
+								{!! Form::label('pesoneto', 'Neto:') !!}
+								{!! Form::text('pesoneto', null, ['class'=>'form-control decimal','autocomplete'=>'off']) !!}
+							</div>
+							<div class="col-md-2">
+								<div class="row">
+									<div class="col-md-6">
+										<button type="button" id='add' class="btn btn-block btn-convertir mtop20" datatoggle="tooltip" data-placement="top" title="Aceptar">
+											<i class="fas fa-check"></i>
+										</button>
+									</div>
+									<div class="col-md-6">
+										<button type="button" id='cancel' class="btn btn-block btn-convertir mtop20" datatoggle="tooltip" data-placement="top" title="Descartar">
+											<i class="fas fa-times"></i>
+										</button>
+									</div>
+								</div>
+							</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+		<div class="row mtop16" id="detalles">
+			<div class="col-md-12">
+				<div class="panelprin shadow">
+					<div class="inside">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="" id="tdetitem">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 	</div>
 @endsection
 {{-- @section('css')
@@ -161,7 +219,8 @@
 @section('script')
 <script>
 	var url_global='{{url("/")}}';
-
+	$('#formpeso').hide();
+	veritems();
     $(document).ready(function(){
 		$('#guardar').click(function(){
 			$('.activo').prop('disabled',false);
@@ -182,7 +241,6 @@
                 cache: true,
             }
         });
-
 
 		$('#rcompra_id').select2({
 			placeholder:"Seleccione Comprobante de Pago"
@@ -249,6 +307,89 @@
 			placeholder:"Seleccione Producto"
 		});
 
+		$('#tara').blur(function(){
+			$('#pesoneto').val($('#pesobruto').val() - this.value);
+		});
+
+		$('#add').click(function(){
+            var det = {
+				'tipo' : $('#tipo').val(),
+				'id' : $('#idd').val(),
+				'pesobruto' : $('#pesobruto').val(),
+				'tara' : $('#tara').val(),
+				'pesoneto' : $('#pesoneto').val(),
+			};
+			var envio = JSON.stringify(det);
+			alert(envio)
+            $.get(url_global+"/admin/materiaprimas/"+envio+"/aedet/",function(response){
+				$('#pplanta').val(response['pplanta']);
+				$('#batch').val(response['batch']);
+				veritems();
+				$('#formpeso').hide();
+				$('#detalles').show();
+				$('#idd').val($('#id').val());
+				$('#tipo').val(1);
+            });
+            
+        });
+
+		$('#cancel').click(function(){
+            $('#formpeso').hide();
+            $('#detalles').show();
+            $('#pesobruto').val(null);
+			$('#tara').val(null);
+			$('#pesoneto').val(null)
+        });
+
+		
+
 	});
+
+	function veritems(){
+		var id = $('#id').val();
+		$.get(url_global+"/admin/materiaprimas/"+id+"/tablaitem/",function(response){
+			$('#tdetitem').empty();
+			$('#tdetitem').html(response);
+		});
+	}
+
+	function edititem (id) {
+        $('#formpeso').show();
+        $('#detalles').hide();
+        $('#idd').val(id);
+        $('#tipo').val(2);
+        
+        $.get(url_global+"/admin/materiaprimas/"+id+"/detmateriaprima/",function(response){
+			$('#pesobruto').val(response['pesobruto']);
+			$('#tara').val(response['tara']);
+			$('#pesoneto').val(response['pesoneto'])
+        });
+    }
+
+	function destroyitem(id){
+		Swal.fire({
+            title: 'Está Seguro de Eliminar el Registro?',
+            text: "",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '¡Si, eliminar!',
+            cancelButtonText: 'Cancelar'
+            }).then((result) => {
+            if (result.value) {
+				$.get(url_global+"/admin/materiaprimas/"+id+"/destroyitem/",function(response){
+                    $('#pplanta').val(response['pplanta']);
+					$('#batch').val(response['batch']);
+					veritems();
+                    Swal.fire({
+                        icon:'success',
+                        title:'Eliminado',
+                        text:'Registro Eliminado'
+                    });
+				});                
+            }
+            })
+	}
 </script>
 @endsection
