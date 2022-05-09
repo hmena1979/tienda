@@ -177,136 +177,136 @@ class DashboardController extends Controller
 
 	public function permisosfaltantes()
 	{
-		// $this->agregar_permiso('1','INICIO','admin.compras','Puede Realizar Compras');
-		// $this->agregar_permiso('1','INICIO','admin.ventas','Puede realizar Ventas');
+		$this->agregar_permiso('1','INICIO','admin.compras','Puede Realizar Compras');
+		$this->agregar_permiso('1','INICIO','admin.ventas','Puede realizar Ventas');
 
-		// $this->agregar_permiso('2','PROVEEDOR|CLIENTE','admin.clientes.index','Puede ver listado Proveedor|Cliente');
-		// $this->agregar_permiso('2','PROVEEDOR|CLIENTE','admin.clientes.create','Puede agregar Proveedor|Cliente');
-		// $this->agregar_permiso('2','PROVEEDOR|CLIENTE','admin.clientes.edit','Puede editar Proveedor|Cliente');
-		// $this->agregar_permiso('2','PROVEEDOR|CLIENTE','admin.clientes.destroy','Puede eliminar Proveedor|Cliente');
-		// $this->agregar_permiso('2','PROVEEDOR|CLIENTE','admin.clientes.cuenta','Puede agregar eliminar Cuentas');
+		$this->agregar_permiso('2','PROVEEDOR|CLIENTE','admin.clientes.index','Puede ver listado Proveedor|Cliente');
+		$this->agregar_permiso('2','PROVEEDOR|CLIENTE','admin.clientes.create','Puede agregar Proveedor|Cliente');
+		$this->agregar_permiso('2','PROVEEDOR|CLIENTE','admin.clientes.edit','Puede editar Proveedor|Cliente');
+		$this->agregar_permiso('2','PROVEEDOR|CLIENTE','admin.clientes.destroy','Puede eliminar Proveedor|Cliente');
+		$this->agregar_permiso('2','PROVEEDOR|CLIENTE','admin.clientes.cuenta','Puede agregar eliminar Cuentas');
 		
-		// $this->agregar_permiso('5','CATEGORIAS','admin.categorias.index','Puede ver listado Categorías');
-		// $this->agregar_permiso('5','CATEGORIAS','admin.categorias.create','Puede agregar Categorías');
-		// $this->agregar_permiso('5','CATEGORIAS','admin.categorias.edit','Puede editar Categorías');
-		// $this->agregar_permiso('5','CATEGORIAS','admin.categorias.destroy','Puede eliminar Categorías');
+		$this->agregar_permiso('5','CATEGORIAS','admin.categorias.index','Puede ver listado Categorías');
+		$this->agregar_permiso('5','CATEGORIAS','admin.categorias.create','Puede agregar Categorías');
+		$this->agregar_permiso('5','CATEGORIAS','admin.categorias.edit','Puede editar Categorías');
+		$this->agregar_permiso('5','CATEGORIAS','admin.categorias.destroy','Puede eliminar Categorías');
 		
-		// $this->agregar_permiso('6','UNIDAD DE MEDIDA','admin.umedidas.index','Puede ver listado Unidades de Medida');
-		// $this->agregar_permiso('6','UNIDAD DE MEDIDA','admin.umedidas.create','Puede agregar Unidades de Medida');
-		// $this->agregar_permiso('6','UNIDAD DE MEDIDA','admin.umedidas.edit','Puede editar Unidades de Medida');
-		// $this->agregar_permiso('6','UNIDAD DE MEDIDA','admin.umedidas.destroy','Puede eliminar Unidades de Medida');
+		$this->agregar_permiso('6','UNIDAD DE MEDIDA','admin.umedidas.index','Puede ver listado Unidades de Medida');
+		$this->agregar_permiso('6','UNIDAD DE MEDIDA','admin.umedidas.create','Puede agregar Unidades de Medida');
+		$this->agregar_permiso('6','UNIDAD DE MEDIDA','admin.umedidas.edit','Puede editar Unidades de Medida');
+		$this->agregar_permiso('6','UNIDAD DE MEDIDA','admin.umedidas.destroy','Puede eliminar Unidades de Medida');
 		
-		// $this->agregar_permiso('7','PRODUCTOS','admin.productos.index','Puede ver listado Productos');
-		// $this->agregar_permiso('7','PRODUCTOS','admin.productos.create','Puede agregar Productos');
-		// $this->agregar_permiso('7','PRODUCTOS','admin.productos.edit','Puede editar Productos');
-		// $this->agregar_permiso('7','PRODUCTOS','admin.productos.destroy','Puede eliminar Productos');
-		// $this->agregar_permiso('7','PRODUCTOS','admin.productos.price','Puede Asignar Precio Productos');
+		$this->agregar_permiso('7','PRODUCTOS','admin.productos.index','Puede ver listado Productos');
+		$this->agregar_permiso('7','PRODUCTOS','admin.productos.create','Puede agregar Productos');
+		$this->agregar_permiso('7','PRODUCTOS','admin.productos.edit','Puede editar Productos');
+		$this->agregar_permiso('7','PRODUCTOS','admin.productos.destroy','Puede eliminar Productos');
+		$this->agregar_permiso('7','PRODUCTOS','admin.productos.price','Puede Asignar Precio Productos');
 		
-		// $this->agregar_permiso('8','TIPO DE COMPROBANTES','admin.tipocomprobantes.index','Puede ver listado Tipo de Comprobantes');
-		// $this->agregar_permiso('8','TIPO DE COMPROBANTES','admin.tipocomprobantes.create','Puede agregar Tipo de Comprobantes');
-		// $this->agregar_permiso('8','TIPO DE COMPROBANTES','admin.tipocomprobantes.edit','Puede editar Tipo de Comprobantes');
-		// $this->agregar_permiso('8','TIPO DE COMPROBANTES','admin.tipocomprobantes.destroy','Puede eliminar Tipo de Comprobantes');
+		$this->agregar_permiso('8','TIPO DE COMPROBANTES','admin.tipocomprobantes.index','Puede ver listado Tipo de Comprobantes');
+		$this->agregar_permiso('8','TIPO DE COMPROBANTES','admin.tipocomprobantes.create','Puede agregar Tipo de Comprobantes');
+		$this->agregar_permiso('8','TIPO DE COMPROBANTES','admin.tipocomprobantes.edit','Puede editar Tipo de Comprobantes');
+		$this->agregar_permiso('8','TIPO DE COMPROBANTES','admin.tipocomprobantes.destroy','Puede eliminar Tipo de Comprobantes');
 		
-		// $this->agregar_permiso('9','REGISTRO DE COMPRAS','admin.rcompras.index','Puede ver listado Registro de Compras');
-		// $this->agregar_permiso('9','REGISTRO DE COMPRAS','admin.rcompras.create','Puede agregar Registro de Compras');
-		// $this->agregar_permiso('9','REGISTRO DE COMPRAS','admin.rcompras.edit','Puede editar Registro de Compras');
-		// $this->agregar_permiso('9','REGISTRO DE COMPRAS','admin.rcompras.destroy','Puede eliminar Registro de Compras');
+		$this->agregar_permiso('9','REGISTRO DE COMPRAS','admin.rcompras.index','Puede ver listado Registro de Compras');
+		$this->agregar_permiso('9','REGISTRO DE COMPRAS','admin.rcompras.create','Puede agregar Registro de Compras');
+		$this->agregar_permiso('9','REGISTRO DE COMPRAS','admin.rcompras.edit','Puede editar Registro de Compras');
+		$this->agregar_permiso('9','REGISTRO DE COMPRAS','admin.rcompras.destroy','Puede eliminar Registro de Compras');
 		
-		// $this->agregar_permiso('10','REGISTRO DE VENTAS','admin.rventas.index','Puede ver listado Registro de Ventas');
-		// $this->agregar_permiso('10','REGISTRO DE VENTAS','admin.rventas.create','Puede agregar Registro de Ventas');
-		// $this->agregar_permiso('10','REGISTRO DE VENTAS','admin.rventas.edit','Puede editar Registro de Ventas');
-		// $this->agregar_permiso('10','REGISTRO DE VENTAS','admin.rventas.destroy','Puede eliminar Registro de Ventas');
+		$this->agregar_permiso('10','REGISTRO DE VENTAS','admin.rventas.index','Puede ver listado Registro de Ventas');
+		$this->agregar_permiso('10','REGISTRO DE VENTAS','admin.rventas.create','Puede agregar Registro de Ventas');
+		$this->agregar_permiso('10','REGISTRO DE VENTAS','admin.rventas.edit','Puede editar Registro de Ventas');
+		$this->agregar_permiso('10','REGISTRO DE VENTAS','admin.rventas.destroy','Puede eliminar Registro de Ventas');
 
-		// $this->agregar_permiso('11','CUENTAS','admin.cuentas.index','Puede ver listado Cuentas');
-		// $this->agregar_permiso('11','CUENTAS','admin.cuentas.create','Puede agregar Cuentas');
-		// $this->agregar_permiso('11','CUENTAS','admin.cuentas.edit','Puede editar Cuentas');
-		// $this->agregar_permiso('11','CUENTAS','admin.cuentas.destroy','Puede eliminar Cuentas');
+		$this->agregar_permiso('11','CUENTAS','admin.cuentas.index','Puede ver listado Cuentas');
+		$this->agregar_permiso('11','CUENTAS','admin.cuentas.create','Puede agregar Cuentas');
+		$this->agregar_permiso('11','CUENTAS','admin.cuentas.edit','Puede editar Cuentas');
+		$this->agregar_permiso('11','CUENTAS','admin.cuentas.destroy','Puede eliminar Cuentas');
 		
-		// $this->agregar_permiso('12','DETRACCIONES','admin.detraccions.index','Puede ver listado Detracciones');
-		// $this->agregar_permiso('12','DETRACCIONES','admin.detraccions.create','Puede agregar Detracciones');
-		// $this->agregar_permiso('12','DETRACCIONES','admin.detraccions.edit','Puede editar Detracciones');
-		// $this->agregar_permiso('12','DETRACCIONES','admin.detraccions.destroy','Puede eliminar Detracciones');
+		$this->agregar_permiso('12','DETRACCIONES','admin.detraccions.index','Puede ver listado Detracciones');
+		$this->agregar_permiso('12','DETRACCIONES','admin.detraccions.create','Puede agregar Detracciones');
+		$this->agregar_permiso('12','DETRACCIONES','admin.detraccions.edit','Puede editar Detracciones');
+		$this->agregar_permiso('12','DETRACCIONES','admin.detraccions.destroy','Puede eliminar Detracciones');
 		
-		// $this->agregar_permiso('13','TESORERIA','admin.tesorerias.index','Puede ver listado Tesoreria');
-		// $this->agregar_permiso('13','TESORERIA','admin.tesorerias.create','Puede agregar Tesoreria');
-		// $this->agregar_permiso('13','TESORERIA','admin.tesorerias.edit','Puede editar Tesoreria');
-		// $this->agregar_permiso('13','TESORERIA','admin.tesorerias.destroy','Puede eliminar Tesoreria');
+		$this->agregar_permiso('13','TESORERIA','admin.tesorerias.index','Puede ver listado Tesoreria');
+		$this->agregar_permiso('13','TESORERIA','admin.tesorerias.create','Puede agregar Tesoreria');
+		$this->agregar_permiso('13','TESORERIA','admin.tesorerias.edit','Puede editar Tesoreria');
+		$this->agregar_permiso('13','TESORERIA','admin.tesorerias.destroy','Puede eliminar Tesoreria');
 		
-		// $this->agregar_permiso('14','CATEGORÍA PRODUCTOS','admin.catproductos.index','Puede ver listado Categoría Productos');
-		// $this->agregar_permiso('14','CATEGORÍA PRODUCTOS','admin.catproductos.create','Puede agregar Categoría Productos');
-		// $this->agregar_permiso('14','CATEGORÍA PRODUCTOS','admin.catproductos.edit','Puede editar Categoría Productos');
-		// $this->agregar_permiso('14','CATEGORÍA PRODUCTOS','admin.catproductos.destroy','Puede eliminar Categoría Productos');
+		$this->agregar_permiso('14','CATEGORÍA PRODUCTOS','admin.catproductos.index','Puede ver listado Categoría Productos');
+		$this->agregar_permiso('14','CATEGORÍA PRODUCTOS','admin.catproductos.create','Puede agregar Categoría Productos');
+		$this->agregar_permiso('14','CATEGORÍA PRODUCTOS','admin.catproductos.edit','Puede editar Categoría Productos');
+		$this->agregar_permiso('14','CATEGORÍA PRODUCTOS','admin.catproductos.destroy','Puede eliminar Categoría Productos');
 		
-		// $this->agregar_permiso('15','INGRESOS ALMACEN','admin.ingresos.index','Puede ver listado Ingresos');
-		// $this->agregar_permiso('15','INGRESOS ALMACEN','admin.ingresos.edit','Puede editar Ingresos');
-		// $this->agregar_permiso('15','INGRESOS ALMACEN','admin.ingresos.adddet','Puede agregar detalles');
+		$this->agregar_permiso('15','INGRESOS ALMACEN','admin.ingresos.index','Puede ver listado Ingresos');
+		$this->agregar_permiso('15','INGRESOS ALMACEN','admin.ingresos.edit','Puede editar Ingresos');
+		$this->agregar_permiso('15','INGRESOS ALMACEN','admin.ingresos.adddet','Puede agregar detalles');
 		
-		// $this->agregar_permiso('16','PARAMETROS','admin.parametros.index','Puede ver Parametros');
-		// $this->agregar_permiso('16','PARAMETROS','admin.parametros.empresaCreate','Puede agregar Empresas');
-		// $this->agregar_permiso('16','PARAMETROS','admin.parametros.empresaEdit','Puede editar Empresas');
-		// $this->agregar_permiso('16','PARAMETROS','admin.parametros.empresaDestroy','Puede eliminar Empresas');
-		// $this->agregar_permiso('16','PARAMETROS','admin.parametros.sedeCreate','Puede agregar Sedes');
-		// $this->agregar_permiso('16','PARAMETROS','admin.parametros.sedeEdit','Puede editar Sedes');
-		// $this->agregar_permiso('16','PARAMETROS','admin.parametros.sedeDestroy','Puede eliminar Sedes');
+		$this->agregar_permiso('16','PARAMETROS','admin.parametros.index','Puede ver Parametros');
+		$this->agregar_permiso('16','PARAMETROS','admin.parametros.empresaCreate','Puede agregar Empresas');
+		$this->agregar_permiso('16','PARAMETROS','admin.parametros.empresaEdit','Puede editar Empresas');
+		$this->agregar_permiso('16','PARAMETROS','admin.parametros.empresaDestroy','Puede eliminar Empresas');
+		$this->agregar_permiso('16','PARAMETROS','admin.parametros.sedeCreate','Puede agregar Sedes');
+		$this->agregar_permiso('16','PARAMETROS','admin.parametros.sedeEdit','Puede editar Sedes');
+		$this->agregar_permiso('16','PARAMETROS','admin.parametros.sedeDestroy','Puede eliminar Sedes');
 
-		// $this->agregar_permiso('17','CONSUMOS','admin.consumos.index','Puede ver listado Consumos');
-		// $this->agregar_permiso('17','CONSUMOS','admin.consumos.create','Puede agregar Consumos');
-		// $this->agregar_permiso('17','CONSUMOS','admin.consumos.edit','Puede editar Consumos');
-		// $this->agregar_permiso('17','CONSUMOS','admin.consumos.destroy','Puede eliminar Consumos');
+		$this->agregar_permiso('17','CONSUMOS','admin.consumos.index','Puede ver listado Consumos');
+		$this->agregar_permiso('17','CONSUMOS','admin.consumos.create','Puede agregar Consumos');
+		$this->agregar_permiso('17','CONSUMOS','admin.consumos.edit','Puede editar Consumos');
+		$this->agregar_permiso('17','CONSUMOS','admin.consumos.destroy','Puede eliminar Consumos');
 
-		// $this->agregar_permiso('18','DESTINOS','admin.destinos.index','Puede ver listado Destinos');
-		// $this->agregar_permiso('18','DESTINOS','admin.destinos.create','Puede agregar Destinos');
-		// $this->agregar_permiso('18','DESTINOS','admin.destinos.edit','Puede editar Destinos');
-		// $this->agregar_permiso('18','DESTINOS','admin.destinos.destroy','Puede eliminar Destinos');
+		$this->agregar_permiso('18','DESTINOS','admin.destinos.index','Puede ver listado Destinos');
+		$this->agregar_permiso('18','DESTINOS','admin.destinos.create','Puede agregar Destinos');
+		$this->agregar_permiso('18','DESTINOS','admin.destinos.edit','Puede editar Destinos');
+		$this->agregar_permiso('18','DESTINOS','admin.destinos.destroy','Puede eliminar Destinos');
 		
-		// $this->agregar_permiso('19','CENTROS DE COSTO','admin.ccostos.index','Puede ver listado Centro de Costo');
-		// $this->agregar_permiso('19','CENTROS DE COSTO','admin.ccostos.create','Puede agregar Centro de Costo');
-		// $this->agregar_permiso('19','CENTROS DE COSTO','admin.ccostos.edit','Puede editar Centro de Costo');
-		// $this->agregar_permiso('19','CENTROS DE COSTO','admin.ccostos.destroy','Puede eliminar Centro de Costo');
+		$this->agregar_permiso('19','CENTROS DE COSTO','admin.ccostos.index','Puede ver listado Centro de Costo');
+		$this->agregar_permiso('19','CENTROS DE COSTO','admin.ccostos.create','Puede agregar Centro de Costo');
+		$this->agregar_permiso('19','CENTROS DE COSTO','admin.ccostos.edit','Puede editar Centro de Costo');
+		$this->agregar_permiso('19','CENTROS DE COSTO','admin.ccostos.destroy','Puede eliminar Centro de Costo');
 		
-		// $this->agregar_permiso('20','TRANSFERENCIAS','admin.transferencias.index','Puede ver listado Transferencias');
-		// $this->agregar_permiso('20','TRANSFERENCIAS','admin.transferencias.create','Puede agregar Transferencias');
-		// $this->agregar_permiso('20','TRANSFERENCIAS','admin.transferencias.edit','Puede editar Transferencias');
-		// $this->agregar_permiso('20','TRANSFERENCIAS','admin.transferencias.destroy','Puede eliminar Transferencias');
+		$this->agregar_permiso('20','TRANSFERENCIAS','admin.transferencias.index','Puede ver listado Transferencias');
+		$this->agregar_permiso('20','TRANSFERENCIAS','admin.transferencias.create','Puede agregar Transferencias');
+		$this->agregar_permiso('20','TRANSFERENCIAS','admin.transferencias.edit','Puede editar Transferencias');
+		$this->agregar_permiso('20','TRANSFERENCIAS','admin.transferencias.destroy','Puede eliminar Transferencias');
 		
-		// $this->agregar_permiso('21','EMP ACOPIADORAS','admin.empacopiadoras.index','Puede ver listado Emp. Acopiadoras');
-		// $this->agregar_permiso('21','EMP ACOPIADORAS','admin.empacopiadoras.create','Puede agregar Emp. Acopiadoras');
-		// $this->agregar_permiso('21','EMP ACOPIADORAS','admin.empacopiadoras.edit','Puede editar Emp. Acopiadoras');
-		// $this->agregar_permiso('21','EMP ACOPIADORAS','admin.empacopiadoras.destroy','Puede eliminar Emp. Acopiadoras');
+		$this->agregar_permiso('21','EMP ACOPIADORAS','admin.empacopiadoras.index','Puede ver listado Emp. Acopiadoras');
+		$this->agregar_permiso('21','EMP ACOPIADORAS','admin.empacopiadoras.create','Puede agregar Emp. Acopiadoras');
+		$this->agregar_permiso('21','EMP ACOPIADORAS','admin.empacopiadoras.edit','Puede editar Emp. Acopiadoras');
+		$this->agregar_permiso('21','EMP ACOPIADORAS','admin.empacopiadoras.destroy','Puede eliminar Emp. Acopiadoras');
 		
-		// $this->agregar_permiso('22','TRANSPORTISTAS','admin.transportistas.index','Puede ver listado Transportistas');
-		// $this->agregar_permiso('22','TRANSPORTISTAS','admin.transportistas.create','Puede agregar Transportistas');
-		// $this->agregar_permiso('22','TRANSPORTISTAS','admin.transportistas.edit','Puede editar Transportistas');
-		// $this->agregar_permiso('22','TRANSPORTISTAS','admin.transportistas.destroy','Puede eliminar Transportistas');
+		$this->agregar_permiso('22','TRANSPORTISTAS','admin.transportistas.index','Puede ver listado Transportistas');
+		$this->agregar_permiso('22','TRANSPORTISTAS','admin.transportistas.create','Puede agregar Transportistas');
+		$this->agregar_permiso('22','TRANSPORTISTAS','admin.transportistas.edit','Puede editar Transportistas');
+		$this->agregar_permiso('22','TRANSPORTISTAS','admin.transportistas.destroy','Puede eliminar Transportistas');
 		
-		// $this->agregar_permiso('23','MATERIAS PRIMAS','admin.materiaprimas.index','Puede ver listado Materias Primas');
-		// $this->agregar_permiso('23','MATERIAS PRIMAS','admin.materiaprimas.create','Puede agregar Materias Primas');
-		// $this->agregar_permiso('23','MATERIAS PRIMAS','admin.materiaprimas.edit','Puede editar Materias Primas');
-		// $this->agregar_permiso('23','MATERIAS PRIMAS','admin.materiaprimas.destroy','Puede eliminar Materias Primas');
-		// $this->agregar_permiso('23','MATERIAS PRIMAS','admin.materiaprimas.comprobante','Puede ver/editar Comprobante');
-		// $this->agregar_permiso('23','MATERIAS PRIMAS','admin.materiaprimas.precio','Puede ver/editar Precio');
+		$this->agregar_permiso('23','MATERIAS PRIMAS','admin.materiaprimas.index','Puede ver listado Materias Primas');
+		$this->agregar_permiso('23','MATERIAS PRIMAS','admin.materiaprimas.create','Puede agregar Materias Primas');
+		$this->agregar_permiso('23','MATERIAS PRIMAS','admin.materiaprimas.edit','Puede editar Materias Primas');
+		$this->agregar_permiso('23','MATERIAS PRIMAS','admin.materiaprimas.destroy','Puede eliminar Materias Primas');
+		$this->agregar_permiso('23','MATERIAS PRIMAS','admin.materiaprimas.comprobante','Puede ver/editar Comprobante');
+		$this->agregar_permiso('23','MATERIAS PRIMAS','admin.materiaprimas.precio','Puede ver/editar Precio');
 		
-		// $this->agregar_permiso('24','EMBARCACIONES','admin.embarcaciones.index','Puede ver listado Embarcaciones');
-		// $this->agregar_permiso('24','EMBARCACIONES','admin.embarcaciones.create','Puede agregar Embarcaciones');
-		// $this->agregar_permiso('24','EMBARCACIONES','admin.embarcaciones.edit','Puede editar Embarcaciones');
-		// $this->agregar_permiso('24','EMBARCACIONES','admin.embarcaciones.destroy','Puede eliminar Embarcaciones');
+		$this->agregar_permiso('24','EMBARCACIONES','admin.embarcaciones.index','Puede ver listado Embarcaciones');
+		$this->agregar_permiso('24','EMBARCACIONES','admin.embarcaciones.create','Puede agregar Embarcaciones');
+		$this->agregar_permiso('24','EMBARCACIONES','admin.embarcaciones.edit','Puede editar Embarcaciones');
+		$this->agregar_permiso('24','EMBARCACIONES','admin.embarcaciones.destroy','Puede eliminar Embarcaciones');
 		
-		// $this->agregar_permiso('25','GUÍA DE REMISIÓN','admin.guias.index','Puede ver listado Guía de Remisión');
-		// $this->agregar_permiso('25','GUÍA DE REMISIÓN','admin.guias.create','Puede agregar Guía de Remisión');
-		// $this->agregar_permiso('25','GUÍA DE REMISIÓN','admin.guias.edit','Puede editar Guía de Remisión');
-		// $this->agregar_permiso('25','GUÍA DE REMISIÓN','admin.guias.destroy','Puede eliminar Guía de Remisión');
+		$this->agregar_permiso('25','GUÍA DE REMISIÓN','admin.guias.index','Puede ver listado Guía de Remisión');
+		$this->agregar_permiso('25','GUÍA DE REMISIÓN','admin.guias.create','Puede agregar Guía de Remisión');
+		$this->agregar_permiso('25','GUÍA DE REMISIÓN','admin.guias.edit','Puede editar Guía de Remisión');
+		$this->agregar_permiso('25','GUÍA DE REMISIÓN','admin.guias.destroy','Puede eliminar Guía de Remisión');
 		
-		// $this->agregar_permiso('26','PAGOS MASIVOS','admin.masivos.index','Puede ver listado Pagos Masivos');
-		// $this->agregar_permiso('26','PAGOS MASIVOS','admin.masivos.create','Puede agregar Pagos Masivos');
-		// $this->agregar_permiso('26','PAGOS MASIVOS','admin.masivos.edit','Puede editar Pagos Masivos');
-		// $this->agregar_permiso('26','PAGOS MASIVOS','admin.masivos.destroy','Puede eliminar Pagos Masivos');
-		// $this->agregar_permiso('26','PAGOS MASIVOS','admin.masivos.autorizar','Puede autorizar Pagos Masivos');
-		// $this->agregar_permiso('26','PAGOS MASIVOS','admin.masivos.generar','Puede generar Macro');
+		$this->agregar_permiso('26','PAGOS MASIVOS','admin.masivos.index','Puede ver listado Pagos Masivos');
+		$this->agregar_permiso('26','PAGOS MASIVOS','admin.masivos.create','Puede agregar Pagos Masivos');
+		$this->agregar_permiso('26','PAGOS MASIVOS','admin.masivos.edit','Puede editar Pagos Masivos');
+		$this->agregar_permiso('26','PAGOS MASIVOS','admin.masivos.destroy','Puede eliminar Pagos Masivos');
+		$this->agregar_permiso('26','PAGOS MASIVOS','admin.masivos.autorizar','Puede autorizar Pagos Masivos');
+		$this->agregar_permiso('26','PAGOS MASIVOS','admin.masivos.generar','Puede generar Macro');
 
-		// $this->agregar_permiso('27','MUELLES','admin.muelles.index','Puede ver listado Muelles');
-		// $this->agregar_permiso('27','MUELLES','admin.muelles.create','Puede agregar Muelles');
-		// $this->agregar_permiso('27','MUELLES','admin.muelles.edit','Puede editar Muelles');
-		// $this->agregar_permiso('27','MUELLES','admin.muelles.destroy','Puede eliminar Muelles');
+		$this->agregar_permiso('27','MUELLES','admin.muelles.index','Puede ver listado Muelles');
+		$this->agregar_permiso('27','MUELLES','admin.muelles.create','Puede agregar Muelles');
+		$this->agregar_permiso('27','MUELLES','admin.muelles.edit','Puede editar Muelles');
+		$this->agregar_permiso('27','MUELLES','admin.muelles.destroy','Puede eliminar Muelles');
 
 		// return redirect()->route('admin.inicio')->with('update', 'Permisos Agregados');
 		// return redirect()->route('admin.inicio')->with('update', 'Registro Actualizado');		
