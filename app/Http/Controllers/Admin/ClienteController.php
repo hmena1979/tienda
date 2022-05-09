@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreClienteRequest;
+use App\Models\Banco;
 use Illuminate\Support\Facades\Validator;
 
 use App\Models\Cliente;
 use App\Models\Categoria;
+use App\Models\Detcliente;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Empresa;
 
@@ -112,7 +114,9 @@ class ClienteController extends Controller
         $sexo = Categoria::where('modulo', 2)->pluck('nombre','codigo');
         $estciv = Categoria::where('modulo', 3)->pluck('nombre','codigo');
 
-        return view('admin.clientes.edit', compact('cliente','tipdoc','sexo','estciv'));
+        $bancos = Banco::pluck('nombre', 'id');
+
+        return view('admin.clientes.edit', compact('cliente','tipdoc','sexo','estciv','bancos'));
     }
     
     public function update(Request $request, Cliente $cliente)
@@ -270,5 +274,40 @@ class ClienteController extends Controller
         if ($request->ajax()) {
             return response()->json($cliente);
         }
+    }
+
+    public function tablaitem(Cliente $cliente)
+    {
+        return view('admin.clientes.detalle',compact('cliente'));
+    }
+
+    public function storedetalle(Request $request,Cliente $cliente)
+    {
+        $rules = [
+            'banco_id' => 'required',
+        ];
+        
+        $messages = [
+    		'banco_id.required' => 'Seleccione Banco.',
+        ];
+        $validator = Validator::make($request->all(),$rules,$messages);
+    	if($validator->fails()){
+            return back()->withErrors($validator)->with('message', 'Se ha producido un error')->with('typealert', 'danger')->withinput();
+        }else{
+            Detcliente::create([
+                'cliente_id' => $cliente->id,
+                'banco_id' => $request->input('banco_id'),
+                'moneda' => $request->input('moneda'),
+                'cuenta' => $request->input('cuenta'),
+                'cci' => $request->input('cci'),
+            ]);
+            return redirect()->route('admin.clientes.edit',$cliente)->with('store', 'Cuenta Agregada');
+        }
+    }
+
+    public function destroyitem(Detcliente $detcliente)
+    {
+        $detcliente->delete();
+        return true;
     }
 }

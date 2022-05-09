@@ -23,18 +23,30 @@
                         {!! Form::hidden('empresa_id', session('empresa')) !!}
                         {!! Form::hidden('sede_id',session('sede')) !!}
 						<div class="row">
-							<div class="col-md-6 form-group">
+							<div class="col-md-3 form-group">
 								{!! Form::label('nombre', 'Nombre:') !!}
 								{!! Form::text('nombre', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
 							</div>
-                            <div class="col-md-2 form-group">
-                                {!! Form::label('moneda', 'Moneda:') !!}
-                                {!! Form::select('moneda',$moneda,1,['class'=>'custom-select activo']) !!}
-                            </div>
-                            <div class="col-md-2 form-group">
-                                {!! Form::label('tipo', 'Tipo:') !!}
-                                {!! Form::select('tipo',[1=>'BANCO',2=>'CAJA'],1,['class'=>'custom-select activo']) !!}
-                            </div>
+							<div class="col-md-3">
+								<div class="row">
+									<div class="col-md-6 form-group">
+										{!! Form::label('moneda', 'Moneda:') !!}
+										{!! Form::select('moneda',$moneda,null,['class'=>'custom-select activo']) !!}
+									</div>
+									<div class="col-md-6 form-group">
+										{!! Form::label('tipo', 'Tipo:') !!}
+										{!! Form::select('tipo',[1=>'BANCO',2=>'CAJA'],null,['class'=>'custom-select activo']) !!}
+									</div>
+								</div>
+							</div>
+							<div class="col-md-2 form-group">
+								{!! Form::label('banco_id', 'Banco:') !!}
+								{!! Form::select('banco_id',$bancos,null,['class'=>'custom-select activo','placeholder' => 'Seleccione Banco']) !!}
+							</div>
+							<div class="col-md-4 form-group">
+								{!! Form::label('numerocta', 'Número Cuenta:') !!}
+								{!! Form::text('numerocta', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
+							</div>
 						</div>
 						{!! Form::submit('Guardar', ['class'=>'btn btn-convertir']) !!}
 						{!! Form::close() !!}

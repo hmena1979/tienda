@@ -18,7 +18,7 @@ class CreateDetrcomprasTable extends Migration
             $table->unsignedBigInteger('rcompra_id');
             $table->unsignedInteger('detdestino_id');
             $table->unsignedBigInteger('ccosto_id');
-            $table->decimal('monto');            
+            $table->decimal('monto',12,2);
             $table->softDeletes();
             $table->timestamps();
         });

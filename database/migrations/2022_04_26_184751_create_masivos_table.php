@@ -18,7 +18,7 @@ class CreateMasivosTable extends Migration
             $table->unsignedBigInteger('empresa_id')->default(1);
             $table->unsignedBigInteger('sede_id')->default(1);
             $table->string('periodo',6);
-            $table->dateTime('fecha');
+            $table->date('fecha');
             $table->decimal('tc',10,3)->nullable();
             $table->unsignedBigInteger('cuenta_id')->nullable();
             $table->decimal('monto',12,2)->nullable();

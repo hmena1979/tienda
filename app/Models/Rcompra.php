@@ -14,6 +14,12 @@ class Rcompra extends Model
     protected $table = 'rcompras';
     protected $hidden = ['created_at','updated_at'];
     protected $guarded = [];
+    protected $appends = ['serie_numero'];
+
+    public function getSerieNumeroAttribute()
+    {
+        return $this->serie. '-'.$this->numero;
+    }
 
     public function detingresos()
     {
@@ -74,5 +80,10 @@ class Rcompra extends Model
         if($this->moneda == 'USD'){
             return $this->renta * $this->tc;
         }
+    }
+
+    public function getPendienteAttribute()
+    {
+        return $this->saldo - $this->total_masivo;
     }
 }

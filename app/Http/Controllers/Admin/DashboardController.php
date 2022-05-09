@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Banco;
 use App\Models\Cliente;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -148,6 +149,17 @@ class DashboardController extends Controller
 				]);
 	
 			}
+			if (Banco::count() == 0) {
+				Banco::create([
+					'nombre' => 'CAJA',
+				]);
+				Banco::create([
+					'nombre' => 'BANCO DE CRÉDITO',
+				]);
+				Banco::create([
+					'nombre' => 'BBVA CONTINENTAL',
+				]);
+			}
             return redirect()->route('logout');
         }
     }
@@ -172,6 +184,7 @@ class DashboardController extends Controller
 		// $this->agregar_permiso('2','PROVEEDOR|CLIENTE','admin.clientes.create','Puede agregar Proveedor|Cliente');
 		// $this->agregar_permiso('2','PROVEEDOR|CLIENTE','admin.clientes.edit','Puede editar Proveedor|Cliente');
 		// $this->agregar_permiso('2','PROVEEDOR|CLIENTE','admin.clientes.destroy','Puede eliminar Proveedor|Cliente');
+		// $this->agregar_permiso('2','PROVEEDOR|CLIENTE','admin.clientes.cuenta','Puede agregar eliminar Cuentas');
 		
 		// $this->agregar_permiso('5','CATEGORIAS','admin.categorias.index','Puede ver listado Categorías');
 		// $this->agregar_permiso('5','CATEGORIAS','admin.categorias.create','Puede agregar Categorías');
@@ -270,6 +283,8 @@ class DashboardController extends Controller
 		// $this->agregar_permiso('23','MATERIAS PRIMAS','admin.materiaprimas.create','Puede agregar Materias Primas');
 		// $this->agregar_permiso('23','MATERIAS PRIMAS','admin.materiaprimas.edit','Puede editar Materias Primas');
 		// $this->agregar_permiso('23','MATERIAS PRIMAS','admin.materiaprimas.destroy','Puede eliminar Materias Primas');
+		// $this->agregar_permiso('23','MATERIAS PRIMAS','admin.materiaprimas.comprobante','Puede ver/editar Comprobante');
+		// $this->agregar_permiso('23','MATERIAS PRIMAS','admin.materiaprimas.precio','Puede ver/editar Precio');
 		
 		// $this->agregar_permiso('24','EMBARCACIONES','admin.embarcaciones.index','Puede ver listado Embarcaciones');
 		// $this->agregar_permiso('24','EMBARCACIONES','admin.embarcaciones.create','Puede agregar Embarcaciones');
@@ -281,10 +296,17 @@ class DashboardController extends Controller
 		// $this->agregar_permiso('25','GUÍA DE REMISIÓN','admin.guias.edit','Puede editar Guía de Remisión');
 		// $this->agregar_permiso('25','GUÍA DE REMISIÓN','admin.guias.destroy','Puede eliminar Guía de Remisión');
 		
-		$this->agregar_permiso('26','PAGOS MASIVOS','admin.masivos.index','Puede ver listado Pagos Masivos');
-		$this->agregar_permiso('26','PAGOS MASIVOS','admin.masivos.create','Puede agregar Pagos Masivos');
-		$this->agregar_permiso('26','PAGOS MASIVOS','admin.masivos.edit','Puede editar Pagos Masivos');
-		$this->agregar_permiso('26','PAGOS MASIVOS','admin.masivos.destroy','Puede eliminar Pagos Masivos');
+		// $this->agregar_permiso('26','PAGOS MASIVOS','admin.masivos.index','Puede ver listado Pagos Masivos');
+		// $this->agregar_permiso('26','PAGOS MASIVOS','admin.masivos.create','Puede agregar Pagos Masivos');
+		// $this->agregar_permiso('26','PAGOS MASIVOS','admin.masivos.edit','Puede editar Pagos Masivos');
+		// $this->agregar_permiso('26','PAGOS MASIVOS','admin.masivos.destroy','Puede eliminar Pagos Masivos');
+		// $this->agregar_permiso('26','PAGOS MASIVOS','admin.masivos.autorizar','Puede autorizar Pagos Masivos');
+		// $this->agregar_permiso('26','PAGOS MASIVOS','admin.masivos.generar','Puede generar Macro');
+
+		// $this->agregar_permiso('27','MUELLES','admin.muelles.index','Puede ver listado Muelles');
+		// $this->agregar_permiso('27','MUELLES','admin.muelles.create','Puede agregar Muelles');
+		// $this->agregar_permiso('27','MUELLES','admin.muelles.edit','Puede editar Muelles');
+		// $this->agregar_permiso('27','MUELLES','admin.muelles.destroy','Puede eliminar Muelles');
 
 		// return redirect()->route('admin.inicio')->with('update', 'Permisos Agregados');
 		// return redirect()->route('admin.inicio')->with('update', 'Registro Actualizado');		

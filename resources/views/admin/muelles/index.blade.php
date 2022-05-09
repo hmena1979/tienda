@@ -1,10 +1,10 @@
 {{-- @extends('adminlte::page') --}}
 @extends('admin.master')
-@section('title','Embarcaciones')
+@section('title','Muelles')
 
 @section('breadcrumb')
 	<li class="breadcrumb-item">
-		<a href="{{ route('admin.embarcaciones.index') }}"><i class="fas fa-anchor"></i> Embarcaciones</a>
+		<a href="{{ route('admin.muelles.index') }}"><i class="fab fa-docker"></i> Muelles</a>
 	</li>
 @endsection
 
@@ -14,11 +14,11 @@
 			<div class="col-md-12">
 				<div class="panelprin shadow">
 					<div class="headercontent">
-						<h2 class="title"><i class="fas fa-anchor"></i> Embarcaciones</h2>
+						<h2 class="title"><i class="fab fa-docker"></i> Muelles</h2>
 						<ul>
-							@can('admin.embarcaciones.create')
+							@can('admin.muelles.create')
 							<li>
-								<a href="{{ route('admin.embarcaciones.create') }}">
+								<a href="{{ route('admin.muelles.create') }}">
 									Agregar registro
 								</a>
 							</li>
@@ -29,27 +29,23 @@
 						<table id= "grid" class="table table-hover table-sm">
 							<thead>
 								<tr>
-									<th width="45%">Nombre</th>
-									<th width="15%">Matrícula</th>
-									<th width="20%">Protoc SANIPES</th>
-									<th width="10%">CAP.Bodega</th>
+									<th width="60%">Nombre</th>
+									<th width="30%">Protocolo SANIPES</th>
 									<th width="10%"></th>
 								</tr>
 							</thead>
 							<tbody>
-								@foreach($embarcaciones as $embarcacion)
+								@foreach($muelles as $muelle)
 								<tr>
-									<td>{{ $embarcacion->nombre }}</td>
-									<td>{{ $embarcacion->matricula }}</td>
-									<td>{{ $embarcacion->protocolo }}</td>
-									<td>{{ $embarcacion->capacidad }}</td>
+									<td>{{ $muelle->nombre }}</td>
+									<td>{{ $muelle->protocolo }}</td>
 									<td>
 										<div class="opts">
-											@can('admin.embarcaciones.edit')
-											<a class="" href="{{ route('admin.embarcaciones.edit',$embarcacion) }}"datatoggle="tooltip" data-placement="top" title="Editar"><i class="fas fa-edit"></i></a>
+											@can('admin.muelles.edit')
+											<a class="" href="{{ route('admin.muelles.edit',$muelle) }}"datatoggle="tooltip" data-placement="top" title="Editar"><i class="fas fa-edit"></i></a>
 											@endcan
-											@can('admin.embarcaciones.destroy')
-											<form action="{{ route('admin.embarcaciones.destroy',$embarcacion) }}" method="POST" class="formulario_eliminar">
+											@can('admin.muelles.destroy')
+											<form action="{{ route('admin.muelles.destroy',$muelle) }}" method="POST" class="formulario_eliminar">
 												@csrf
 												@method('delete')
 												<button type="submit" datatoggle="tooltip" data-placement="top" title="Eliminar">

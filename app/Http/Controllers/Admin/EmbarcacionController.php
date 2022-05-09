@@ -37,13 +37,13 @@ class EmbarcacionController extends Controller
         $rules = [
             'nombre' => 'required',
             'matricula' => 'required',
-            'protoc' => 'required',
+            'protocolo' => 'required',
             'capacidad' => 'required',
         ];
         $messages = [
     		'nombre.required' => 'Ingrese Nombre.',
     		'matricula.required' => 'Ingrese Matrícula.',
-    		'protoc.required' => 'Ingrese Protoc. Sanipes.',
+    		'protocolo.required' => 'Ingrese Protoc. Sanipes.',
     		'capacidad.required' => 'Ingrese Capacidad.',
         ];
         $validator = Validator::make($request->all(),$rules,$messages);
@@ -70,13 +70,13 @@ class EmbarcacionController extends Controller
         $rules = [
             'nombre' => 'required',
             'matricula' => 'required',
-            'protoc' => 'required',
+            'protocolo' => 'required',
             'capacidad' => 'required',
         ];
         $messages = [
     		'nombre.required' => 'Ingrese Nombre.',
     		'matricula.required' => 'Ingrese Matrícula.',
-    		'protoc.required' => 'Ingrese Protoc. Sanipes.',
+    		'protocolo.required' => 'Ingrese Protoc. Sanipes.',
     		'capacidad.required' => 'Ingrese Capacidad.',
         ];
         $validator = Validator::make($request->all(),$rules,$messages);

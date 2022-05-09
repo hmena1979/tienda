@@ -483,6 +483,17 @@ class RcompraController extends Controller
     	// }
     }
 
+    public function materiaprima(Request $request, $proveedor, $lote)
+    {
+    	// if($request->ajax()){
+    		$rcompras = Rcompra::select('id','serie','numero')
+                ->where('cliente_id',$proveedor)
+                ->where('lote',$lote)
+                ->get();
+    		return response()->json($rcompras);
+    	// }
+    }
+
     
     public function adddestino(StoreDetrcompraRequest $request)
     {

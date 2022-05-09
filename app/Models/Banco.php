@@ -19,4 +19,9 @@ class Banco extends Model
     {
     	return $this->hasOne('App\Models\Cuenta');
     }
+
+    public function cliente()
+    {
+    	return $this->hasOne('App\Models\Cliente');
+    }
 }

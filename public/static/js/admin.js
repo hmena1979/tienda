@@ -77,10 +77,9 @@ function sumarDias(pfecha,pdias){
 	var anio = pfecha.substr(0,4);
 	var fecha = new Date(anio+'/'+mes+'/'+dia);
 	
-
 	var tmpfecha = new Date();
-	tmpfecha.setDate(fecha.getDate() + dias);
-	var nfecha = String(tmpfecha.getFullYear()) + '-' + (String(tmpfecha.getMonth() + 1)).padStart(2,0) + '-' + (String(tmpfecha.getDate())).padStart(2,0);
+	fecha.setDate(fecha.getDate() + dias);
+	var nfecha = String(fecha.getFullYear()) + '-' + (String(fecha.getMonth() + 1)).padStart(2,0) + '-' + (String(fecha.getDate())).padStart(2,0);
 	return nfecha;
 }
 

@@ -20,106 +20,134 @@
 								<li>{!! Form::submit('Guardar', ['class'=>'btn btn-convertir mt-2', 'id'=>'guardar']) !!}</li>
                             </ul>
                         </div>
-					<div class="inside">
-						{{-- {!! Form::open(['url'=>'/admin/categoria/add/'.$module]) !!} --}}
-						<div class="row">
-							<div class="col-md-1 form-group">
-								{!! Form::hidden('empresa_id', session('empresa')) !!}
-                                {!! Form::label('periodo', 'Periodo:') !!}
-								{!! Form::text('periodo', null, ['class'=>'form-control activo','disabled']) !!}
+						<div class="inside">
+							{{-- {!! Form::open(['url'=>'/admin/categoria/add/'.$module]) !!} --}}
+							<div class="row">
+								<div class="col-md-2 form-group">
+									{!! Form::hidden('empresa_id', session('empresa')) !!}
+									{!! Form::hidden('periodo', session('periodo')) !!}
+									{!! Form::label('lote', 'Lote:') !!}
+									{!! Form::text('lote', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
+								</div>
+								<div class="col-md-2 form-group">
+									{!! Form::label('remitente_guia', 'Guía Remitente:') !!}
+									{!! Form::text('remitente_guia', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
+								</div>
+								<div class="col-md-2 form-group">
+									{!! Form::label('transportista_guia', 'Guía Transportista:') !!}
+									{!! Form::text('transportista_guia', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
+								</div>
+								<div class="col-md-2 form-group">
+									{!! Form::label('ticket_balanza', 'Ticket Balanza:') !!}
+									{!! Form::text('ticket_balanza', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
+								</div>
+								<div class="col-md-2 form-group">
+									{!! Form::label('certprocedencia', 'Certif. Procedencia:') !!}
+									{!! Form::text('certprocedencia', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
+								</div>
 							</div>
-							<div class="col-md-5 form-group">
-                                {!! Form::label('cliente_id', 'Proveedor:') !!}
-								{!! Form::select('cliente_id',$clientes,null,['class'=>'custom-select activo','id'=>'cliente_id','placeholder'=>'']) !!}
-                            </div>
-							<div class="col-md-5 form-group">
-                                {!! Form::label('embarcacion_id', 'Embarcación:') !!}
-								{!! Form::select('embarcacion_id',$embarcacion,null,['class'=>'custom-select activo','placeholder'=>'']) !!}
-                            </div>
-						</div>
-						<div class="row">
-							<div class="col-md-4 form-group">
-                                {!! Form::label('empacopiadora_id', 'Empresa Acopiadora:') !!}
-								{!! Form::select('empacopiadora_id',$empAcopiadora,null,['class'=>'custom-select','placeholder'=>'Seleccione Empresa Acopiadora']) !!}
+							<div class="row">
+								<div class="col-md-4 form-group">
+									{!! Form::label('cliente_id', 'Proveedor:') !!}
+									{!! Form::select('cliente_id',$clientes,null,['class'=>'custom-select activo','id'=>'cliente_id','placeholder'=>'']) !!}
+								</div>
+								<div class="col-md-2 form-group">
+									{!! Form::label('rcompra_id', 'Comprobante de Pago:') !!}
+									{!! Form::select('rcompra_id',$rcompra,null,['class'=>'custom-select activo','placeholder'=>'']) !!}
+								</div>
+								<div class="col-md-3 form-group">
+									{!! Form::label('embarcacion_id', 'Embarcación:') !!}
+									{!! Form::select('embarcacion_id',$embarcacion,null,['class'=>'custom-select activo','placeholder'=>'']) !!}
+								</div>
+								<div class="col-md-3 form-group">
+									{!! Form::label('muelle_id', 'Muelle:') !!}
+									{!! Form::select('muelle_id',$muelles,null,['class'=>'custom-select activo','placeholder'=>'']) !!}
+								</div>
 							</div>
-							<div class="col-md-4 form-group">
-                                {!! Form::label('acopiador_id', 'Acopiador:') !!}
-								{!! Form::select('acopiador_id',$acopiador,null,['class'=>'custom-select','placeholder'=>'Seleccione Acopiador']) !!}
+							<div class="row">
+								<div class="col-md-4 form-group">
+									{!! Form::label('empacopiadora_id', 'Empresa Acopiadora:') !!}
+									{!! Form::select('empacopiadora_id',$empAcopiadora,null,['class'=>'custom-select','placeholder'=>'Seleccione Empresa Acopiadora']) !!}
+								</div>
+								<div class="col-md-4 form-group">
+									{!! Form::label('acopiador_id', 'Acopiador:') !!}
+									{!! Form::select('acopiador_id',$acopiador,null,['class'=>'custom-select','placeholder'=>'Seleccione Acopiador']) !!}
+								</div>
 							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-4 form-group">
-                                {!! Form::label('transportista_id', 'Trasportista:') !!}
-								{!! Form::select('transportista_id',$transportistas,null,['class'=>'custom-select','placeholder'=>'Seleccione Transportista']) !!}
+							<div class="row">
+								<div class="col-md-4 form-group">
+									{!! Form::label('transportista_id', 'Trasportista:') !!}
+									{!! Form::select('transportista_id',$transportistas,null,['class'=>'custom-select','placeholder'=>'Seleccione Transportista']) !!}
+								</div>
+								<div class="col-md-4 form-group">
+									{!! Form::label('chofer_id', 'Chofer:') !!}
+									{!! Form::select('chofer_id',$chofer,null,['class'=>'custom-select','placeholder'=>'Seleccione Chofer']) !!}
+								</div>
+								<div class="col-md-4 form-group">
+									{!! Form::label('camara_id', 'Cámara:') !!}
+									{!! Form::select('camara_id',$camara,null,['class'=>'custom-select','placeholder'=>'Seleccione Cámara']) !!}
+								</div>
 							</div>
-							<div class="col-md-4 form-group">
-                                {!! Form::label('chofer_id', 'Chofer:') !!}
-								{!! Form::select('chofer_id',$chofer,null,['class'=>'custom-select','placeholder'=>'Seleccione Chofer']) !!}
+							<div class="row">
+								<div class="col-md-2 form-group">
+									{!! Form::label('fpartida', 'Fecha Partida:') !!}
+									{!! Form::date('fpartida', null, ['class'=>'form-control']) !!}
+								</div>
+								<div class="col-md-2 form-group">
+									{!! Form::label('fllegada', 'Fecha Llegada:') !!}
+									{!! Form::date('fllegada', null, ['class'=>'form-control']) !!}
+								</div>
+								<div class="col-md-2 form-group">
+									{!! Form::label('ingplanta', 'Ingreso a Planta:') !!}
+									{!! Form::date('ingplanta', null, ['class'=>'form-control']) !!}
+								</div>
+								<div class="col-md-2 form-group">
+									{!! Form::label('hinicio', 'Hora Inicio:') !!}
+									{!! Form::time('hinicio', null, ['class'=>'form-control']) !!}
+								</div>
+								<div class="col-md-2 form-group">
+									{!! Form::label('hfin', 'Hora Fin:') !!}
+									{!! Form::time('hfin', null, ['class'=>'form-control']) !!}
+								</div>
 							</div>
-							<div class="col-md-4 form-group">
-                                {!! Form::label('camara_id', 'Cámara:') !!}
-								{!! Form::select('camara_id',$camara,null,['class'=>'custom-select','placeholder'=>'Seleccione Cámara']) !!}
+							<div class="row">
+								
+								<div class="col-md-2 form-group">
+									{!! Form::label('cajas', 'Cajas Declaradas:') !!}
+									{!! Form::text('cajas', null, ['class'=>'form-control numero','autocomplete'=>'off']) !!}
+								</div>
+								<div class="col-md-2 form-group">
+									{!! Form::label('pplanta', 'Peso Planta:') !!}
+									{!! Form::text('pplanta', null, ['class'=>'form-control decimal','autocomplete'=>'off', 'disabled']) !!}
+								</div>
+								<div class="col-md-2 form-group">
+									{!! Form::label('batch', 'Batch:') !!}
+									{!! Form::text('batch', null, ['class'=>'form-control decimal','autocomplete'=>'off', 'disabled']) !!}
+								</div>
+								<div class="col-md-2 form-group">
+									{!! Form::label('precio', 'Precio:') !!}
+									{!! Form::text('precio', null, ['class'=>'form-control decimal','autocomplete'=>'off']) !!}
+								</div>
 							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-2 form-group">
-                                {!! Form::label('fpartida', 'Fecha Partida:') !!}
-                                {!! Form::date('fpartida', null, ['class'=>'form-control']) !!}
-                            </div>
-							<div class="col-md-2 form-group">
-                                {!! Form::label('fllegada', 'Fecha Llegada:') !!}
-                                {!! Form::date('fllegada', null, ['class'=>'form-control']) !!}
-                            </div>
-							<div class="col-md-2 form-group">
-                                {!! Form::label('ingplanta', 'Ingreso a Planta:') !!}
-                                {!! Form::date('ingplanta', null, ['class'=>'form-control']) !!}
-                            </div>
-							<div class="col-md-2 form-group">
-                                {!! Form::label('hdescarga', 'Hora Descarga:') !!}
-                                {!! Form::time('hdescarga', null, ['class'=>'form-control']) !!}
-                            </div>
-						</div>
-						<div class="row">
-							<div class="col-md-2 form-group">
-								{!! Form::label('guia', 'Guía:') !!}
-								{!! Form::text('guia', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
+							<div class="row">
+								<div class="col-md-2 form-group">
+									{!! Form::label('lugar', 'Lugar:') !!}
+									{!! Form::text('lugar', 'PAITA', ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
+								</div>
+								<div class="col-md-4 form-group">
+									{!! Form::label('producto_id', 'Tipo Producto:') !!}
+									{!! Form::select('producto_id',$producto,null,['class'=>'custom-select','placeholder'=>'Seleccione Producto']) !!}
+								</div>
+								<div class="col-md-2 form-group">
+									{!! Form::label('destare', 'Destare KG:') !!}
+									{!! Form::text('destare', null, ['class'=>'form-control decimal','autocomplete'=>'off']) !!}
+								</div>
+								<div class="col-md-4 form-group">
+									{!! Form::label('observaciones', 'Observaciones:') !!}
+									{!! Form::text('observaciones', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
+								</div>
 							</div>
-							<div class="col-md-2 form-group">
-								{!! Form::label('lote', 'Lote:') !!}
-								{!! Form::text('lote', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
-							</div>
-							<div class="col-md-2 form-group">
-								{!! Form::label('cajas', 'Cajas Declaradas:') !!}
-								{!! Form::text('cajas', null, ['class'=>'form-control numero','autocomplete'=>'off']) !!}
-							</div>
-							<div class="col-md-2 form-group">
-								{!! Form::label('pplanta', 'Peso Planta:') !!}
-								{!! Form::text('pplanta', null, ['class'=>'form-control decimal','autocomplete'=>'off']) !!}
-							</div>
-							<div class="col-md-2 form-group">
-								{!! Form::label('precio', 'Precio:') !!}
-								{!! Form::text('precio', null, ['class'=>'form-control decimal','autocomplete'=>'off']) !!}
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-2 form-group">
-								{!! Form::label('lugar', 'Lugar:') !!}
-								{!! Form::text('lugar', 'PAITA', ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
-							</div>
-							<div class="col-md-4 form-group">
-                                {!! Form::label('producto_id', 'Tipo Producto:') !!}
-								{!! Form::select('producto_id',$producto,null,['class'=>'custom-select','placeholder'=>'Seleccione Producto']) !!}
-							</div>
-							<div class="col-md-2 form-group">
-								{!! Form::label('destare', 'Destare KG:') !!}
-								{!! Form::text('destare', null, ['class'=>'form-control decimal','autocomplete'=>'off']) !!}
-							</div>
-							<div class="col-md-4 form-group">
-								{!! Form::label('observaciones', 'Observaciones:') !!}
-								{!! Form::text('observaciones', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
-							</div>
-						</div>
-					</div>				
+						</div>			
 					{!! Form::close() !!}
 				</div>
 			</div>
@@ -155,6 +183,10 @@
             }
         });
 
+
+		$('#rcompra_id').select2({
+			placeholder:"Seleccione Comprobante de Pago"
+		});
 
 		$('#embarcacion_id').select2({
 			placeholder:"Seleccione Embarcación"

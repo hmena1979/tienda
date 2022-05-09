@@ -53,7 +53,7 @@
 							</thead>
 							<tbody>
 								@foreach($masivos as $masivo)
-								<tr class="@if($masivo->estado==2)verde @endif @if($masivo->estado==3)azul @endif">
+								<tr class="@if($masivo->estado==2)verde negrita @endif @if($masivo->estado==3)azul negrita @endif">
 									<td>
 										{{date('Y-m-d',strtotime($masivo->fecha))}}
 									</td>

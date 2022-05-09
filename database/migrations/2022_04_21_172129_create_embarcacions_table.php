@@ -17,9 +17,9 @@ class CreateEmbarcacionsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('empresa_id')->default(1);
             $table->string('nombre', 100);
-            $table->string('matricula', 15);
-            $table->string('protoc', 25);
-            $table->decimal('capacidad', 10, 2);
+            $table->string('matricula', 15)->nullable();
+            $table->string('protocolo', 25)->nullable();
+            $table->decimal('capacidad', 10, 2)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

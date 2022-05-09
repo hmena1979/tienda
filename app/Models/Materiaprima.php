@@ -43,7 +43,16 @@ class Materiaprima extends Model
         return $this->belongsTo('App\Models\Embarcacion');
     }
 
+    public function muelle(){
+        return $this->belongsTo('App\Models\Muelle');
+    }
+
     public function producto(){
         return $this->belongsTo('App\Models\Producto');
+    }
+
+    public function detmateriaprimas()
+    {
+        return $this->hasMany('App\Models\Detmateriaprima');
     }
 }

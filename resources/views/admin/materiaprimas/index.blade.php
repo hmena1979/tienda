@@ -31,7 +31,46 @@
 						</ul>
 					</div>
 					<div class="inside">
-						<table id= "grid" class="table table-bordered table-responsive table-hover table-sm table-materia-prima">
+						<table id= "grid" class="table table-bordered table-responsive table-hover">
+							<thead>
+								<tr>
+									<th width='10%' class="align-middle">Ingreso <br> Planta</th>
+									<th width='10%' class="align-middle">Lote</th>
+									<th width='30%' class="align-middle">Proveedor</th>
+									<th width='10%' class="align-middle">Peso <br> Planta KG</th>
+									<th width='30%' class="align-middle">Empresa Transportista</th>
+									<th width='10%' class="align-middle"></th>
+								</tr>
+							</thead>
+							<tbody>
+								@foreach($materiaprimas as $materiaprima)
+								<tr>
+									<td>{{ $materiaprima->ingplanta }}</td>
+									<td>{{ $materiaprima->lote }}</td>
+									<td>{{ $materiaprima->cliente->razsoc }}</td>
+									<td>{{ $materiaprima->pplanta }}</td>
+									<td>{{ $materiaprima->transportista->nombre }}</td>
+									<td>
+										<div class="opts">
+											@can('admin.materiaprimas.edit')
+											<a class="" href="{{ route('admin.materiaprimas.edit',$materiaprima) }}"datatoggle="tooltip" data-placement="top" title="Editar"><i class="fas fa-edit"></i></a>
+											@endcan
+											@can('admin.materiaprimas.destroy')
+											<form action="{{ route('admin.materiaprimas.destroy',$materiaprima) }}" method="POST" class="formulario_eliminar">
+												@csrf
+												@method('delete')
+												<button type="submit" datatoggle="tooltip" data-placement="top" title="Eliminar">
+													<i class="fas fa-trash-alt"></i>
+												</button>
+											</form>
+                                            @endcan
+										</div>
+									</td>
+								</tr>
+								@endforeach
+								</tbody>
+						</table>
+						{{-- <table id= "grid" class="table table-bordered table-responsive table-hover table-sm table-materia-prima">
 							<thead>
 								<tr>
 									<th class="align-middle">Ingreso <br> Planta</th>
@@ -97,7 +136,7 @@
 								</tr>
 								@endforeach
 								</tbody>
-						</table>
+						</table> --}}
 						<!-- Modal -->
                         <div class="modal fade" id="print" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">

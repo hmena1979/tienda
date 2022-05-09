@@ -96,15 +96,29 @@
                     <div class="inside">
                         <div class="oculto mb-3" id="aedetcamara">
                             <div class="row" id="aedet">
-                                <div class="col-md-6 form-group">
-                                    {!! Form::hidden('iddcamara', null, ['id'=> 'iddcamara']) !!}
-                                    {!! Form::hidden('tipocamara', 1, ['id' => 'tipocamara']) !!}
-                                    {!! Form::label('marca', 'Marca:') !!}
-                                    {!! Form::text('marca', null, ['class'=>'form-control mayuscula','maxlength'=>'50','autocomplete'=>'off']) !!}
-                                </div>
-                                <div class="col-md-3 form-group">
-                                    {!! Form::label('placa', 'Placa:') !!}
-                                    {!! Form::text('placa', null, ['class'=>'form-control mayuscula','maxlength'=>'15','autocomplete'=>'off']) !!}
+                                <div class="col-md-9">
+                                    <div class="row">
+                                        <div class="col-md-8 form-group">
+                                            {!! Form::hidden('iddcamara', null, ['id'=> 'iddcamara']) !!}
+                                            {!! Form::hidden('tipocamara', 1, ['id' => 'tipocamara']) !!}
+                                            {!! Form::label('marca', 'Marca:') !!}
+                                            {!! Form::text('marca', null, ['class'=>'form-control mayuscula','maxlength'=>'50','autocomplete'=>'off']) !!}
+                                        </div>
+                                        <div class="col-md-4 form-group">
+                                            {!! Form::label('placa', 'Placa:') !!}
+                                            {!! Form::text('placa', null, ['class'=>'form-control mayuscula','maxlength'=>'15','autocomplete'=>'off']) !!}
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-8 form-group">
+                                            {!! Form::label('protocolo', 'Protocolo:') !!}
+                                            {!! Form::text('protocolo', null, ['class'=>'form-control mayuscula','maxlength'=>'25','autocomplete'=>'off']) !!}
+                                        </div>
+                                        <div class="col-md-4 form-group">
+                                            {!! Form::label('capacidad', 'Capacidad:') !!}
+                                            {!! Form::text('capacidad', null, ['class'=>'form-control decimal','maxlength'=>'15','autocomplete'=>'off']) !!}
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="row">
@@ -187,8 +201,11 @@
 				'id' : $('#iddcamara').val(),
 				'marca' : $('#marca').val(),
 				'placa' : $('#placa').val(),
+				'protocolo' : $('#protocolo').val(),
+				'capacidad' : $('#capacidad').val(),
 			};
 			var envio = JSON.stringify(det);
+            alert(envio);
             $.get(url_global+"/admin/transportistas/"+envio+"/aedetcamara/",function(response){
                 if (response == 1) {
                     veritemscamara();
@@ -196,6 +213,8 @@
                     $('#detallescamara').show();
                     $('#marca').val(null);
                     $('#placa').val(null);
+                    $('#protocolo').val(null);
+                    $('#capacidad').val(null);
                 } else {
                     Swal.fire(
                         'Falló',
@@ -212,6 +231,8 @@
             $('#detalles').show();
             $('#marca').val(null);
             $('#placa').val(null);
+            $('#protocolo').val(null);
+            $('#capacidad').val(null);
         });
 
         $('#cancelcamara').click(function(){
@@ -257,6 +278,8 @@
         $.get(url_global+"/admin/transportistas/"+id+"/camara/",function(response){
             $('#marca').val(response['marca']);
             $('#placa').val(response['placa']);
+            $('#protocolo').val(response['protocolo']);
+            $('#capacidad').val(response['capacidad']);
         });
     }
 

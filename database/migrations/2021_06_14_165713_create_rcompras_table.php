@@ -19,6 +19,7 @@ class CreateRcomprasTable extends Migration
             $table->integer('sede_id')->default(1);
             $table->string('periodo',6);
             $table->string('peringreso',6)->nullable();
+            $table->string('lote',15)->nullable();
             $table->integer('contable')->default(1);//(1)Si / (2) No
             $table->integer('almacen')->default(2);//(2)Si / (1) No
             $table->integer('fpago')->default(1);//(1)Contado / (2) Credito
@@ -67,6 +68,10 @@ class CreateRcomprasTable extends Migration
             $table->text('detalle')->nullable();
             $table->integer('completado')->default(2);
             $table->text('entregadopor')->nullable();
+
+            $table->unsignedTinyInteger('masivo')->default(2);
+            $table->decimal('total_masivo',12,2)->nullable();
+
             $table->softDeletes();
             $table->timestamps();
 

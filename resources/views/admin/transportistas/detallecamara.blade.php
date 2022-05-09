@@ -1,8 +1,9 @@
 <table id= "gridcamara" class="table table-hover table-sm">
     <thead>
         <tr>
-            <th width="65%">Marca</th>
+            <th width="25%">Marca</th>
             <th width="20%">Placa</th>
+            <th width="40%">Protocolo</th>
             <th width="15%"></th>
         </tr>
     </thead>
@@ -11,6 +12,7 @@
         <tr>
             <td>{{ $det->marca }}</td>
             <td>{{ $det->placa }}</td>
+            <td>{{ $det->protocolo }}</td>
             <td>
                 <div class="opts">
                     <button type="button" class="btn" title="Editar" onclick="edititemcamara('{{ $det->id }}');">

@@ -17,8 +17,16 @@
 		<div class="row">
 			<div class="col-md-12">
 				<div class="panelprin shadow">
+                    {!! Form::model($cliente,['route'=>['admin.clientes.update',$cliente], 'method' => 'put']) !!}
+                    <div class="headercontent">
+						<h2 class="title"><i class="fas fa-address-card"></i> Proveedor | Cliente: <strong>{{ $cliente->razsoc }}</h2>
+						<ul>
+                            <li>
+                                {!! Form::submit('Guardar', ['class'=>'btn btn-convertir mt-2', 'id'=>'guardar']) !!}
+                            </li>
+						</ul>
+					</div>
 					<div class="inside">
-						{!! Form::model($cliente,['route'=>['admin.clientes.update',$cliente], 'method' => 'put']) !!}
                         {!! Form::hidden('id', null,['id'=>'id']) !!}
 						<div class="row">
 							<div class="col-md-4 form-group">
@@ -88,13 +96,58 @@
 								{!! Form::text('telefono', null, ['class'=>'form-control','autocomplete'=>'off']) !!}
 							</div>
 						</div>
-						{!! Form::submit('Guardar', ['class'=>'btn btn-convertir', 'id'=>'guardar']) !!}
-						{!! Form::close() !!}
 					</div>				
+                    {!! Form::close() !!}
 				</div>
 			</div>
-
-		</div>		
+		</div>
+        @can('admin.clientes.cuenta')
+        <div class="row mtop16" id="addcuenta">
+			<div class="col-md-12">
+				<div class="panelprin shadow">
+					<div class="inside">
+                        {!! Form::open(['route'=>['admin.clientes.storedetalle',$cliente]]) !!}
+                        <div class="row">
+                            <div class="col-md-2 form-group">
+								{!! Form::label('banco_id', 'Banco:') !!}
+								{!! Form::select('banco_id',$bancos,null,['class'=>'custom-select activo','placeholder' => 'Seleccione Banco']) !!}
+							</div>
+                            <div class="col-md-2 form-group">
+                                {!! Form::label('moneda', 'Moneda:') !!}
+                                {!! Form::select('moneda',['PEN'=>'SOLES','USD'=>'DOLARES'],null,['class'=>'custom-select activo']) !!}
+                            </div>
+                            <div class="col-md-3 form-group">
+								{!! Form::label('cuenta', 'Número Cuenta:') !!}
+								{!! Form::text('cuenta', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
+							</div>
+                            <div class="col-md-3 form-group">
+								{!! Form::label('cci', 'CCI:') !!}
+								{!! Form::text('cci', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
+							</div>
+                            <div class="col-md-1">
+                                {!! Form::submit('+', ['class'=>'btn btn-block btn-convertir mtop20', 'id'=>'add']) !!}
+                            </div>
+                        </div>
+                        {!! Form::close() !!}
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endcan
+        <div class="row mtop16">
+			<div class="col-md-12">
+				<div class="panelprin shadow">
+					<div class="inside">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="" id="tdetitem">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 	</div>
 @endsection
 {{-- @section('css')
@@ -111,6 +164,8 @@
             document.getElementById("nombres").disabled = false;
             // document.getElementById("nombre2").disabled = false;
         });
+
+        veritems();
 
         $('#numdoc').blur(function(e){
             e.preventDefault();
@@ -280,14 +335,15 @@
                 $('#nomcomercial').val($('#razsoc').val());
             }
         });
-        
-        // document.getElementById('nombre2').addEventListener("blur",function(){
-        //     this.value = this.value.toUpperCase();
-        //     document.getElementById("razsoc").value = document.getElementById("ape_pat").value + ' '
-        //         + document.getElementById("ape_mat").value + ' '
-        //         + document.getElementById("nombres").value;// + ' '
-        //         // + document.getElementById("nombre2").value;
-        // });
+
+        function veritems(){
+            var id = $('#id').val();
+            $.get(url_global+"/admin/clientes/"+id+"/tablaitem/",function(response){
+                $('#tdetitem').empty();
+                $('#tdetitem').html(response);
+            });
+        }
+
     });
 </script>
 @endsection

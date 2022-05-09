@@ -28,6 +28,11 @@ class Cliente extends Model
     	return $this->hasMany('App\Models\Rcompra');
     }
 
+    public function detclientes()
+    {
+    	return $this->hasMany('App\Models\Detcliente');
+    }
+
     public function rventas()
     {
     	return $this->hasMany('App\Models\Rventa');

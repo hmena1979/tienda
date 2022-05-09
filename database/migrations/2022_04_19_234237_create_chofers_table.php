@@ -17,7 +17,7 @@ class CreateChofersTable extends Migration
             $table->id();
             $table->unsignedBigInteger('transportista_id');
             $table->string('nombre',50);
-            $table->string('licencia',15);
+            $table->string('licencia',15)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

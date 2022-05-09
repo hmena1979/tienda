@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Banco;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
@@ -37,7 +38,8 @@ class CuentaController extends Controller
     public function create()
     {
         $moneda = Categoria::where('modulo', 4)->pluck('nombre','codigo');
-        return view('admin.cuentas.create', compact('moneda'));
+        $bancos = Banco::pluck('nombre', 'id');
+        return view('admin.cuentas.create', compact('moneda','bancos'));
     }
 
     public function store(Request $request)
@@ -67,7 +69,8 @@ class CuentaController extends Controller
     public function edit(Cuenta $cuenta)
     {
         $moneda = Categoria::where('modulo', 4)->pluck('nombre','codigo');
-        return view('admin.cuentas.edit', compact('cuenta','moneda'));
+        $bancos = Banco::pluck('nombre', 'id');
+        return view('admin.cuentas.edit', compact('cuenta','moneda','bancos'));
     }
 
     public function update(Request $request, Cuenta $cuenta)

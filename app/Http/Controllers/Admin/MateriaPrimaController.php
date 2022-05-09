@@ -13,7 +13,9 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
 use App\Models\Materiaprima;
+use App\Models\Muelle;
 use App\Models\Producto;
+use App\Models\Rcompra;
 use App\Models\Transportista;
 
 class MateriaPrimaController extends Controller
@@ -39,6 +41,8 @@ class MateriaPrimaController extends Controller
     {
         $embarcacion = Embarcacion::where('empresa_id',session('empresa'))
             ->orderBy('nombre')->get()->pluck('nombre_matricula','id');
+        $muelles = Muelle::where('empresa_id',session('empresa'))
+            ->orderBy('nombre')->pluck('nombre','id');
         $transportistas = Transportista::where('empresa_id',session('empresa'))
             ->orderBy('nombre')->pluck('nombre','id');
         $chofer = Chofer::orderBy('nombre')->pluck('nombre','id');
@@ -46,48 +50,54 @@ class MateriaPrimaController extends Controller
         $empAcopiadora = Empacopiadora::where('empresa_id',session('empresa'))->orderBy('nombre')->pluck('nombre','id');
         $producto = Producto::where('empresa_id',session('empresa'))->where('grupo',3)->orderBy('nombre')->pluck('nombre','id');
         return view('admin.materiaprimas.create',
-        compact('transportistas','chofer','camara','empAcopiadora','producto','embarcacion'));
+        compact('transportistas','chofer','camara','empAcopiadora','producto','embarcacion','muelles'));
     }
 
     public function store(Request $request)
     {
         $rules = [
-            'cliente_id' => 'required',
+            'lote' => 'required',
+            'remitente_guia' => 'required',
+            'transportista_guia' => 'required',
             'transportista_id' => 'required',
-            'chofer_id' => 'required',
+            'ticket_balanza' => 'required',
+            'cliente_id' => 'required',
+            'embarcacion_id' => 'required',
+            'muelle_id' => 'required',
             'empacopiadora_id' => 'required',
             'acopiador_id' => 'required',
-            'embarcacion_id' => 'required',
-            'lote' => 'required',
-            'guia' => 'required',
-            'cajas' => 'required',
-            'pplanta' => 'required',
+            'transportista_id' => 'required',
+            'chofer_id' => 'required',
+            'camara_id' => 'required',
             'fpartida' => 'required',
             'fllegada' => 'required',
             'ingplanta' => 'required',
-            'hdescarga' => 'required',
-            'precio' => 'required',
+            'hinicio' => 'required',
+            'hfin' => 'required',
+            'cajas' => 'required',
             'lugar' => 'required',
             'producto_id' => 'required',
-            // 'destare' => 'required',
-            // 'observaciones' => 'required',
         ];
         $messages = [
-    		'cliente_id.required' => 'Seleccione Proveedor.',
+    		'lote.required' => 'Ingrese Lote.',
+    		'remitente_guia.required' => 'Ingrese Guía Remitente.',
+    		'transportista_guia.required' => 'Ingrese Guía Transportista.',
     		'transportista_id.required' => 'Seleccione Empresa Transportista.',
-    		'chofer_id.required' => 'Seleccione Chofer.',
+    		'ticket_balanza.required' => 'Ingrese Ticket Balanza.',
+    		'cliente_id.required' => 'Seleccione Proveedor.',
+    		'embarcacion_id.required' => 'Seleccione Embarcación.',
+    		'muelle_id.required' => 'Seleccione Muelle.',
     		'empacopiadora_id.required' => 'Seleccione Empresa Acopiadora.',
     		'acopiador_id.required' => 'Seleccione Acopiador.',
-    		'embarcacion_id.required' => 'Seleccione Embarcación .',
-    		'lote.required' => 'Ingrese Lote.',
-    		'guia.required' => 'Ingrese Guía.',
-    		'cajas.required' => 'Ingrese Cajas Declaradas.',
-    		'pplanta.required' => 'Ingrese Peso Planta.',
+    		'transportista_id.required' => 'Seleccione Transportista.',
+    		'chofer_id.required' => 'Seleccione Chofer.',
+    		'camara_id.required' => 'Seleccione Camara.',
     		'fpartida.required' => 'Ingrese Fecha de Partida.',
     		'fllegada.required' => 'Ingrese Fecha de Llegada.',
     		'ingplanta.required' => 'Ingrese Ingreso a Planta.',
-    		'hdescarga.required' => 'Ingrese Hora Desgarga.',
-            'precio.required' => 'Ingrese Precio',
+    		'hinicio.required' => 'Ingrese Hora Inicio',
+    		'hfin.required' => 'Ingrese Hora Fin.',
+    		'cajas.required' => 'Ingrese Cajas Declaradas.',
     		'lugar.required' => 'Ingrese Lugar.',
     		'producto_id.required' => 'Ingrese Tipo de Producto .',
     		'destare.required' => 'Ingrese Destare.',
@@ -110,33 +120,37 @@ class MateriaPrimaController extends Controller
     public function edit(Materiaprima $materiaprima)
     {
         $clientes = Cliente::where('id',$materiaprima->cliente_id)->get()->pluck('numdoc_razsoc','id');
+        if ($materiaprima->rcompra_id) {
+            $rcompra = Rcompra::where('lote',$materiaprima->lote)
+                ->where('cliente_id',$materiaprima->cliente_id)
+                ->get()->pluck('serie_numero','id');
+        } else {
+            $rcompra = [];
+        }
         $embarcacion = Embarcacion::where('empresa_id',session('empresa'))
-            ->orderBy('nombre')
-            ->get()
-            ->pluck('nombre_matricula','id');
+            ->orderBy('nombre')->get()->pluck('nombre_matricula','id');
+        $muelles = Muelle::where('empresa_id',session('empresa'))
+            ->orderBy('nombre')->pluck('nombre','id');
         $transportistas = Transportista::where('empresa_id',session('empresa'))
-            ->orderBy('nombre')
-            ->pluck('nombre','id');
+            ->orderBy('nombre')->pluck('nombre','id');
         $chofer = Chofer::where('id',$materiaprima->chofer_id)->get()->pluck('nombre_licencia','id');
         $camara = Camara::where('id',$materiaprima->camara_id)->get()->pluck('marca_placa','id');
-        $empAcopiadora = Empacopiadora::where('empresa_id',session('empresa'))
-            ->orderBy('nombre')
-            ->pluck('nombre','id');
+        $empAcopiadora = Empacopiadora::where('empresa_id',session('empresa'))->orderBy('nombre')->pluck('nombre','id');
         $acopiador = Acopiador::where('id',$materiaprima->acopiador_id)->pluck('nombre','id');
-        $producto = Producto::where('empresa_id',session('empresa'))
-            ->where('grupo',3)
-            ->orderBy('nombre')
-            ->pluck('nombre','id');
+        $producto = Producto::where('empresa_id',session('empresa'))->where('grupo',3)->orderBy('nombre')->pluck('nombre','id');
+
         return view('admin.materiaprimas.edit',
             compact(
                 'materiaprima',
                 'clientes',
+                'rcompra',
                 'embarcacion',
-                'empAcopiadora',
-                'acopiador',
+                'muelles',
                 'transportistas',
                 'chofer',
                 'camara',
+                'empAcopiadora',
+                'acopiador',
                 'producto',
             )
         );
@@ -145,40 +159,48 @@ class MateriaPrimaController extends Controller
     public function update(Request $request, Materiaprima $materiaprima)
     {
         $rules = [
-            'cliente_id' => 'required',
+            'lote' => 'required',
+            'remitente_guia' => 'required',
+            'transportista_guia' => 'required',
             'transportista_id' => 'required',
-            'chofer_id' => 'required',
+            'ticket_balanza' => 'required',
+            'cliente_id' => 'required',
+            'embarcacion_id' => 'required',
+            'muelle_id' => 'required',
             'empacopiadora_id' => 'required',
             'acopiador_id' => 'required',
-            'embarcacion_id' => 'required',
-            'lote' => 'required',
-            'guia' => 'required',
-            'cajas' => 'required',
-            'pplanta' => 'required',
+            'transportista_id' => 'required',
+            'chofer_id' => 'required',
+            'camara_id' => 'required',
             'fpartida' => 'required',
             'fllegada' => 'required',
             'ingplanta' => 'required',
-            'hdescarga' => 'required',
-            'precio' => 'required',
+            'hinicio' => 'required',
+            'hfin' => 'required',
+            'cajas' => 'required',
             'lugar' => 'required',
             'producto_id' => 'required',
         ];
         $messages = [
-    		'cliente_id.required' => 'Seleccione Proveedor.',
+    		'lote.required' => 'Ingrese Lote.',
+    		'remitente_guia.required' => 'Ingrese Guía Remitente.',
+    		'transportista_guia.required' => 'Ingrese Guía Transportista.',
     		'transportista_id.required' => 'Seleccione Empresa Transportista.',
-    		'chofer_id.required' => 'Seleccione Chofer.',
+    		'ticket_balanza.required' => 'Ingrese Ticket Balanza.',
+    		'cliente_id.required' => 'Seleccione Proveedor.',
+    		'embarcacion_id.required' => 'Seleccione Embarcación.',
+    		'muelle_id.required' => 'Seleccione Muelle.',
     		'empacopiadora_id.required' => 'Seleccione Empresa Acopiadora.',
     		'acopiador_id.required' => 'Seleccione Acopiador.',
-    		'embarcacion_id.required' => 'Seleccione Embarcación .',
-    		'lote.required' => 'Ingrese Lote.',
-    		'guia.required' => 'Ingrese Guía.',
-    		'cajas.required' => 'Ingrese Cajas Declaradas.',
-    		'pplanta.required' => 'Ingrese Peso Planta.',
+    		'transportista_id.required' => 'Seleccione Transportista.',
+    		'chofer_id.required' => 'Seleccione Chofer.',
+    		'camara_id.required' => 'Seleccione Camara.',
     		'fpartida.required' => 'Ingrese Fecha de Partida.',
     		'fllegada.required' => 'Ingrese Fecha de Llegada.',
     		'ingplanta.required' => 'Ingrese Ingreso a Planta.',
-    		'hdescarga.required' => 'Ingrese Hora Desgarga.',
-            'precio.required' => 'Ingrese Precio',
+    		'hinicio.required' => 'Ingrese Hora Inicio',
+    		'hfin.required' => 'Ingrese Hora Fin.',
+    		'cajas.required' => 'Ingrese Cajas Declaradas.',
     		'lugar.required' => 'Ingrese Lugar.',
     		'producto_id.required' => 'Ingrese Tipo de Producto .',
     		'destare.required' => 'Ingrese Destare.',

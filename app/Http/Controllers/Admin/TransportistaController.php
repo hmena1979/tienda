@@ -178,6 +178,8 @@ class TransportistaController extends Controller
                     'transportista_id' => $det->id,
                     'marca' => $det->marca,
                     'placa' => $det->placa,
+                    'protocolo' => $det->protocolo,
+                    'capacidad' => $det->capacidad,
                 ]);
             } else {
                 $camara = Camara::findOrFail($det->id);
@@ -191,6 +193,8 @@ class TransportistaController extends Controller
                 $camara->update([
                     'marca' => $det->marca,
                     'placa' => $det->placa,
+                    'protocolo' => $det->protocolo,
+                    'capacidad' => $det->capacidad,
                 ]);
             }
             return 1;

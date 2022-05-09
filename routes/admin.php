@@ -25,6 +25,7 @@ use App\Http\Controllers\Admin\GuiaController;
 use App\Http\Controllers\Admin\IngresoController;
 use App\Http\Controllers\Admin\MasivoController;
 use App\Http\Controllers\Admin\MateriaPrimaController;
+use App\Http\Controllers\Admin\MuelleController;
 use App\Http\Controllers\Admin\ParametroController;
 use App\Http\Controllers\Admin\PDFController;
 // use App\Http\Controllers\Admin\RegistroCompraController;
@@ -77,8 +78,11 @@ Route::get('/clientes/{tipo}/{numero}/{id?}/busapi', [ClienteController::class, 
 Route::get('/clientes/{cliente}/valores', [ClienteController::class, 'valores'])->name('admin.clientes.valores');
 Route::get('/clientes/{numdoc}/repetido', [ClienteController::class, 'repetido'])->name('admin.clientes.repetido');
 Route::post('/clientes/storeAjax', [ClienteController::class, 'storeAjax'])->name('admin.clientes.storeAjax');
+Route::post('/clientes/{cliente}/storedetalle', [ClienteController::class, 'storedetalle'])->name('admin.clientes.storedetalle');
 // Route::get('/clientes/seleccionado/{search?}', [ClienteController::class, 'seleccionado'])->name('admin.clientes.seleccionado');
 Route::get('/clientes/seleccionado/{tipo?}', [ClienteController::class, 'seleccionado'])->name('admin.clientes.seleccionado');
+Route::get('/clientes/{cliente}/tablaitem', [ClienteController::class,'tablaitem'])->name('admin.clientes.tablaitem');
+Route::get('/clientes/{detcliente}/destroyitem', [ClienteController::class,'destroyitem'])->name('admin.clientes.destroyitem');
 Route::resource('clientes', ClienteController::class)->except('show')->names('admin.clientes');
 // Route::get('/usuario', UsuarioController::class);
 
@@ -131,6 +135,8 @@ Route::resource('transportistas', TransportistaController::class)->names('admin.
 
 Route::resource('/embarcaciones', EmbarcacionController::class)->names('admin.embarcaciones');
 
+Route::resource('/muelles', MuelleController::class)->names('admin.muelles');
+
 Route::resource('/materiaprimas', MateriaPrimaController::class)->names('admin.materiaprimas');
 
 Route::resource('ccostos', CcostoController::class)->names('admin.ccostos');
@@ -145,6 +151,7 @@ Route::resource('tipocomprobantes', TipoComprobanteController::class)->names('ad
 Route::get('/rcompras/{fecha}/bustc', [RcompraController::class,'BusTc'])->name('admin.rcompras.bustc');
 Route::post('/rcompras/change', [RcompraController::class,'change'])->name('admin.rcompras.change');
 Route::get('/rcompras/{proveedor}/pendiente', [RcompraController::class,'pendiente'])->name('admin.rcompras.pendiente');
+Route::get('/rcompras/{proveedor}/{lote}/materiaprima', [RcompraController::class,'materiaprima'])->name('admin.rcompras.materiaprima');
 Route::get('/rcompras/{rcompra}/detrcompra', [RcompraController::class,'detrcompra'])->name('admin.rcompras.detrcompra');
 Route::post('/rcompras/adddestino', [RcompraController::class,'adddestino'])->name('admin.rcompras.adddestino');
 Route::get('/rcompras/{rcompra}/tablaitem', [RcompraController::class,'tablaitem'])->name('admin.rcompras.tablaitem');
@@ -165,7 +172,11 @@ Route::get('/rventas/{periodo?}', [RventaController::class,'index'])->name('admi
 
 Route::post('/masivos/change', [MasivoController::class,'change'])->name('admin.masivos.change');
 Route::get('/masivos/{masivo}/tablaitem', [MasivoController::class,'tablaitem'])->name('admin.masivos.tablaitem');
-Route::get('/masivos/pendientes', [MasivoController::class,'pendientes'])->name('admin.masivos.pendientes');
+Route::get('/masivos/{masivo}/pendientes', [MasivoController::class,'pendientes'])->name('admin.masivos.pendientes');
+Route::post('/masivos/procesa', [MasivoController::class,'procesa'])->name('admin.masivos.procesa');
+Route::get('/masivos/{masivo}/autorizar', [MasivoController::class,'autorizar'])->name('admin.masivos.autorizar');
+Route::get('/masivos/{masivo}/generar', [MasivoController::class,'generar'])->name('admin.masivos.generar');
+Route::get('/masivos/{detmasivo}/destroyitem', [MasivoController::class,'destroyitem'])->name('admin.masivos.destroyitem');
 Route::resource('masivos', MasivoController::class)->names('admin.masivos');
 Route::get('/masivos/{periodo?}', [MasivoController::class,'index'])->name('admin.masivos.index');
 

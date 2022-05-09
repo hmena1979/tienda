@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDetmasivosTable extends Migration
+class CreateDetclientesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,13 @@ class CreateDetmasivosTable extends Migration
      */
     public function up()
     {
-        Schema::create('detmasivos', function (Blueprint $table) {
+        Schema::create('detclientes', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('masivo_id');
-            $table->unsignedBigInteger('rcompra_id');
+            $table->unsignedBigInteger('cliente_id');
+            $table->unsignedBigInteger('banco_id');
+            $table->string('moneda',3)->nullable();
             $table->string('cuenta',25)->nullable();
-            $table->string('tipo',1)->default('P');
-            $table->decimal('montopen',12,2)->nullable();
-            $table->decimal('montousd',12,2)->nullable();
+            $table->string('cci',25)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -33,6 +32,6 @@ class CreateDetmasivosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('detmasivos');
+        Schema::dropIfExists('detclientes');
     }
 }

@@ -523,6 +523,15 @@ return [
                     'can'  => 'admin.embarcaciones.index',
                 ],                
                 [
+                    'text' => 'Muelles',
+                    'icon'    => 'fab fa-docker',
+                    'icon_color' => 'cyan',
+                    'route'  => 'admin.muelles.index',
+                    'active' => ['admin/muelles','admin/muelles/*','admin/muelles/create'
+                                ,'admin/muelles/*/edit'],
+                    'can'  => 'admin.muelles.index',
+                ],                
+                [
                     'text' => 'Detracciones',
                     'icon'    => 'fas fa-receipt',
                     'icon_color' => 'cyan',

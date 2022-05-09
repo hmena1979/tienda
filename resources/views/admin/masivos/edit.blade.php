@@ -15,9 +15,25 @@
                     <div class="headercontent">
 						<h2 class="title"><i class="fas fa-file-invoice-dollar"></i> Pagos Masivos</h2>
 						<ul>
+                            @if ($masivo->estado == 1)
+                            @can('admin.masivos.edit')
                             <li>
                                 {!! Form::submit('Guardar', ['class'=>'btn btn-convertir mt-2', 'id'=>'guardar']) !!}
+                            </li>                                
+                            @endcan
+                            @can('admin.masivos.autorizar')
+                            <li>
+                                <button type="button" id='autorizar' class="btn btn-convertir mt-2">Autorizar</button>
                             </li>
+                            @endcan
+                            @endif
+                            @can('admin.masivos.generar')
+                            @if ($masivo->estado == 2)
+                            <li>
+                                <button type="button" id='generar' class="btn btn-convertir mt-2">Generar</button>
+                            </li>
+                            @endif
+                            @endcan
 						</ul>
 					</div>
 					<div class="inside">
@@ -36,14 +52,14 @@
                                 {!! Form::label('tc', 'TC:') !!}
                                 {!! Form::text('tc', null, ['class'=>'form-control decimal activo','autocomplete'=>'off']) !!}
                             </div>
-                            <div class="col-md-5 form-group">
+                            <div class="col-md-7 form-group">
                                 {!! Form::label('glosa', 'Glosa:') !!}
                                 {!! Form::text('glosa', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
                             </div>
-                            <div class="col-md-2 form-group">
+                            {{-- <div class="col-md-2 form-group">
                                 {!! Form::label('monto', 'Monto:') !!}
                                 {!! Form::text('monto', null, ['class'=>'form-control decimal','autocomplete'=>'off', 'disabled']) !!}
-                            </div>
+                            </div> --}}
 						</div>
 						{!! Form::close() !!}
 					</div>				
@@ -100,8 +116,39 @@
                 $('#tc').val(response['venta']);
             });
         });
-
         veritems();
+
+        $('#autorizar').click(function(){
+            var id = $('#id').val();
+            $.get(url_global+"/admin/masivos/"+id+"/autorizar/",function(response){
+                if (response == 1) {
+                    location.reload();
+                } else {
+                    Swal.fire({
+                        icon:'warning',
+                        title:'Error',
+                        text:'No se encontró cuenta de alguno de los Proveedores'
+                    });
+                }
+            });
+        });
+
+        $('#generar').click(function(){
+            var id = $('#id').val();
+            $.get(url_global+"/admin/masivos/"+id+"/generar/",function(response){
+                alert(response);
+                // if (response == 3) {
+                //     location.reload();
+                // } else {
+                //     Swal.fire({
+                //         icon:'warning',
+                //         title:'Error',
+                //         text:'No se encontró cuenta de alguno de los Proveedores'
+                //     });
+                // }
+            });
+        });
+
     });
     function veritems(){
         var id = $('#id').val();
@@ -112,11 +159,37 @@
     }
 
     function pendientes(){
-        $.get(url_global+"/admin/masivos/pendientes/",function(response){
-            // alert('Pendientes');
+        var id = $('#id').val();
+        $.get(url_global+"/admin/masivos/"+id+"/pendientes/",function(response){
             $('#pendientes').empty();
             $('#pendientes').html(response);
         });
     }
+
+    function destroyitem(id){
+		Swal.fire({
+            title: 'Está Seguro de Eliminar el Registro?',
+            text: "",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '¡Si, eliminar!',
+            cancelButtonText: 'Cancelar'
+            }).then((result) => {
+            if (result.value) {
+				$.get(url_global+"/admin/masivos/"+id+"/destroyitem/",function(response){
+                    // vertotales();
+                    veritems();
+                    Swal.fire({
+                        icon:'success',
+                        title:'Eliminado',
+                        text:'Registro Eliminado'
+                    });
+				});
+                
+            }
+            })
+	}
 </script>
 @endsection

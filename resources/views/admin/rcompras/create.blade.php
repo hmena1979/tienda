@@ -163,6 +163,10 @@
                             </div>
                         </div>
                         <div class="row">
+                            <div class="col-md-2 form-group">
+                                {!! Form::label('lote', 'Lote:') !!}
+                                {!! Form::text('lote', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
+                            </div>
                             <div class="col-md-1 form-group">
                                 {!! Form::label('detraccion', 'Detracción:') !!}
 								{!! Form::select('detraccion',[1=>'SI',2=>'NO'],2,['class'=>'custom-select activo']) !!}

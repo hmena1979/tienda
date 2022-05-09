@@ -32,9 +32,9 @@
 								{!! Form::label('matricula', 'Matrícula:') !!}
 								{!! Form::text('matricula', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
 							</div>
-							<div class="col-md-2 form-group">
-								{!! Form::label('protoc', 'Protoc.Sanipes:') !!}
-								{!! Form::text('protoc', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
+							<div class="col-md-3 form-group">
+								{!! Form::label('protocolo', 'Protoc.Sanipes:') !!}
+								{!! Form::text('protocolo', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
 							</div>
 							<div class="col-md-2 form-group">
 								{!! Form::label('capacidad', 'Cap. Bodega:') !!}
