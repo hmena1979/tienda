@@ -124,7 +124,12 @@
 
 	function azarMayusculas($length = 10) { 
 		return substr(str_shuffle("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, $length); 
-	} 
+	}
+
+	function decimal($n,$cantidad){
+		$respuesta = explode('.',number_format($n, 2))[1];
+		return $respuesta;
+	}
 
 
 ?>

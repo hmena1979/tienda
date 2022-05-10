@@ -1,5 +1,7 @@
 {!! Form::open(['route'=>['admin.masivos.procesa'],'id'=>'formprocesa']) !!}
-{!! Form::submit('Agregar', ['class'=>'btn btn-convertir mt-2', 'id'=>'agregar']) !!}
+<div class="text-right mb-2">
+    {!! Form::submit('Agregar', ['class'=>'btn btn-block btn-convertir mt-2', 'id'=>'agregar']) !!}
+</div>
 <table id= "grid" class="table table-hover table-sm">
     <thead>
         <tr>

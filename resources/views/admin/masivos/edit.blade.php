@@ -33,6 +33,11 @@
                                 <button type="button" id='generar' class="btn btn-convertir mt-2">Generar</button>
                             </li>
                             @endif
+                            @if ($masivo->estado == 3)
+                            <li>
+                                <a class="btn btn-convertir mt-2" href="{{ route('admin.masivos.download_macro',$masivo) }}">Descargar</a>
+                            </li>
+                            @endif
                             @endcan
 						</ul>
 					</div>
@@ -136,16 +141,7 @@
         $('#generar').click(function(){
             var id = $('#id').val();
             $.get(url_global+"/admin/masivos/"+id+"/generar/",function(response){
-                alert(response);
-                // if (response == 3) {
-                //     location.reload();
-                // } else {
-                //     Swal.fire({
-                //         icon:'warning',
-                //         title:'Error',
-                //         text:'No se encontró cuenta de alguno de los Proveedores'
-                //     });
-                // }
+                location.reload();
             });
         });
 

@@ -3,14 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
+
+use App\Models\Masivo;
 use App\Models\Cuenta;
 use App\Models\Detcliente;
 use App\Models\Detmasivo;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-
-use App\Models\Masivo;
 use App\Models\Rcompra;
+use Facade\FlareClient\Http\Response;
 
 class MasivoController extends Controller
 {
@@ -202,17 +204,65 @@ class MasivoController extends Controller
 
     public function generar(Masivo $masivo)
     {
-        // str_pad($correlativo, 8, '0', STR_PAD_LEFT);
-        $cuenta = str_pad($masivo->cuenta->numerocta, 20, '0', STR_PAD_RIGHT);
-        $moneda = $masivo->cuenta->moneda;
-        $esp15 = str_pad('00', 15, '0', STR_PAD_RIGHT);
-        $esp9 = str_pad('', 15, ' ', STR_PAD_RIGHT);
-        $glosa = str_pad($masivo->glosa, 25, ' ', STR_PAD_RIGHT);
-        $contenido = '750'.$cuenta.$moneda.$esp15.'A'.$esp9.'S';
-
-        return $contenido;
+        if ($masivo->cuenta->banco_id == 3){
+            $cuenta = str_pad($masivo->cuenta->numerocta, 20, '0', STR_PAD_RIGHT);
+            $moneda = $masivo->cuenta->moneda;
+            $entera = floor($masivo->monto);
+            $pentera = str_pad($entera,13,'0',STR_PAD_LEFT);
+            $decimal = decimal($masivo->monto,2);
+            $esp15 = str_pad('00', 15, '0', STR_PAD_RIGHT);
+            $esp9 = '         ';
+            $glosa = str_pad($masivo->glosa, 25, ' ', STR_PAD_RIGHT);
+            $lineas = str_pad($masivo->detmasivos->count(),6,'0',STR_PAD_LEFT);
+            $fin = str_pad('',18,'0',STR_PAD_LEFT);
+            $cabecera = '750'.$cuenta.$moneda.$pentera.$decimal.'A'.$esp9.$glosa.$lineas.'S'.$fin;
+            $detalles = '';
+            foreach($masivo->detmasivos as $det) {
+                switch($det->rcompra->cliente->tipdoc_id) {
+                    case '1':
+                        $td = 'L';
+                        break;
+                    case '4':
+                        $td = 'E';
+                        break;
+                    case '6':
+                        $td = 'R';
+                        break;
+                }
+                $numdoc = str_pad($det->rcompra->cliente->numdoc,12,' ',STR_PAD_RIGHT);
+                $tipo = $det->tipo;
+                $cuenta = str_pad($det->cuenta,20,' ',STR_PAD_RIGHT);
+                $beneficiario = str_pad($det->rcompra->cliente->razsoc, 40,' ',STR_PAD_RIGHT);
+                if ($masivo->cuenta->moneda == 'PEN') {
+                    $entera = floor($det->montopen);
+                    $pentera = str_pad($entera,13,'0',STR_PAD_LEFT);
+                    $decimal = decimal($det->montopen,2);
+                    // $decimal = ($det->montopen-intval($det->montopen))*100;
+                } else {
+                    $entera = floor($det->montousd);
+                    $pentera = str_pad($entera,13,'0',STR_PAD_LEFT);
+                    $decimal = decimal($det->montousd,2);
+                    // $decimal = ($det->montousd-intval($det->montousd))*100;
+                }
+                $trecibo = 'F';
+                $documento = str_pad($det->rcompra->serie.$det->rcompra->numero,12,' ',STR_PAD_RIGHT);
+                $abono = 'N';
+                $referencia = str_pad($masivo->glosa,40,' ',STR_PAD_RIGHT);
+                $esp = str_pad(' ',81,' ',STR_PAD_RIGHT);
+                $ceros = str_pad('0',32,'0',STR_PAD_LEFT);
+                $item = '002'.$td.$numdoc.$tipo.$cuenta.$beneficiario.$pentera.$decimal.$trecibo.$documento.$abono.$referencia.$esp.$ceros;
+                $detalles .= "\r\n".$item;
+            }
+            $archivo =  'BBVA'.$masivo->cuenta->moneda.substr($masivo->fecha, 0, 4).substr($masivo->fecha, 5, 2).substr($masivo->fecha, 8, 2).'.txt';
+            
+            $resultado = $cabecera.$detalles;
+            $arcresul = $masivo->id.'/'.$archivo;
+            Storage::disk('masivos')->put($arcresul, $resultado);
+            $masivo->update(['estado' => 3]);
+        }
+        return true;
     }
-
+    
     public function destroyitem(Detmasivo $detmasivo)
     {
         $moneda = $detmasivo->masivo->cuenta->moneda;
@@ -234,6 +284,38 @@ class MasivoController extends Controller
         }
         $detmasivo->delete();
 
+        $masivo = Masivo::findOrFail($detmasivo->masivo_id);
+        if ($masivo->cuenta->moneda == 'PEN') {
+            $masivo->update([
+                'monto' => $masivo->detmasivos->sum('montopen')
+            ]);
+        } else {
+            $masivo->update([
+                'monto' => $masivo->detmasivos->sum('montousd')
+            ]);
+        }
+
         return true;
+    }
+
+    public function download_macro(Masivo $masivo)
+    {
+        if ($masivo->cuenta->banco_id == 3){
+            $archivo =  'BBVA'.$masivo->cuenta->moneda.substr($masivo->fecha, 0, 4).substr($masivo->fecha, 5, 2).substr($masivo->fecha, 8, 2).'.txt';
+        }
+        if ($masivo->cuenta->banco_id == 2){
+            $archivo =  'BCP'.$masivo->cuenta->moneda.substr($masivo->fecha, 0, 4).substr($masivo->fecha, 5, 2).substr($masivo->fecha, 8, 2).'.txt';
+        }
+        $arcresul = $masivo->id.'/'.$archivo;
+        // return response()->download(url('masivos/'.$arcresul));
+        $contents = Storage::disk('masivos')->get($arcresul);
+        return response($contents, 200)
+        ->withHeaders(
+            [
+                'Content-Type' => 'text/plain',
+                'Cache-Control' => 'no-store, no-cache',
+                'Content-Disposition' => 'attachment; filename="'.$archivo.'"',
+            ]
+        );
     }
 }

@@ -37,7 +37,7 @@
         </tr>
         @endforeach
         <tr>
-            <td colspan="4" class="negrita text-right">TOTAL</td>
+            <td colspan="5" class="negrita text-right">TOTAL</td>
             <td class="@if ($masivo->cuenta->moneda == 'PEN')negrita @endif text-right">
                 {{ number_format($masivo->detmasivos->sum('montopen'),2) }}
             </td>
