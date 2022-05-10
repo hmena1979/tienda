@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Categoria;
 use App\Models\Empresa;
 use App\Models\Guia;
+use App\Models\Masivo;
 use Illuminate\Http\Request;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Luecano\NumeroALetras\NumeroALetras;
@@ -155,6 +156,28 @@ class PDFController extends Controller
         $pdf = PDF::loadView('pdf.tesoreria', $data)->setPaper('A4', 'portrait');
         return $pdf->stream(str_pad($tesoreria->sede_id, 2, '0', STR_PAD_LEFT).
             str_pad($tesoreria->id, 8, '0', STR_PAD_LEFT).'.pdf', array('Attachment'=>false));
+        
+        //$pdf->stream($parametro->ruc.'-'.$factura->comprobante_id.'-'.$factura->serie.'-'.$factura->numero.'.pdf', array('Attachment'=>false));
+        //return redirect('/admin/factura/'.$factura->id.'/edit')->with('message', 'Factura generada')->with('typealert', 'success');
+        
+        // return view('pdf.boleta', $data);
+    }
+
+    public function masivos(Masivo $masivo)
+    {
+        $moneda = ['PEN' => 'SOLES', 'USD' => 'DOLARES'];
+        $empresa = Empresa::findOrFail(session('empresa'));
+        $sede = Sede::findOrFail(session('sede'));
+
+        $data = [
+            'masivo' => $masivo,
+            'moneda' => $moneda,
+            'empresa' => $empresa,
+            'sede' => $sede,
+        ];
+        $pdf = PDF::loadView('pdf.masivos', $data)->setPaper('A4', 'portrait');
+        return $pdf->stream(str_pad($masivo->sede_id, 2, '0', STR_PAD_LEFT).
+            str_pad($masivo->id, 8, '0', STR_PAD_LEFT).'.pdf', array('Attachment'=>false));
         
         //$pdf->stream($parametro->ruc.'-'.$factura->comprobante_id.'-'.$factura->serie.'-'.$factura->numero.'.pdf', array('Attachment'=>false));
         //return redirect('/admin/factura/'.$factura->id.'/edit')->with('message', 'Factura generada')->with('typealert', 'success');

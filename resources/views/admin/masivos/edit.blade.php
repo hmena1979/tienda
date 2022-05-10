@@ -11,7 +11,8 @@
     <div class="container-fluid">
 		<div class="row">
 			<div class="col-md-12">
-				<div class="panelprin shadow">
+                <div class="panelprin shadow">
+                    {!! Form::model($masivo, ['route'=>['admin.masivos.update', $masivo], 'method' => 'put']) !!}
                     <div class="headercontent">
 						<h2 class="title"><i class="fas fa-file-invoice-dollar"></i> Pagos Masivos</h2>
 						<ul>
@@ -39,10 +40,10 @@
                             </li>
                             @endif
                             @endcan
+                            <li><a class="btn btn-convertir mt-2" href="{{ route('admin.pdf.masivos',$masivo) }}" target="_blank" datatoggle="tooltip" data-placement="top" title="Imprimir"><i class="fas fa-print"></i></a></li>
 						</ul>
 					</div>
 					<div class="inside">
-						{!! Form::model($masivo, ['route'=>['admin.masivos.store', $masivo], 'method' => 'put']) !!}
 						<div class="row">
                             <div class="col-md-2 form-group">
                                 {!! Form::hidden('id', null,['id'=>'id']) !!}
@@ -66,8 +67,8 @@
                                 {!! Form::text('monto', null, ['class'=>'form-control decimal','autocomplete'=>'off', 'disabled']) !!}
                             </div> --}}
 						</div>
-						{!! Form::close() !!}
 					</div>				
+                    {!! Form::close() !!}
 				</div>
                 
 			</div>
@@ -141,6 +142,7 @@
         $('#generar').click(function(){
             var id = $('#id').val();
             $.get(url_global+"/admin/masivos/"+id+"/generar/",function(response){
+                // alert(response);
                 location.reload();
             });
         });

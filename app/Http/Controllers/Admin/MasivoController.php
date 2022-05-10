@@ -100,7 +100,26 @@ class MasivoController extends Controller
 
     public function update(Request $request, Masivo $masivo)
     {
-        //
+        $rules = [
+            'cuenta_id' => 'required',
+            'fecha' => 'required',
+            'tc' => 'required',
+            'glosa' => 'required'
+        ];
+        
+        $messages = [
+    		'cuenta_id.required' => 'Seleccione Cuenta.',
+    		'fecha.required' => 'Ingrese Fecha.',
+    		'tc.required' => 'Ingrese Tipo de Cambio.',
+    		'glosa.required' => 'Ingrese Glosa.',
+        ];
+        $validator = Validator::make($request->all(),$rules,$messages);
+    	if($validator->fails()){
+            return back()->withErrors($validator)->with('message', 'Se ha producido un error')->with('typealert', 'danger')->withinput();
+        }else{
+            $masivo->update($request->all());
+            return redirect()->route('admin.masivos.index')->with('update', 'Registro Actualizado');
+        }
     }
 
     public function destroy(Masivo $masivo)
@@ -260,7 +279,18 @@ class MasivoController extends Controller
             Storage::disk('masivos')->put($arcresul, $resultado);
             $masivo->update(['estado' => 3]);
         }
-        return true;
+        if ($masivo->cuenta->banco_id == 2){
+            $numope = str_pad($masivo->detmasivos->count(),6,'0',STR_PAD_LEFT);
+            $fecha = substr($masivo->fecha, 0, 4).substr($masivo->fecha, 5, 2).substr($masivo->fecha, 8, 2);
+            $cuenta = str_pad($masivo->cuenta->numerocta, 13, '0', STR_PAD_RIGHT);
+            $esp7 = '       ';
+            $entera = floor($masivo->monto);
+            $pentera = str_pad($entera,14,'0',STR_PAD_LEFT);
+            $decimal = decimal($masivo->monto,2);
+            $glosa = str_pad($masivo->glosa, 40, ' ', STR_PAD_RIGHT);
+            $cabecera = '1'.$numope.$fecha.'C0001'.$cuenta.$esp7.$pentera.'.'.$decimal.$glosa.'N00000'.azarNumeros(10);
+        }
+        return $cabecera;
     }
     
     public function destroyitem(Detmasivo $detmasivo)
