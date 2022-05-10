@@ -11,7 +11,9 @@ use App\Models\Masivo;
 use App\Models\Cuenta;
 use App\Models\Detcliente;
 use App\Models\Detmasivo;
+use App\Models\Dettesor;
 use App\Models\Rcompra;
+use App\Models\Tesoreria;
 use Facade\FlareClient\Http\Response;
 
 class MasivoController extends Controller
@@ -223,6 +225,45 @@ class MasivoController extends Controller
 
     public function generar(Masivo $masivo)
     {
+        //---------------------------------------------------------------------------------------
+        foreach($masivo->detmasivos as $cmp) {
+            if($masivo->cuenta->moneda == 'PEN'){
+                $montotal = $cmp->montopen;
+            }else{
+                $montotal = $cmp->montousd;
+            }
+            $t = Tesoreria::create([
+                'empresa_id' => session('empresa'),
+                'sede_id' => session('sede'),
+                'periodo' => session('periodo'),
+                'cuenta_id' => $masivo->cuenta_id,
+                'tipo' => 2,
+                'fecha' => $masivo->fecha,
+                'tc' => $masivo->tc,
+                'mediopago' => '001',
+                'monto' => $montotal,
+                'glosa' => $cmp->rcompra->cliente->razsoc
+            ]);
+            Dettesor::create([
+                'dettesorable_id' => $cmp->rcompra->id,
+                'dettesorable_type' => 'App\Models\Rcompra',
+                'tesoreria_id' => $t->id,
+                'montopen' => $cmp->montopen,
+                'montousd' => $cmp->montousd,
+            ]);
+            $r = Rcompra::find($cmp->rcompra->id);
+            $pagado = $r->pagado + $montotal;
+            $saldo = $r->saldo - $montotal;
+            $tmasivo = $r->total_masivo - $montotal;
+            $masrc = $tmasivo == 0 ? 2 : 1;
+            $r->update([
+                'pagado' => $pagado,
+                'saldo' => $saldo,
+                'total_masivo' => $tmasivo,
+                'masivo' => $masrc
+            ]);
+        }
+        //---------------------------------------------------------------------------------------
         if ($masivo->cuenta->banco_id == 3){
             $cuenta = str_pad($masivo->cuenta->numerocta, 20, '0', STR_PAD_RIGHT);
             $moneda = $masivo->cuenta->moneda;
@@ -288,9 +329,55 @@ class MasivoController extends Controller
             $pentera = str_pad($entera,14,'0',STR_PAD_LEFT);
             $decimal = decimal($masivo->monto,2);
             $glosa = str_pad($masivo->glosa, 40, ' ', STR_PAD_RIGHT);
-            $cabecera = '1'.$numope.$fecha.'C0001'.$cuenta.$esp7.$pentera.'.'.$decimal.$glosa.'N00000'.azarNumeros(10);
+            $codigo = str_pad($masivo->id,15,'0',STR_PAD_LEFT);
+            $cabecera = '1'.$numope.$fecha.'C0001'.$cuenta.$esp7.$pentera.'.'.$decimal.$glosa.'N'.$codigo;
+            $detalles = '';
+            foreach($masivo->detmasivos as $det) {
+                if($det->tipo == 'I') {
+                    $tipo = 'B';
+                } else {
+                    if (substr($det->rcompra->cliente->numdoc,0,1) == '2') {
+                        $tipo = 'C';
+                    } else {
+                        $tipo = 'A';
+                    }
+                }
+                $cuenta = str_pad($det->cuenta,20,' ',STR_PAD_RIGHT);
+                $tipdoc = $det->rcompra->cliente->tipdoc_id;
+                $numdoc = str_pad($det->rcompra->cliente->numdoc,15,' ',STR_PAD_RIGHT);
+                $nombre = str_pad($det->rcompra->cliente->razsoc,75,' ',STR_PAD_RIGHT);
+                $refben = 'Referencia Beneficiario ';
+                $refemp = 'Ref Emp ';
+                $nd_emp = $numdoc = str_pad($det->rcompra->cliente->numdoc,12,' ',STR_PAD_RIGHT);
+                if ($masivo->cuenta->moneda == 'PEN') {
+                    $entera = floor($det->montopen);
+                    $pentera = str_pad($entera,14,'0',STR_PAD_LEFT);
+                    $decimal = decimal($det->montopen,2);
+                    // $decimal = ($det->montopen-intval($det->montopen))*100;
+                } else {
+                    $entera = floor($det->montousd);
+                    $pentera = str_pad($entera,14,'0',STR_PAD_LEFT);
+                    $decimal = decimal($det->montousd,2);
+                    // $decimal = ($det->montousd-intval($det->montousd))*100;
+                }
+                $item = '2'.$tipo.$cuenta.'1'.$tipdoc.$numdoc.$nombre.$refben.$numdoc.' '.$refemp.$nd_emp.'0001'.$pentera.'.'.$decimal.'S';
+                if ($det->rcompra->tipocomprobante_codigo == '01') {
+                    $tcomp = 'F0';
+                } else {
+                    $tcomp = 'D0';
+                }
+                $numcomprobante = str_pad(numDoc($det->rcompra->serie, $det->rcompra->numero),15,' ',STR_PAD_RIGHT);
+                $dets = '3'.$tcomp.$numcomprobante.$pentera.'.'.$decimal;
+                $detalles .= "\r\n".$item."\r\n".$dets;
+            }
+            $archivo =  'BCP'.$masivo->cuenta->moneda.substr($masivo->fecha, 0, 4).substr($masivo->fecha, 5, 2).substr($masivo->fecha, 8, 2).'.txt';
+            
+            $resultado = $cabecera.$detalles;
+            $arcresul = $masivo->id.'/'.$archivo;
+            Storage::disk('masivos')->put($arcresul, $resultado);
+            $masivo->update(['estado' => 3]);
         }
-        return $cabecera;
+        return true;
     }
     
     public function destroyitem(Detmasivo $detmasivo)

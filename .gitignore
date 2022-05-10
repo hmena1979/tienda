@@ -2,6 +2,7 @@
 /public/hot
 /public/storage
 /public/invoice
+/public/masivos
 /storage/*.key
 /vendor
 .env

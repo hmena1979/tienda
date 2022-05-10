@@ -173,7 +173,7 @@ class TesoreriaController extends Controller
     	if($validator->fails()){
             return back()->with('message', 'Se ha producido un error: Ingrese Proveedor, Nro Documento y Monto')->with('typealert', 'danger')->withinput();
         }else{
-            $r = Rcompra::find($request->input('documento'));            
+            $r = Rcompra::find($request->input('documento'));
             $monto = $r->moneda == 'PEN'? $request->input('montpen') : $request->input('montusd');
             $pagado = $r->pagado + $monto;
             $saldo = $r->saldo - $monto;
