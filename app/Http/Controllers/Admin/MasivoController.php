@@ -277,7 +277,7 @@ class MasivoController extends Controller
             $lineas = str_pad($masivo->detmasivos->count(),6,'0',STR_PAD_LEFT);
             $fin = str_pad('',18,'0',STR_PAD_LEFT);
             $esp50 = '                                                  ';
-            $cabecera = '750'.$cuenta.$moneda.$pentera.$decimal.'A'.$fecha.$glosa.$lineas.'S'.$fin.$esp50;
+            $cabecera = '750'.$cuenta.$moneda.$pentera.$decimal.'A'.$fecha.' '.$glosa.$lineas.'S'.$fin.$esp50;
             $detalles = '';
             foreach($masivo->detmasivos as $det) {
                 switch($det->rcompra->cliente->tipdoc_id) {
