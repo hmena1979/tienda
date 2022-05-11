@@ -309,7 +309,7 @@ class MasivoController extends Controller
                 $trecibo = 'F';
                 $documento = str_pad($det->rcompra->serie.$det->rcompra->numero,12,' ',STR_PAD_RIGHT);
                 $abono = 'N';
-                $referencia = str_pad($masivo->glosa,40,' ',STR_PAD_RIGHT);
+                $referencia = str_pad('',40,' ',STR_PAD_RIGHT);
                 $esp = str_pad(' ',81,' ',STR_PAD_RIGHT);
                 $ceros = str_pad('0',32,'0',STR_PAD_LEFT);
                 $espfinal = '                  ';
