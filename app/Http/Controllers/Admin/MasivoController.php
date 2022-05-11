@@ -295,7 +295,7 @@ class MasivoController extends Controller
                 }
                 $numdoc = str_pad($det->rcompra->cliente->numdoc,12,' ',STR_PAD_RIGHT);
                 $tipo = $det->tipo;
-                $cuenta = str_pad($det->cuenta,20,' ',STR_PAD_RIGHT);
+                $cuenta = substr($det->cuenta,0,8).'00'.substr($det->cuenta,8);//str_pad($det->cuenta,20,' ',STR_PAD_RIGHT);
                 $beneficiario = substr(str_pad($det->rcompra->cliente->razsoc, 40,' ',STR_PAD_RIGHT), 0, 40);
                 if ($masivo->cuenta->moneda == 'PEN') {
                     $entera = floor($det->montopen);
