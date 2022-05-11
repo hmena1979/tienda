@@ -272,10 +272,12 @@ class MasivoController extends Controller
             $decimal = decimal($masivo->monto,2);
             $esp15 = str_pad('00', 15, '0', STR_PAD_RIGHT);
             $esp9 = '         ';
+            $fecha = substr($masivo->fecha, 0, 4).substr($masivo->fecha, 5, 2).substr($masivo->fecha, 8, 2);
             $glosa = str_pad($masivo->glosa, 25, ' ', STR_PAD_RIGHT);
             $lineas = str_pad($masivo->detmasivos->count(),6,'0',STR_PAD_LEFT);
             $fin = str_pad('',18,'0',STR_PAD_LEFT);
-            $cabecera = '750'.$cuenta.$moneda.$pentera.$decimal.'A'.$esp9.$glosa.$lineas.'S'.$fin;
+            $esp50 = '                                                  ';
+            $cabecera = '750'.$cuenta.$moneda.$pentera.$decimal.'A'.$fecha.$glosa.$lineas.'S'.$fin.$esp50;
             $detalles = '';
             foreach($masivo->detmasivos as $det) {
                 switch($det->rcompra->cliente->tipdoc_id) {
@@ -292,7 +294,7 @@ class MasivoController extends Controller
                 $numdoc = str_pad($det->rcompra->cliente->numdoc,12,' ',STR_PAD_RIGHT);
                 $tipo = $det->tipo;
                 $cuenta = str_pad($det->cuenta,20,' ',STR_PAD_RIGHT);
-                $beneficiario = str_pad($det->rcompra->cliente->razsoc, 40,' ',STR_PAD_RIGHT);
+                $beneficiario = substr(str_pad($det->rcompra->cliente->razsoc, 40,' ',STR_PAD_RIGHT), 0, 40);
                 if ($masivo->cuenta->moneda == 'PEN') {
                     $entera = floor($det->montopen);
                     $pentera = str_pad($entera,13,'0',STR_PAD_LEFT);
@@ -310,7 +312,8 @@ class MasivoController extends Controller
                 $referencia = str_pad($masivo->glosa,40,' ',STR_PAD_RIGHT);
                 $esp = str_pad(' ',81,' ',STR_PAD_RIGHT);
                 $ceros = str_pad('0',32,'0',STR_PAD_LEFT);
-                $item = '002'.$td.$numdoc.$tipo.$cuenta.$beneficiario.$pentera.$decimal.$trecibo.$documento.$abono.$referencia.$esp.$ceros;
+                $espfinal = '                  ';
+                $item = '002'.$td.$numdoc.$tipo.$cuenta.$beneficiario.$pentera.$decimal.$trecibo.$documento.$abono.$referencia.$esp.$ceros.$espfinal;
                 $detalles .= "\r\n".$item;
             }
             $archivo =  'BBVA'.$masivo->cuenta->moneda.substr($masivo->fecha, 0, 4).substr($masivo->fecha, 5, 2).substr($masivo->fecha, 8, 2).'.txt';
