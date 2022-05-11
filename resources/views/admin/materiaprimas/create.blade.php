@@ -41,20 +41,24 @@
 								{!! Form::label('ticket_balanza', 'Ticket Balanza:') !!}
 								{!! Form::text('ticket_balanza', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
 							</div>
+							@can('admin.materiaprimas.comprobante')
 							<div class="col-md-2 form-group">
 								{!! Form::label('certprocedencia', 'Certif. Procedencia:') !!}
 								{!! Form::text('certprocedencia', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
 							</div>
+							@endcan
 						</div>
 						<div class="row">
 							<div class="col-md-4 form-group">
                                 {!! Form::label('cliente_id', 'Proveedor:') !!}
 								{!! Form::select('cliente_id',[],null,['class'=>'custom-select activo','id'=>'cliente_id','placeholder'=>'']) !!}
                             </div>
+							@can('admin.materiaprimas.comprobante')
 							<div class="col-md-2 form-group">
                                 {!! Form::label('rcompra_id', 'Comprobante de Pago:') !!}
 								{!! Form::select('rcompra_id',[],null,['class'=>'custom-select activo','placeholder'=>'']) !!}
                             </div>
+							@endcan
 							<div class="col-md-3 form-group">
                                 {!! Form::label('embarcacion_id', 'Embarcación:') !!}
 								{!! Form::select('embarcacion_id',$embarcacion,null,['class'=>'custom-select activo','placeholder'=>'']) !!}
@@ -111,7 +115,6 @@
                             </div>
 						</div>
 						<div class="row">
-							
 							<div class="col-md-2 form-group">
 								{!! Form::label('cajas', 'Cajas Declaradas:') !!}
 								{!! Form::text('cajas', null, ['class'=>'form-control numero','autocomplete'=>'off']) !!}
@@ -124,10 +127,12 @@
 								{!! Form::label('batch', 'Batch:') !!}
 								{!! Form::text('batch', null, ['class'=>'form-control decimal','autocomplete'=>'off', 'disabled']) !!}
 							</div>
+							@can('admin.materiaprimas.precio')
 							<div class="col-md-2 form-group">
 								{!! Form::label('precio', 'Precio:') !!}
 								{!! Form::text('precio', null, ['class'=>'form-control decimal','autocomplete'=>'off']) !!}
 							</div>
+							@endcan
 						</div>
 						<div class="row">
 							<div class="col-md-2 form-group">

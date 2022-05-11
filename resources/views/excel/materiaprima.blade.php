@@ -56,7 +56,7 @@
                     <td>{{ $materiaprima->fpartida }}</td>
                     <td>{{ $materiaprima->fllegada }}</td>
                     <td>{{ $materiaprima->ingplanta }}</td>
-                    <td>{{ $materiaprima->hdescarga }}</td>
+                    <td>{{ $materiaprima->hfin }}</td>
                     <td>{{ $materiaprima->cliente->razsoc }}</td>
                     <td>{{ $materiaprima->precio }}</td>
                     <td>{{ $materiaprima->lugar }}</td>

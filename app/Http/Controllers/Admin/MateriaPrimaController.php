@@ -108,8 +108,8 @@ class MateriaPrimaController extends Controller
     	if($validator->fails()){
             return back()->withErrors($validator)->with('message', 'Se ha producido un error')->with('typealert', 'danger')->withinput();
         }else{
-            Materiaprima::create($request->all());
-            return redirect()->route('admin.materiaprimas.index')->with('store', 'Materia Prima Agregada');
+            $materiaprima = Materiaprima::create($request->all());
+            return redirect()->route('admin.materiaprimas.edit', $materiaprima)->with('store', 'Materia Prima Agregada');
         }
     }
 

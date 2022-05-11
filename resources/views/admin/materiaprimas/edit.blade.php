@@ -320,7 +320,6 @@
 				'pesoneto' : $('#pesoneto').val(),
 			};
 			var envio = JSON.stringify(det);
-			alert(envio)
             $.get(url_global+"/admin/materiaprimas/"+envio+"/aedet/",function(response){
 				$('#pplanta').val(response['pplanta']);
 				$('#batch').val(response['batch']);
