@@ -149,8 +149,10 @@ class MasivoController extends Controller
     public function procesa(Request $request)
     {
         // $masivo = $request->rcompra[0]['masivo_id'];
-        if ($request->rcompra[1]['masivo_id']) {
-            $masivo = Masivo::findOrFail($request->rcompra[1]['masivo_id']);
+        $pos = array_key_first($request->rcompra);
+        // return $request->rcompra[$pos]['masivo_id'];
+        if ($request->rcompra[$pos]['masivo_id']) {
+            $masivo = Masivo::findOrFail($request->rcompra[$pos]['masivo_id']);
             $moneda = $masivo->cuenta->moneda;
             $tc = $masivo->tc;
             foreach ($request->rcompra as $rc) {

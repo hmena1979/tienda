@@ -88,6 +88,7 @@
             
             success: function(respuesta){
                 console.log(respuesta);
+                // alert(respuesta)
                 $('#buscarLote').modal('hide')
                 veritems();
                 // var data = {
@@ -108,6 +109,7 @@
             error: function(error){
                 $('#buscarLote').modal('hide')
                 veritems();
+                alert(respuesta);
                 // console.log(error);
                 // let html = 'Se encontraron los siguientes errores:';
                 // html += "<ul>";

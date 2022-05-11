@@ -97,7 +97,7 @@ class RcompraController extends Controller
                 ->where('sede_id',session('sede'))
                 ->where('moneda','PEN')
                 ->pluck('nombre','id');
-        $detraccions = Detraccion::orderBy('codigo')->pluck('nombre','codigo');
+        $detraccions = Detraccion::orderBy('codigo')->get()->pluck('codigo_nombre','codigo');
 
         $tipdoc = Categoria::where('modulo', 1)->orderBy('codigo')->pluck('nombre','codigo');
         $sexo = Categoria::where('modulo', 2)->pluck('nombre','codigo');
@@ -122,9 +122,11 @@ class RcompraController extends Controller
                 'tipooperacion_id' => 'required'            
             ]);
         }
+        $detraccion_monto = $request->input('detraccion_monto');
+        $total = $request->input('total') - $detraccion_monto;
         if($request->input('fpago') == 1){
-            $pagos = $request->input('total');
-            $saldo = 0;
+            $pagos = $request->input('total')-$detraccion_monto;
+            $saldo = $detraccion_monto;
             $rules = array_merge($rules,[
                 'mediopago' => 'required',
                 'cuenta_id' => 'required',
@@ -132,7 +134,7 @@ class RcompraController extends Controller
             ]);
         }else{
             $pagos = 0;
-            $saldo = $request->input('total');
+            $saldo = $request->input('total')-$detraccion_monto;
         }
         
         $messages = [
@@ -174,11 +176,11 @@ class RcompraController extends Controller
             $glosa = Cliente::where('id',$request->input('cliente_id'))->value('razsoc');
             $r = Rcompra::create($data);
             if($request->input('moneda') == 'PEN'){
-                $montopen = $request->input('total');
-                $montousd = round($request->input('total')/$request->input('tc'),2);
+                $montopen = $total;
+                $montousd = round($total/$request->input('tc'),2);
             }else{
-                $montousd = $request->input('total');
-                $montopen = round($request->input('total')*$request->input('tc'),2);
+                $montousd = $total;
+                $montopen = round($total*$request->input('tc'),2);
             }
             if($request->input('fpago') == 1 && $request->input('tipocomprobante_codigo') <> '07'){
                 $bt = Tesoreria::where('cuenta_id',$request->input('cuenta_id'))
@@ -253,7 +255,7 @@ class RcompraController extends Controller
                 ->where('sede_id',session('sede'))
                 ->where('moneda',$rcompra->moneda)
                 ->pluck('nombre','id');
-        $detraccions = Detraccion::orderBy('codigo')->pluck('nombre','codigo');
+        $detraccions = Detraccion::orderBy('codigo')->get()->pluck('codigo_nombre','codigo');
 
         return view('admin.rcompras.edit',
             compact('rcompra','moneda','tipocomprobante','clientes','tipooperacion',

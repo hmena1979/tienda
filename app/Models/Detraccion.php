@@ -14,4 +14,10 @@ class Detraccion extends Model
     protected $table = 'detraccions';
     protected $hidden = ['created_at','updated_at'];
     protected $guarded = [];
+    protected $appends = ['codigo_nombre'];
+
+    public function getCodigoNombreAttribute()
+    {
+        return $this->codigo. '-'.$this->nombre;
+    }
 }
