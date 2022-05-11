@@ -259,6 +259,11 @@ Route::post('/import/afectacion', [ImportController::class,'afectacion'])->name(
 Route::post('/import/departamento', [ImportController::class,'departamento'])->name('admin.imports.departamento');
 Route::post('/import/provincia', [ImportController::class,'provincia'])->name('admin.imports.provincia');
 Route::post('/import/ubigeo', [ImportController::class,'ubigeo'])->name('admin.imports.ubigeo');
+Route::post('/import/transportista', [ImportController::class,'transportista'])->name('admin.imports.transportista');
+Route::post('/import/camara', [ImportController::class,'camara'])->name('admin.imports.camara');
+Route::post('/import/empacopiadora', [ImportController::class,'empacopiadora'])->name('admin.imports.empacopiadora');
+Route::post('/import/acopiador', [ImportController::class,'acopiador'])->name('admin.imports.empacopiadora');
+Route::post('/import/chofer', [ImportController::class,'chofer'])->name('admin.imports.chofer');
 
 //Modulo Busquedas
 Route::get('/busquedas/departamento', [BusquedaController::class,'departamento'])->name('admin.busquedas.departamento');

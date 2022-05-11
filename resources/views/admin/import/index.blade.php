@@ -250,6 +250,131 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row mtop16">
+                            <div class="card w-100 ml-2">
+                                <div class="card-header">
+                                    <h2 class="title">Importar Transportistas</h2>
+                                </div>
+                                <div class="card-body">
+                                    {!! Form::open(['url'=>'/admin/import/transportista', 'files' => true]) !!}
+                                        {{-- @csrf --}}
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label for="archivo" class="">Archivo:</label>
+                                                <div class="custom-file">
+                                                    {!! Form::file('archivo', ['class'=>'custom-file-input','id'=>'customFile', 'accept'=>'.xlsx']) !!}
+                                                    <label class="custom-file-label" for="customFile" data-browse="Buscar">Buscar archivo Transportista.xlsx</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                {!! Form::submit('Importar', ['class'=>'btn btn-convertir mtop25']) !!}
+
+                                            </div>
+                                        </div>
+                                        {!! Form::close() !!}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mtop16">
+                            <div class="card w-100 ml-2">
+                                <div class="card-header">
+                                    <h2 class="title">Importar Cámaras</h2>
+                                </div>
+                                <div class="card-body">
+                                    {!! Form::open(['url'=>'/admin/import/camara', 'files' => true]) !!}
+                                        {{-- @csrf --}}
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label for="archivo" class="">Archivo:</label>
+                                                <div class="custom-file">
+                                                    {!! Form::file('archivo', ['class'=>'custom-file-input','id'=>'customFile', 'accept'=>'.xlsx']) !!}
+                                                    <label class="custom-file-label" for="customFile" data-browse="Buscar">Buscar archivo Camara.xlsx</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                {!! Form::submit('Importar', ['class'=>'btn btn-convertir mtop25']) !!}
+
+                                            </div>
+                                        </div>
+                                        {!! Form::close() !!}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mtop16">
+                            <div class="card w-100 ml-2">
+                                <div class="card-header">
+                                    <h2 class="title">Importar Empresas Acopiadoras</h2>
+                                </div>
+                                <div class="card-body">
+                                    {!! Form::open(['url'=>'/admin/import/empacopiadora', 'files' => true]) !!}
+                                        {{-- @csrf --}}
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label for="archivo" class="">Archivo:</label>
+                                                <div class="custom-file">
+                                                    {!! Form::file('archivo', ['class'=>'custom-file-input','id'=>'customFile', 'accept'=>'.xlsx']) !!}
+                                                    <label class="custom-file-label" for="customFile" data-browse="Buscar">Buscar archivo Empacopiadora.xlsx</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                {!! Form::submit('Importar', ['class'=>'btn btn-convertir mtop25']) !!}
+
+                                            </div>
+                                        </div>
+                                        {!! Form::close() !!}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mtop16">
+                            <div class="card w-100 ml-2">
+                                <div class="card-header">
+                                    <h2 class="title">Importar Acopiadores</h2>
+                                </div>
+                                <div class="card-body">
+                                    {!! Form::open(['url'=>'/admin/import/acopiador', 'files' => true]) !!}
+                                        {{-- @csrf --}}
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label for="archivo" class="">Archivo:</label>
+                                                <div class="custom-file">
+                                                    {!! Form::file('archivo', ['class'=>'custom-file-input','id'=>'customFile', 'accept'=>'.xlsx']) !!}
+                                                    <label class="custom-file-label" for="customFile" data-browse="Buscar">Buscar archivo Acopiador.xlsx</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                {!! Form::submit('Importar', ['class'=>'btn btn-convertir mtop25']) !!}
+
+                                            </div>
+                                        </div>
+                                        {!! Form::close() !!}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mtop16">
+                            <div class="card w-100 ml-2">
+                                <div class="card-header">
+                                    <h2 class="title">Importar Choferes</h2>
+                                </div>
+                                <div class="card-body">
+                                    {!! Form::open(['url'=>'/admin/import/chofer', 'files' => true]) !!}
+                                        {{-- @csrf --}}
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label for="archivo" class="">Archivo:</label>
+                                                <div class="custom-file">
+                                                    {!! Form::file('archivo', ['class'=>'custom-file-input','id'=>'customFile', 'accept'=>'.xlsx']) !!}
+                                                    <label class="custom-file-label" for="customFile" data-browse="Buscar">Buscar archivo Chofer.xlsx</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                {!! Form::submit('Importar', ['class'=>'btn btn-convertir mtop25']) !!}
+
+                                            </div>
+                                        </div>
+                                        {!! Form::close() !!}
+                                </div>
+                            </div>
+                        </div>
 
                         {{-- <div class="row mtop16">
                             <div class="col-md-12">
