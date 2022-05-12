@@ -227,6 +227,7 @@ class MasivoController extends Controller
 
     public function generar(Masivo $masivo)
     {
+        $masivo->update(['estado' => 3]);
         //---------------------------------------------------------------------------------------
         foreach($masivo->detmasivos as $cmp) {
             if($masivo->cuenta->moneda == 'PEN'){
@@ -266,6 +267,54 @@ class MasivoController extends Controller
             ]);
         }
         //---------------------------------------------------------------------------------------
+        
+        return true;
+    }
+    
+    public function destroyitem(Detmasivo $detmasivo)
+    {
+        $moneda = $detmasivo->masivo->cuenta->moneda;
+        if ($detmasivo->masivo->cuenta->moneda == 'PEN') {
+            $monto = $detmasivo->montopen;
+        } else {
+            $monto = $detmasivo->montousd;
+        }
+        $rcompra = Rcompra::find($detmasivo->rcompra_id);
+        if ($rcompra->total_masivo == $monto) {
+            $rcompra->update([
+                'total_masivo' => $rcompra->total_masivo - $monto,
+                'masivo' => 2
+            ]);
+        } else {
+            $rcompra->update([
+                'total_masivo' => $rcompra->total_masivo - $monto,
+            ]);
+        }
+        $detmasivo->delete();
+
+        $masivo = Masivo::findOrFail($detmasivo->masivo_id);
+        if ($masivo->cuenta->moneda == 'PEN') {
+            $masivo->update([
+                'monto' => $masivo->detmasivos->sum('montopen')
+            ]);
+        } else {
+            $masivo->update([
+                'monto' => $masivo->detmasivos->sum('montousd')
+            ]);
+        }
+
+        return true;
+    }
+
+    public function download_macro(Masivo $masivo)
+    {
+        // if ($masivo->cuenta->banco_id == 3){
+        //     $archivo =  'BBVA'.$masivo->cuenta->moneda.substr($masivo->fecha, 0, 4).substr($masivo->fecha, 5, 2).substr($masivo->fecha, 8, 2).'.txt';
+        // }
+        // if ($masivo->cuenta->banco_id == 2){
+        //     $archivo =  'BCP'.$masivo->cuenta->moneda.substr($masivo->fecha, 0, 4).substr($masivo->fecha, 5, 2).substr($masivo->fecha, 8, 2).'.txt';
+        // }
+        //---------------------------------------------------------------------------------------------
         if ($masivo->cuenta->banco_id == 3){
             $cuenta = str_pad($masivo->cuenta->numerocta, 20, '0', STR_PAD_RIGHT);
             $moneda = $masivo->cuenta->moneda;
@@ -318,12 +367,11 @@ class MasivoController extends Controller
                 $item = '002'.$td.$numdoc.$tipo.$cuenta.$beneficiario.$pentera.$decimal.$trecibo.$documento.$abono.$referencia.$esp.$ceros.$espfinal;
                 $detalles .= "\r\n".$item;
             }
-            $masivo->update(['estado' => 3]);
             $archivo =  'BBVA'.$masivo->cuenta->moneda.substr($masivo->fecha, 0, 4).substr($masivo->fecha, 5, 2).substr($masivo->fecha, 8, 2).'.txt';
             
             $resultado = $cabecera.$detalles;
-            $arcresul = $masivo->id.'/'.$archivo;
-            Storage::disk('masivos')->put($arcresul, $resultado);
+            // $arcresul = $masivo->id.'/'.$archivo;
+            // Storage::disk('masivos')->put($arcresul, $resultado);
         }
         if ($masivo->cuenta->banco_id == 2){
             $numope = str_pad($masivo->detmasivos->count(),6,'0',STR_PAD_LEFT);
@@ -378,60 +426,15 @@ class MasivoController extends Controller
             $archivo =  'BCP'.$masivo->cuenta->moneda.substr($masivo->fecha, 0, 4).substr($masivo->fecha, 5, 2).substr($masivo->fecha, 8, 2).'.txt';
             
             $resultado = $cabecera.$detalles;
-            $arcresul = $masivo->id.'/'.$archivo;
-            Storage::disk('masivos')->put($arcresul, $resultado);
-            $masivo->update(['estado' => 3]);
+            // $arcresul = $masivo->id.'/'.$archivo;
+            // Storage::disk('masivos')->put($arcresul, $resultado);
         }
-        return true;
-    }
-    
-    public function destroyitem(Detmasivo $detmasivo)
-    {
-        $moneda = $detmasivo->masivo->cuenta->moneda;
-        if ($detmasivo->masivo->cuenta->moneda == 'PEN') {
-            $monto = $detmasivo->montopen;
-        } else {
-            $monto = $detmasivo->montousd;
-        }
-        $rcompra = Rcompra::find($detmasivo->rcompra_id);
-        if ($rcompra->total_masivo == $monto) {
-            $rcompra->update([
-                'total_masivo' => $rcompra->total_masivo - $monto,
-                'masivo' => 2
-            ]);
-        } else {
-            $rcompra->update([
-                'total_masivo' => $rcompra->total_masivo - $monto,
-            ]);
-        }
-        $detmasivo->delete();
-
-        $masivo = Masivo::findOrFail($detmasivo->masivo_id);
-        if ($masivo->cuenta->moneda == 'PEN') {
-            $masivo->update([
-                'monto' => $masivo->detmasivos->sum('montopen')
-            ]);
-        } else {
-            $masivo->update([
-                'monto' => $masivo->detmasivos->sum('montousd')
-            ]);
-        }
-
-        return true;
-    }
-
-    public function download_macro(Masivo $masivo)
-    {
-        if ($masivo->cuenta->banco_id == 3){
-            $archivo =  'BBVA'.$masivo->cuenta->moneda.substr($masivo->fecha, 0, 4).substr($masivo->fecha, 5, 2).substr($masivo->fecha, 8, 2).'.txt';
-        }
-        if ($masivo->cuenta->banco_id == 2){
-            $archivo =  'BCP'.$masivo->cuenta->moneda.substr($masivo->fecha, 0, 4).substr($masivo->fecha, 5, 2).substr($masivo->fecha, 8, 2).'.txt';
-        }
-        $arcresul = $masivo->id.'/'.$archivo;
+        //---------------------------------------------------------------------------------------------
+        // $arcresul = $masivo->id.'/'.$archivo;
         // return response()->download(url('masivos/'.$arcresul));
-        $contents = Storage::disk('masivos')->get($arcresul);
-        return response($contents, 200)
+        // $contents = Storage::disk('masivos')->get($arcresul);
+        // return response($contents, 200)
+        return response($resultado, 200)
         ->withHeaders(
             [
                 'Content-Type' => 'text/plain',
