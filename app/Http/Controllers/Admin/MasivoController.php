@@ -318,12 +318,12 @@ class MasivoController extends Controller
                 $item = '002'.$td.$numdoc.$tipo.$cuenta.$beneficiario.$pentera.$decimal.$trecibo.$documento.$abono.$referencia.$esp.$ceros.$espfinal;
                 $detalles .= "\r\n".$item;
             }
+            $masivo->update(['estado' => 3]);
             $archivo =  'BBVA'.$masivo->cuenta->moneda.substr($masivo->fecha, 0, 4).substr($masivo->fecha, 5, 2).substr($masivo->fecha, 8, 2).'.txt';
             
             $resultado = $cabecera.$detalles;
             $arcresul = $masivo->id.'/'.$archivo;
             Storage::disk('masivos')->put($arcresul, $resultado);
-            $masivo->update(['estado' => 3]);
         }
         if ($masivo->cuenta->banco_id == 2){
             $numope = str_pad($masivo->detmasivos->count(),6,'0',STR_PAD_LEFT);
