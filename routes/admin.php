@@ -244,6 +244,7 @@ Route::get('/pdf/{guia}/guia', [PDFController::class,'guia'])->name('admin.pdf.g
 Route::get('/pdf/{rcompra}/ingresos', [PDFController::class,'ingresos'])->name('admin.pdf.ingresos');
 Route::get('/pdf/{tesoreria}/tesoreria', [PDFController::class,'tesoreria'])->name('admin.pdf.tesoreria');
 Route::get('/pdf/{masivo}/masivos', [PDFController::class,'masivos'])->name('admin.pdf.masivos');
+Route::get('/pdf/{materiaprima}/materiaprima', [PDFController::class,'materiaprima'])->name('admin.pdf.materiaprima');
 
 //EXCEL
 Route::get('/excel/{desde}/{hasta}/materiaprima', [ExcelController::class,'materiaprima'])->name('admin.excel.materiaprima');

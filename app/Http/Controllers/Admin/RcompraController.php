@@ -264,6 +264,8 @@ class RcompraController extends Controller
 
     public function update(Request $request, Rcompra $rcompra)
     {
+        $detraccion_monto = $request->input('detraccion_monto');
+        $total = $request->input('total') - $detraccion_monto;
         $rules = [
             'fecha' => 'required',
             'tipocomprobante_codigo' => 'required',
@@ -281,7 +283,7 @@ class RcompraController extends Controller
             ]);
         }else{
             $pagos = $rcompra->pagos;
-            $saldo = $request->input('total') - $pagos;
+            $saldo = $total - $pagos;
         }
         $tipcomp = TipoComprobante::where('codigo',$request->input('tipocomprobante_codigo'))->value('tipo');
         if($tipcomp == 1){
@@ -343,11 +345,11 @@ class RcompraController extends Controller
             // return true;
 
             if($request->input('moneda') == 'PEN'){
-                $montopen = $request->input('total');
-                $montousd = round($request->input('total')/$request->input('tc'),2);
+                $montopen = $total;
+                $montousd = round($total/$request->input('tc'),2);
             }else{
-                $montousd = $request->input('total');
-                $montopen = round($request->input('total')*$request->input('tc'),2);
+                $montousd = $total;
+                $montopen = round($total*$request->input('tc'),2);
             }
             
             if($request->input('fpago') == 1 && $request->input('tipocomprobante_codigo') <> '07'){

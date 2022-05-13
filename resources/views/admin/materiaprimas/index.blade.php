@@ -64,6 +64,7 @@
 												</button>
 											</form>
                                             @endcan
+											<a class="" href="{{ route('admin.pdf.materiaprima',$materiaprima) }}" target="_blank" datatoggle="tooltip" data-placement="top" title="Imprimir"><i class="fas fa-print"></i></a>
 										</div>
 									</td>
 								</tr>
