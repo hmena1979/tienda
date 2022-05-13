@@ -26,7 +26,7 @@ class CreateMateriaprimasTable extends Migration
             $table->unsignedBigInteger('camara_id')->nullable();
             $table->unsignedBigInteger('empacopiadora_id')->nullable();
             $table->unsignedBigInteger('acopiador_id')->nullable();
-            $table->unsignedBigInteger('embarcacion_id')->nullable();
+            $table->text('embarcacion_id',50)->nullable();
             $table->unsignedBigInteger('muelle_id')->nullable();
             $table->string('remitente_guia',15)->nullable();
             $table->string('transportista_guia',15)->nullable();

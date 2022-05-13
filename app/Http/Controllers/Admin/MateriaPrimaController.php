@@ -56,6 +56,7 @@ class MateriaPrimaController extends Controller
 
     public function store(Request $request)
     {
+        // return $request->embarcacion_id;
         $rules = [
             'lote' => 'required',
             'remitente_guia' => 'required',
@@ -104,11 +105,17 @@ class MateriaPrimaController extends Controller
     		'destare.required' => 'Ingrese Destare.',
     		'observaciones.required' => 'Ingrese Observaciones.',
         ];
+        
         $validator = Validator::make($request->all(),$rules,$messages);
     	if($validator->fails()){
             return back()->withErrors($validator)->with('message', 'Se ha producido un error')->with('typealert', 'danger')->withinput();
         }else{
-            $materiaprima = Materiaprima::create($request->all());
+            $data = $request->except('embarcacion_id');
+            $embarcacion = json_encode($request->input('embarcacion_id'));
+            $data = array_merge($data,[
+                'embarcacion_id' => $embarcacion,
+            ]);
+            $materiaprima = Materiaprima::create($data);
             return redirect()->route('admin.materiaprimas.edit', $materiaprima)->with('store', 'Materia Prima Agregada');
         }
     }
@@ -211,7 +218,12 @@ class MateriaPrimaController extends Controller
     	if($validator->fails()){
             return back()->withErrors($validator)->with('message', 'Se ha producido un error')->with('typealert', 'danger')->withinput();
         }else{
-            $materiaprima->update($request->all());
+            $data = $request->except('embarcacion_id');
+            $embarcacion = json_encode($request->input('embarcacion_id'));
+            $data = array_merge($data,[
+                'embarcacion_id' => $embarcacion,
+            ]);
+            $materiaprima->update($data);
             return redirect()->route('admin.materiaprimas.index')->with('update', 'Materia Prima Actualizada');
         }
     }

@@ -60,8 +60,8 @@
                             </div>
 							@endcan
 							<div class="col-md-3 form-group">
-                                {!! Form::label('embarcacion_id', 'Embarcación:') !!}
-								{!! Form::select('embarcacion_id',$embarcacion,null,['class'=>'custom-select activo','placeholder'=>'']) !!}
+                                {!! Form::label('embarcacion_id[]', 'Embarcación:') !!}
+								{!! Form::select('embarcacion_id[]',$embarcacion,null,['class' => 'form-control embarcacion_id', 'multiple'=>'multiple']) !!}
                             </div>
 							<div class="col-md-3 form-group">
                                 {!! Form::label('muelle_id', 'Muelle:') !!}
@@ -205,7 +205,7 @@
         });
 
 
-		$('#embarcacion_id').select2({
+		$('.embarcacion_id').select2({
 			placeholder:"Seleccione Embarcación"
 		});
 
