@@ -383,6 +383,16 @@ class MasivoController extends Controller
             $decimal = decimal($masivo->monto,2);
             $glosa = str_pad($masivo->glosa, 40, ' ', STR_PAD_RIGHT);
             $codigo = str_pad($masivo->id,15,'0',STR_PAD_LEFT);
+            $codCabecera = substr($masivo->cuenta->numerocta, 3);
+            $codDetalle = 0;
+            foreach($masivo->detmasivos as $det) {
+                if($det->tipo == 'P') {
+                    $codDetalle += substr($det->cuenta, 3);
+                } else {
+                    $codDetalle += substr($det->cuenta, 11);
+                }
+            }
+            $codigo = str_pad($codCabecera+$codDetalle,15,'0',STR_PAD_LEFT);
             $cabecera = '1'.$numope.$fecha.'C0001'.$cuenta.$esp7.$pentera.'.'.$decimal.$glosa.'N'.$codigo;
             $detalles = '';
             foreach($masivo->detmasivos as $det) {
@@ -390,7 +400,11 @@ class MasivoController extends Controller
                     $tipo = 'B';
                 } else {
                     if (substr($det->rcompra->cliente->numdoc,0,1) == '2') {
-                        $tipo = 'C';
+                        if (strlen($det->cuenta) == 13) {
+                            $tipo = 'C';
+                        } else {
+                            $tipo = 'A';
+                        }
                     } else {
                         $tipo = 'A';
                     }
