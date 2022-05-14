@@ -400,7 +400,7 @@ class MasivoController extends Controller
                 $numdoc = str_pad($det->rcompra->cliente->numdoc,15,' ',STR_PAD_RIGHT);
                 $nombre = str_pad($det->rcompra->cliente->razsoc,75,' ',STR_PAD_RIGHT);
                 $refben = 'Referencia Beneficiario ';
-                $refemp = 'Ref Emp ';
+                $refemp = '   Ref Emp ';
                 $nd_emp = $numdoc = str_pad($det->rcompra->cliente->numdoc,12,' ',STR_PAD_RIGHT);
                 if ($masivo->cuenta->moneda == 'PEN') {
                     $entera = floor($det->montopen);
@@ -413,13 +413,13 @@ class MasivoController extends Controller
                     $decimal = decimal($det->montousd,2);
                     // $decimal = ($det->montousd-intval($det->montousd))*100;
                 }
-                $item = '2'.$tipo.$cuenta.'1'.$tipdoc.$numdoc.$nombre.$refben.$numdoc.' '.$refemp.$nd_emp.'0001'.$pentera.'.'.$decimal.'S';
+                $item = '2'.$tipo.$cuenta.'1'.$tipdoc.$numdoc.'   '.$nombre.$refben.$numdoc.' '.$refemp.$nd_emp.'0001'.$pentera.'.'.$decimal.'S';
                 if ($det->rcompra->tipocomprobante_codigo == '01') {
-                    $tcomp = 'F0';
+                    $tcomp = 'F';
                 } else {
-                    $tcomp = 'D0';
+                    $tcomp = 'D';
                 }
-                $numcomprobante = str_pad(numDoc($det->rcompra->serie, $det->rcompra->numero),15,' ',STR_PAD_RIGHT);
+                $numcomprobante = str_pad($det->rcompra->serie .' '. $det->rcompra->numero,15,'0',STR_PAD_LEFT);
                 $dets = '3'.$tcomp.$numcomprobante.$pentera.'.'.$decimal;
                 $detalles .= "\r\n".$item."\r\n".$dets;
             }

@@ -2,23 +2,36 @@
 <html>
 	<head>
         <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>Tienda</title>
-
-        <!-- CSRF Token -->
-        <meta name="csrf-token" content="{{ csrf_token() }}">
-        <meta name="routeName" content="{{ Route::currentRouteName() }}">
-
-        <!-- Styles
-        <link href="{{ asset('css/app.css') }}" rel="stylesheet" type="text/css"/>
-        -->
-        <link rel="stylesheet" href="{{ url('/static/css/invoice.css?v='.time()) }}">
+        <link rel="stylesheet" href="{{ url('/static/css/report.css?v='.time()) }}">
 	</head>
 	<body>
+        <table class="cuadrosborde">
+            <thead>
+                <tr>
+                    <td width="10%" class="text-left">
+                        {{-- <img src="{{ url('/static/images/logo.jpg') }}" alt=""> --}}
+                        Logo
+                    </td>
+                    <td width="30%" class="text-left lchicas negrita">
+                        {{ $empresa->razsoc }}
+                    </td>
+                    <td width="60%" valign='top'>
+                        <div class="text-right lchicas">
+                            
+                        </div>
+                    </td>
+                </tr>
+            </thead>
+        </table>
+        <br>
+        <div class="text-center letra12 negrita">
+            INGRESO MATERIA PRIMA <br>
+            LOTE: {{ $materiaprima->lote }}
+        </div>
         <table class="tabla">
             <tr>
-                <th>
+                <th class="text-left">
                     DATOS DEL GENERALES
                 </th>
             </tr>
@@ -40,12 +53,26 @@
                         <th width='10%'>HORA FIN</th>
                         <td width='10%'>{{ $materiaprima->hinicio }}</td>
                         <th width='10%'>TURNO</th>
-                        <td width='10%'>{{ 'MAÑANA' }}</td>
+                        <td width='10%'>
+                            @if (substr($materiaprima->hinicio, 0, 2) <= 12)
+                                MAÑANA
+                            @else
+                                TARDE
+                            @endif
+                        </td>
                     </tr>
 
                 </tbody>
             </table>
         </div>
+        <table class="tabla">
+            <tr>
+                <th class="text-left">
+                    DATOS DEL GENERALES
+                </th>
+            </tr>
+        </table>
+        
         {{-- <table class="header">
             <tr>
                 <td width="15%" valign='middle'>
