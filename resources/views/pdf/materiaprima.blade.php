@@ -13,11 +13,11 @@
                         {{-- <img src="{{ url('/static/images/logo.jpg') }}" alt=""> --}}
                         Logo
                     </td>
-                    <td width="30%" class="text-left lchicas negrita">
+                    <td width="30%" class="text-left letra8 negrita">
                         {{ $empresa->razsoc }}
                     </td>
                     <td width="60%" valign='top'>
-                        <div class="text-right lchicas">
+                        <div class="text-right letra8">
                             
                         </div>
                     </td>
@@ -29,9 +29,10 @@
             INGRESO MATERIA PRIMA <br>
             LOTE: {{ $materiaprima->lote }}
         </div>
+        <br>
         <table class="tabla">
             <tr>
-                <th class="text-left">
+                <th class="text-left letra9">
                     DATOS DEL GENERALES
                 </th>
             </tr>
@@ -40,20 +41,12 @@
             <table>
                 <tbody>
                     <tr>
-                        <th width='10%'>FECHA PARTIDA</th>
-                        <td width='10%'>{{ date('d-m-Y',strtotime($materiaprima->fpartida)) }}</td>
-                        <th width='10%'>FECHA LLEGADA</th>
-                        <td width='10%'>{{ date('d-m-Y',strtotime($materiaprima->fllegada)) }} </td>
-                        <th width='10%'>INGRESO PLANTA </th>
-                        <td width='10%'>{{ date('d-m-Y',strtotime($materiaprima->ingplanta)) }} </td>
-                    </tr>
-                    <tr>
-                        <th width='10%'>HORA INICIO</th>
-                        <td width='10%'>{{ $materiaprima->hinicio }}</td>
-                        <th width='10%'>HORA FIN</th>
-                        <td width='10%'>{{ $materiaprima->hinicio }}</td>
-                        <th width='10%'>TURNO</th>
-                        <td width='10%'>
+                        <td class="text-left negrita" width='10%'>Hora Inicio:</td>
+                        <td class="text-left" width='10%'>{{ $materiaprima->hinicio }}</td>
+                        <td class="text-left negrita" width='10%'>Hora Fin:</td>
+                        <td class="text-left" width='10%'>{{ $materiaprima->hinicio }}</td>
+                        <td class="text-left negrita" width='10%'>Turno:</td>
+                        <td class="text-left" width='10%'>
                             @if (substr($materiaprima->hinicio, 0, 2) <= 12)
                                 MAÑANA
                             @else
@@ -61,17 +54,82 @@
                             @endif
                         </td>
                     </tr>
+                    <tr>
+                        <td class="text-left negrita">Fecha Partida:</td>
+                        <td class="text-left">{{ date('d-m-Y',strtotime($materiaprima->fpartida)) }}</td>
+                        <td class="text-left negrita">Fecha Llegada:</td>
+                        <td class="text-left">{{ date('d-m-Y',strtotime($materiaprima->fllegada)) }} </td>
+                        <td class="text-left negrita">Ingreso Planta: </td>
+                        <td class="text-left">{{ date('d-m-Y',strtotime($materiaprima->ingplanta)) }} </td>
+                    </tr>
+                    <tr>
+                        <td class="text-left negrita">Zona Acopio:</td>
+                        <td class="text-left">{{ $materiaprima->lugar }}</td>
+                        <td class="text-left negrita">Producto:</td>
+                        <td class="text-left" colspan="3">{{ $materiaprima->producto->nombre }} </td>
+                    </tr>
 
                 </tbody>
             </table>
         </div>
+        <br>
         <table class="tabla">
             <tr>
-                <th class="text-left">
-                    DATOS DEL GENERALES
+                <th class="text-left letra9">
+                    INFORMACIÓN PLANTA
                 </th>
             </tr>
         </table>
+        <div class="detalle">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="text-left negrita" width='15%'>Ticket Balanza:</td>
+                        <td class="text-left" width='10%'>{{ $materiaprima->ticket_balanza }}</td>
+                        <td class="text-left negrita" width='15%'>Peso Planta:</td>
+                        <td class="text-left" width='10%'>{{ number_format($materiaprima->pplanta,2) }} </td>
+                        <td class="text-left negrita" width='10%'>N° Batch: </td>
+                        <td class="text-left" width='10%'>{{ $materiaprima->batch }} </td>
+                        <td class="text-left negrita" width='10%'>Cajas: </td>
+                        <td class="text-left" width='10%'>{{ $materiaprima->cajas }} </td>
+                    </tr>
+                    <tr>
+                        <td class="text-left negrita">Destare KG:</td>
+                        <td class="text-left">{{ number_format($materiaprima->destare,2) }}</td>
+                        <td class="text-left negrita">Observaciones:</td>
+                        <td class="text-left" colspan="5">{{ $materiaprima->observaciones }} </td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+
+        <br>
+        <table class="tabla">
+            <tr>
+                <th class="text-left letra9">
+                    INFORMACIÓN DEL PROVEEDOR
+                </th>
+            </tr>
+        </table>
+        <div class="detalle">
+            <table>
+                <tbody>
+                    <tr> {{ $materiaprima->cliente_id }}
+                        <td class="text-left negrita" width='17%'>RUC:</td>
+                        <td class="text-left" width='10%'>
+                            {{ empty($materiaprima->cliente_id)?'PENDIENTE':$materiaprima->cliente->numdoc }}
+                        </td>
+                        <td class="text-left negrita" width='16%'>Razón Social:</td>
+                        <td class="text-left" width='57%'>
+                            {{ empty($materiaprima->cliente_id)?'PENDIENTE':$materiaprima->cliente->razsoc }}
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
         
         {{-- <table class="header">
             <tr>

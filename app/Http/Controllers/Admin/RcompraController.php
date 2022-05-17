@@ -19,6 +19,9 @@ use App\Models\Detraccion;
 use App\Models\Detrcompra;
 use App\Models\Tesoreria;
 use App\Models\Dettesor;
+use DOMDocument;
+use DOMXPath;
+use SimpleXMLElement;
 
 class RcompraController extends Controller
 {
@@ -523,5 +526,71 @@ class RcompraController extends Controller
     public function destroyitem(Detrcompra $detrcompra)
     {
         $detrcompra->delete();
+    }
+    
+    public function leerXML(Request $request)
+    {
+        $extencion = $request->file('xml')->getClientOriginalExtension();
+        if ($extencion <> 'xml' && $extencion <> 'XML') {
+            return back()->with('message', 'Error: Solo se pueden importar archivos XML')->with('typealert', 'danger');
+        }
+        $texto = $_FILES["xml"];// file($request->file('xml'));
+        // $xml_content = file_get_contents($texto['tmp_name']);
+        // $xml_content = str_replace("<SelfBilledInvoice","<",$xml_content);
+        // $xml_content = str_replace("</SelfBilledInvoice","</",$xml_content);
+        // $xml_content = str_replace("<cac:","<",$xml_content);
+        // $xml_content = str_replace("</cac:","</",$xml_content);
+        // $xml_content = str_replace("<cbc:","<",$xml_content);
+        // $xml_content = str_replace("</cbc:","</",$xml_content);
+        // $xml_content = simplexml_load_string(utf8_encode($xml_content));
+        // return $texto;
+        // $xml = simplexml_load_string($texto);
+        // return $xml_content;
+        // return $texto['tmp_name'];
+        // $xmlDataString = file_get_contents(public_path('/import/sample-course.xml'));
+
+        $xml = file_get_contents($texto['tmp_name']);
+        $xml = str_replace('\n','',$xml);
+        $xml = str_replace('\t','',$xml);
+        $cbc = "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2";
+        $cac = "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2";
+        $document = new DOMDocument();
+        $document->loadXml($xml);
+        // $xpath = new DOMXPath($document);
+        $lineas = '';
+        // foreach($document->getElementsByTagNameNS($cac, "PartyIdentification") as $lin){
+        //     $lineas .= $lin->childNodes.' ';
+        // }
+        foreach($document->getElementsByTagName("PartyIdentification") as $lin){
+            $lineas .= $lin->getAttribute('ID') . ' - ';
+        }
+        $lineas .= $document->getElementsByTagName("PartyIdentification")[0]->childNodes['ID']->textContent.' ';
+        $lineas .= $document->getElementsByTagName("PartyIdentification")[1]->getattribute('schemeAgencyName');
+
+        // childNodes[0]->nodeName => Nombre del Nodo
+        // childNodes[0]->childNodes[0]->nodeValue => Valor del Nodo
+        // getElementsByTagName("PartyIdentification")[0]->getAttribute("nombre") => Valor Attributo
+
+        return $lineas;
+        $numero = $document->getElementsByTagNameNS($cbc, "ID")[0]->textContent;
+        $fecha = $document->getElementsByTagNameNS($cbc, "IssueDate")[0]->textContent;
+        $emisor = trim($document->getElementsByTagNameNS($cac, "PartyIdentification")[0]->textContent);
+        $proveedor = trim($document->getElementsByTagNameNS($cac, "PartyIdentification")[2]->textContent);
+        $factura = [
+            'fecha' => $fecha,
+            'numero' => $numero,
+            'emisor' => $emisor,
+            'proveedor' => $proveedor,
+        ];
+        return $factura;
+        return json_decode($document->getElementsByTagNameNS($cbc, "IssueDate")[0]);
+        // $reader = new \Sabre\Xml\Reader();
+        // $reader->xml($xml);
+        // $result = $reader->parse();
+
+
+   
+        // dd($phpArray);
+
     }
 }

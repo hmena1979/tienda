@@ -44,12 +44,24 @@
             <tbody>
                 @foreach($materiaprimas as $materiaprima)
                 <tr>
-                    <td>{{ $materiaprima->chofer->nombre }}</td>
-                    <td>{{ $materiaprima->transportista->nombre }}</td>
-                    <td>{{ $materiaprima->empacopiadora->nombre }}</td>
-                    <td>{{ $materiaprima->acopiador->nombre }}</td>
-                    <td>{{ $materiaprima->camara->marca }}</td>
-                    <td>{{ $materiaprima->camara->placa }}</td>
+                    <td>
+                        {{ empty($materiaprima->chofer_id)?'PENDIENTE':$materiaprima->chofer->nombre }}
+                    </td>
+                    <td>
+                        {{ empty($materiaprima->transportista_id)?'PENDIENTE':$materiaprima->transportista->nombre }}
+                    </td>
+                    <td>
+                        {{ empty($materiaprima->empacopiadora_id)?'PENDIENTE':$materiaprima->empacopiadora->nombre }}
+                    </td>
+                    <td>
+                        {{ empty($materiaprima->acopiador_id)?'PENDIENTE':$materiaprima->acopiador->nombre }}
+                    </td>
+                    <td>
+                        {{ empty($materiaprima->camara_id)?'PENDIENTE':$materiaprima->camara->marca }}
+                    </td>
+                    <td>
+                        {{ empty($materiaprima->camara_id)?'PENDIENTE':$materiaprima->camara->placa }}
+                    </td>
                     <td>{{ $materiaprima->lote }}</td>
                     <td>{{ $materiaprima->cajas }}</td>
                     <td>{{ $materiaprima->pplanta }}</td>
@@ -57,7 +69,9 @@
                     <td>{{ $materiaprima->fllegada }}</td>
                     <td>{{ $materiaprima->ingplanta }}</td>
                     <td>{{ $materiaprima->hfin }}</td>
-                    <td>{{ $materiaprima->cliente->razsoc }}</td>
+                    <td>
+                        {{ empty($materiaprima->cliente_id)?'PENDIENTE':$materiaprima->cliente->razsoc }}
+                    </td>
                     <td>{{ $materiaprima->precio }}</td>
                     <td>{{ $materiaprima->lugar }}</td>
                     <td>{{ $materiaprima->producto->nombre }}</td>

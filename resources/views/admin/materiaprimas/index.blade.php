@@ -47,9 +47,13 @@
 								<tr>
 									<td>{{ $materiaprima->ingplanta }}</td>
 									<td>{{ $materiaprima->lote }}</td>
-									<td>{{ $materiaprima->cliente->razsoc }}</td>
+									<td class="@if (empty($materiaprima->cliente_id)) rojo @endif">
+										{{ empty($materiaprima->cliente_id)?'PENDIENTE':$materiaprima->cliente->razsoc }}
+									</td>
 									<td>{{ $materiaprima->pplanta }}</td>
-									<td>{{ $materiaprima->transportista->nombre }}</td>
+									<td class="@if (empty($materiaprima->transportista_id)) rojo @endif">
+										{{ empty($materiaprima->transportista_id)?'PENDIENTE':$materiaprima->transportista->nombre }}
+									</td>
 									<td>
 										<div class="opts">
 											@can('admin.materiaprimas.edit')

@@ -259,12 +259,26 @@ class MasivoController extends Controller
             $saldo = $r->saldo - $montotal;
             $tmasivo = $r->total_masivo - $montotal;
             $masrc = $tmasivo == 0 ? 2 : 1;
-            $r->update([
-                'pagado' => $pagado,
-                'saldo' => $saldo,
-                'total_masivo' => $tmasivo,
-                'masivo' => $masrc
-            ]);
+            if ($saldo > 0) {
+                $r->update([
+                    'pagado' => $pagado,
+                    'saldo' => $saldo,
+                    'total_masivo' => $tmasivo,
+                    'masivo' => $masrc,
+                    'mediopago' => '001',
+                    'cuenta_id' => $masivo->cuenta_id,
+                ]);
+            } else {
+                $r->update([
+                    'pagado' => $pagado,
+                    'saldo' => $saldo,
+                    'total_masivo' => $tmasivo,
+                    'masivo' => $masrc,
+                    'cancelacion' => $masivo->fecha,
+                    'mediopago' => '001',
+                    'cuenta_id' => $masivo->cuenta_id,
+                ]);
+            }
         }
         //---------------------------------------------------------------------------------------
         

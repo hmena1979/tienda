@@ -95,7 +95,34 @@
 					</div> --}}
 					<div class="inside">
 						<div class="row">
-							<div class="col-md-8"></div>
+							<div class="col-md-6">
+								{!! Form::open(['route'=>'admin.rcompras.leerxml','files' => true,"enctype"=>"multipart/form-data"]) !!}
+								<table class="table table-hover table-sm table-bordered oculto">
+									<thead>
+										<tr>
+											<th colspan="2">Importar XML</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td class="align-middle">
+												{!! Form::file('xml', ['class'=>'form-control','id' => 'xml', 'accept'=>'.xml', 'required']) !!}
+											</td>
+											<td>
+												{!! Form::submit('XML', ['class'=>'btn btn-convertir btn-block', 'id'=>'enviar']) !!}
+											</td>
+										</tr>
+									</tbody>
+								</table>
+								<div class="row">
+									<div class="col-md-8">
+									</div>
+									<div class="col md-2">
+									</div>
+								</div>
+								{!! Form::close() !!}
+							</div>
+							<div class="col-md-2"></div>
 							<div class="col-md-4">
 								<table class="table table-hover table-sm table-bordered">
 									<thead>

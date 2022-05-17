@@ -160,6 +160,7 @@ Route::get('/rcompras/{rcompra}/detrcompra', [RcompraController::class,'detrcomp
 Route::post('/rcompras/adddestino', [RcompraController::class,'adddestino'])->name('admin.rcompras.adddestino');
 Route::get('/rcompras/{rcompra}/tablaitem', [RcompraController::class,'tablaitem'])->name('admin.rcompras.tablaitem');
 Route::get('/rcompras/{detrcompra}/destroyitem', [RcompraController::class,'destroyitem'])->name('admin.rcompras.destroyitem');
+Route::post('/rcompras/leerxml', [RcompraController::class,'leerXML'])->name('admin.rcompras.leerxml');
 Route::resource('rcompras', RcompraController::class)->names('admin.rcompras');
 Route::get('/rcompras/{periodo?}', [RcompraController::class,'index'])->name('admin.rcompras.index');
 // Route::get('/registrocompra/create', [RegistroCompraController::class,'create'])->name('admin.registrocompras.create');

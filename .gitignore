@@ -3,6 +3,7 @@
 /public/storage
 /public/invoice
 /public/masivos
+/public/xml
 /storage/*.key
 /vendor
 .env
