@@ -232,6 +232,9 @@ class MateriaPrimaController extends Controller
 
     public function destroy(Materiaprima $materiaprima)
     {
+        if($materiaprima->detmateriaprimas->count() > 0) {
+            return redirect()->route('admin.materiaprimas.index')->with('message', 'Se ha producido un error, No se puede eliminar, Ya contiene pesos')->with('typealert', 'danger');
+        }
         $materiaprima->delete();
         return redirect()->route('admin.materiaprimas.index')->with('destroy', 'Materia Prima Eliminada');
     }

@@ -152,7 +152,35 @@ class TesoreriaController extends Controller
 
     public function update(Request $request, Tesoreria $tesoreria)
     {
-        //
+        $rules = [
+            'fecha' => 'required',
+            'tc' => 'required',
+            'mediopago' => 'required',
+            'numerooperacion' => 'required',
+            'glosa' => 'required'
+        ];
+        
+        $messages = [
+    		'fecha.required' => 'Ingrese Fecha.',
+    		'tc.required' => 'Ingrese Tipo de Cambio.',
+    		'mediopago.required' => 'Ingrese Medio Pago.',
+    		'numerooperacion.required' => 'Ingrese Número Operación.',
+    		'glosa.required' => 'Ingrese Glosa.',
+        ];
+        $validator = Validator::make($request->all(),$rules,$messages);
+    	if($validator->fails()){
+            return back()->withErrors($validator)->with('message', 'Se ha producido un error')->with('typealert', 'danger')->withinput();
+        }else{
+            $data = [
+                'fecha' => $request->input('fecha'),
+                'tc' => $request->input('tc'),
+                'mediopago' => $request->input('mediopago'),
+                'numerooperacion' => $request->input('numerooperacion'),
+                'notaegreso' => $request->input('notaegreso'),
+            ];
+            $tesoreria->update($data);
+            return redirect()->route('admin.tesorerias.index')->with('update', 'Registro Actualizado');
+        }
     }
 
     public function detstore(Request $request, Tesoreria $tesoreria){

@@ -60,7 +60,7 @@
 											<a class="" href="{{ route('admin.materiaprimas.edit',$materiaprima) }}"datatoggle="tooltip" data-placement="top" title="Editar"><i class="fas fa-edit"></i></a>
 											@endcan
 											@can('admin.materiaprimas.destroy')
-											<form action="{{ route('admin.materiaprimas.destroy',$materiaprima) }}" method="POST" class="formulario_eliminar">
+											<form action="{{ route('admin.materiaprimas.destroy',$materiaprima) }}" method="POST" class="formulario_eliminars">
 												@csrf
 												@method('delete')
 												<button type="submit" datatoggle="tooltip" data-placement="top" title="Eliminar">
