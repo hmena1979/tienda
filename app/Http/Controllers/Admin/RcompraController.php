@@ -552,17 +552,33 @@ class RcompraController extends Controller
         $xml = file_get_contents($texto['tmp_name']);
         $xml = str_replace('\n','',$xml);
         $xml = str_replace('\t','',$xml);
+        // $xml = str_replace('cac:','',$xml);
+        // $xml = str_replace('/cac:','',$xml);
+        // $xml = str_replace('cbc:','',$xml);
+        // $xml = str_replace('/cbc:','',$xml);
         $cbc = "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2";
         $cac = "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2";
-        $document = new DOMDocument();
+        $document = new DOMDocument('1.0', 'utf-8');
         $document->loadXml($xml);
         // $xpath = new DOMXPath($document);
         $lineas = '';
-        // foreach($document->getElementsByTagNameNS($cac, "PartyIdentification") as $lin){
-        //     $lineas .= $lin->childNodes.' ';
+        $identificacion = $document->getElementsByTagName("SignatoryParty");
+        foreach($identificacion as $lin){
+            $lineas .= $lin->getElementsByTagName('PartyIdentification')->item(0)->nodeValue;
+            $lineas .= '-';
+            $lineas .= $lin->getElementsByTagName('PartyName')->item(0)->nodeValue;
+        }
+        $ruc = $document->getElementsByTagName("SignatoryParty")[0]->childNodes[1]->nodeValue;
+        $nombre = $document->getElementsByTagName("SignatoryParty")[0]->childNodes[3]->nodeValue;
+        return $ruc.'-'.$nombre;
+        // $p = $document->getElementsByTagNameNS($cac,"SignatoryParty")[0]->childNodes[0]->nodeValue;
+        // $p = $document->getElementsByTagName("InvoiceTypeCode")[0]->getAttribute['listAgencyName'];
+        // foreach($document->getElementsByTagName("SignatoryParty") as $lin) {
+        //     $lineas .= $lin->nodeName(0).'1-';
         // }
-        foreach($document->getElementsByTagName("PartyIdentification") as $lin){
-            $lineas .= $lin->getAttribute('ID') . ' - ';
+        return $lineas;
+        foreach($document->getElementsByTagName("SignatoryParty") as $lin){
+            // $lineas .= $lin->getAttribute('ID') . ' - ';
         }
         $lineas .= $document->getElementsByTagName("PartyIdentification")[0]->childNodes['ID']->textContent.' ';
         $lineas .= $document->getElementsByTagName("PartyIdentification")[1]->getattribute('schemeAgencyName');

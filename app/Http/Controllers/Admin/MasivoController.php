@@ -338,7 +338,7 @@ class MasivoController extends Controller
             $esp15 = str_pad('00', 15, '0', STR_PAD_RIGHT);
             $esp9 = '         ';
             $fecha = substr($masivo->fecha, 0, 4).substr($masivo->fecha, 5, 2).substr($masivo->fecha, 8, 2);
-            $glosa = str_pad($masivo->glosa, 25, ' ', STR_PAD_RIGHT);
+            $glosa = substr(str_pad($masivo->glosa, 25, ' ', STR_PAD_RIGHT),0,25);
             $lineas = str_pad($masivo->detmasivos->count(),6,'0',STR_PAD_LEFT);
             $fin = str_pad('',18,'0',STR_PAD_LEFT);
             $esp50 = '                                                  ';
