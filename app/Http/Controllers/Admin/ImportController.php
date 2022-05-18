@@ -17,6 +17,7 @@ use App\Imports\UMedidaImport;
 use App\Imports\TipoComprobanteImport;
 use App\Imports\DetraccionImport;
 use App\Imports\DepartamentoImport;
+use App\Imports\EmbarcacionImport;
 use App\Imports\EmpacopiadoraImport;
 use App\Imports\ProvinciaImport;
 use App\Imports\TransportistaImport;
@@ -276,7 +277,7 @@ class ImportController extends Controller
     	endif;
     }
 
-    public function Acopiador(Request $request)
+    public function acopiador(Request $request)
     {
     	$rules = [
 			'archivo' => 'required'
@@ -296,7 +297,7 @@ class ImportController extends Controller
     	endif;
     }
 
-    public function Chofer(Request $request)
+    public function chofer(Request $request)
     {
     	$rules = [
 			'archivo' => 'required'
@@ -311,6 +312,26 @@ class ImportController extends Controller
 		else:
     		$file = $request->file('archivo');
     		Excel::import(new ChoferImport, $file);
+
+    		return redirect('/admin/import')->with('message', 'Archivo importado')->with('typealert', 'success');
+    	endif;
+    }
+
+    public function embarcacion(Request $request)
+    {
+    	$rules = [
+			'archivo' => 'required'
+    	];
+    	$messages = [
+			'archivo.required' => 'No ha selecionado archivo Embarcaciones.xlsx'
+    	];
+
+    	$validator = validator::make($request->all(), $rules, $messages);
+    	if($validator->fails()):
+    		return back()->withErrors($validator)->with('message', 'Se ha producido un error')->with('typealert', 'danger')->withinput();
+		else:
+    		$file = $request->file('archivo');
+    		Excel::import(new EmbarcacionImport, $file);
 
     		return redirect('/admin/import')->with('message', 'Archivo importado')->with('typealert', 'success');
     	endif;

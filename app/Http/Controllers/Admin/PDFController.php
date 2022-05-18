@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Categoria;
+use App\Models\Embarcacion;
 use App\Models\Empresa;
 use App\Models\Guia;
 use App\Models\Masivo;
@@ -17,6 +18,7 @@ use App\Models\Rventa;
 use App\Models\Rcompra;
 use App\Models\Sede;
 use App\Models\Tesoreria;
+use App\Models\TipoComprobante;
 
 class PDFController extends Controller
 {
@@ -191,20 +193,46 @@ class PDFController extends Controller
         $moneda = ['PEN' => 'SOLES', 'USD' => 'DOLARES'];
         $empresa = Empresa::findOrFail(session('empresa'));
         $sede = Sede::findOrFail(session('sede'));
+        $tipocomprobante = TipoComprobante::pluck('nombre','codigo');
+        if ($materiaprima->embarcacion_id) {
+            $embarcaciones = json_decode($materiaprima->embarcacion_id);
+        } else {
+            $embarcaciones = [];
+        }
+        $enombre = Embarcacion::pluck('nombre','id');
+        $ematricula = Embarcacion::pluck('matricula','id');
+        $eprotocolo = Embarcacion::pluck('protocolo','id');
+        $ecapacidad = Embarcacion::pluck('capacidad','id');
+        $tot = $materiaprima->detmateriaprimas->count();
+        if ($tot%2 == 0) {
+            $primeros = $tot / 2;
+            $ultimos = $tot / 2;
+        } else {
+            $primeros = round($tot / 2);
+            $ultimos = $tot - $primeros;
+        }
+        $tabla1 = $materiaprima->detmateriaprimas->take($primeros);
+        $tabla2 = $materiaprima->detmateriaprimas->skip($primeros)->take($ultimos);
+
 
         $data = [
             'materiaprima' => $materiaprima,
             'moneda' => $moneda,
             'empresa' => $empresa,
             'sede' => $sede,
+            'tipocomprobante' => $tipocomprobante,
+            'embarcaciones' => $embarcaciones,
+            'enombre' => $enombre,
+            'ematricula' => $ematricula,
+            'eprotocolo' => $eprotocolo,
+            'ecapacidad' => $ecapacidad,
+            'tabla1' => $tabla1,
+            'tabla2' => $tabla2,
         ];
         $pdf = PDF::loadView('pdf.materiaprima', $data)->setPaper('A4', 'portrait');
         return $pdf->stream(str_pad($materiaprima->sede_id, 2, '0', STR_PAD_LEFT).
             str_pad($materiaprima->id, 8, '0', STR_PAD_LEFT).'.pdf', array('Attachment'=>false));
         
-        //$pdf->stream($parametro->ruc.'-'.$factura->comprobante_id.'-'.$factura->serie.'-'.$factura->numero.'.pdf', array('Attachment'=>false));
-        //return redirect('/admin/factura/'.$factura->id.'/edit')->with('message', 'Factura generada')->with('typealert', 'success');
-        
-        // return view('pdf.boleta', $data);
+          // return view('pdf.materiaprima', $data);
     }
 }

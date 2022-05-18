@@ -128,13 +128,15 @@ class MateriaPrimaController extends Controller
     public function edit(Materiaprima $materiaprima)
     {
         $clientes = Cliente::where('id',$materiaprima->cliente_id)->get()->pluck('numdoc_razsoc','id');
-        if ($materiaprima->rcompra_id) {
+        if (!empty($materiaprima->lote) && !empty($materiaprima->cliente_id)) {
             $rcompra = Rcompra::where('lote',$materiaprima->lote)
                 ->where('cliente_id',$materiaprima->cliente_id)
                 ->get()->pluck('serie_numero','id');
         } else {
             $rcompra = [];
         }
+        // return $materiaprima->lote.' | '.$materiaprima->cliente_id;
+        // return $$rcompra;
         $embarcacion = Embarcacion::where('empresa_id',session('empresa'))
             ->orderBy('nombre')->get()->pluck('nombre_matricula','id');
         $muelles = Muelle::where('empresa_id',session('empresa'))

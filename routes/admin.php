@@ -266,6 +266,7 @@ Route::post('/import/camara', [ImportController::class,'camara'])->name('admin.i
 Route::post('/import/empacopiadora', [ImportController::class,'empacopiadora'])->name('admin.imports.empacopiadora');
 Route::post('/import/acopiador', [ImportController::class,'acopiador'])->name('admin.imports.empacopiadora');
 Route::post('/import/chofer', [ImportController::class,'chofer'])->name('admin.imports.chofer');
+Route::post('/import/embarcacion', [ImportController::class,'embarcacion'])->name('admin.imports.embarcacion');
 
 //Modulo Busquedas
 Route::get('/busquedas/departamento', [BusquedaController::class,'departamento'])->name('admin.busquedas.departamento');

@@ -146,7 +146,7 @@
                         <div class="row">
                             <div class="col-md-2 form-group">
                                 {!! Form::label('lote', 'Lote:') !!}
-                                {!! Form::text('lote', null, ['class'=>'form-control decimal activo','autocomplete'=>'off']) !!}
+                                {!! Form::text('lote', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
                             </div>
                             <div class="col-md-1 form-group">
                                 {!! Form::label('detraccion', 'Detracción:') !!}

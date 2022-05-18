@@ -6,37 +6,33 @@
         <link rel="stylesheet" href="{{ url('/static/css/report.css?v='.time()) }}">
 	</head>
 	<body>
+        {{-- <div class="footer letra9">
+            {{ $sede->direccion}}&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;{{ $empresa->dominio }}&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;<br>
+            Telef. {{ $sede->telefono}}&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;Cel: {{ $sede->celular}}
+        </div> --}}
         <table class="cuadrosborde">
             <thead>
                 <tr>
-                    <td width="10%" class="text-left">
-                        {{-- <img src="{{ url('/static/images/logo.jpg') }}" alt=""> --}}
-                        Logo
+                    <td width="7%" class="text-left">
+                        <img class="logo" src="{{ url('/static/images/logo.jpg') }}" alt="">
+                        {{-- Logo --}}
                     </td>
-                    <td width="30%" class="text-left letra8 negrita">
+                    <td width="33%" class="text-left letra8 negrita">
                         {{ $empresa->razsoc }}
                     </td>
-                    <td width="60%" valign='top'>
-                        <div class="text-right letra8">
-                            
-                        </div>
+                    <td width="40%"></td>
+                    <td width="20%" valign='top'  class="text-right letra8">
+                        <span class="negrita">Fecha:</span>  {{ Carbon\Carbon::now()->format('Y-m-d') }}
                     </td>
                 </tr>
             </thead>
         </table>
-        <br>
         <div class="text-center letra12 negrita">
             INGRESO MATERIA PRIMA <br>
             LOTE: {{ $materiaprima->lote }}
         </div>
         <br>
-        <table class="tabla">
-            <tr>
-                <th class="text-left letra9">
-                    DATOS DEL GENERALES
-                </th>
-            </tr>
-        </table>
+        <div class="letra9 negrita">DATOS DEL GENERALES</div>
         <div class="detalle">
             <table>
                 <tbody>
@@ -72,14 +68,146 @@
                 </tbody>
             </table>
         </div>
-        <br>
-        <table class="tabla">
+        <div class="letra6">{!! htmlspecialchars_decode("&nbsp;") !!}</div>
+        <div class="letra9 negrita">DATOS DEL PROVEEDOR</div>
+        <div class="detalle">
+            <table>
+                <tbody>
+                    <tr> {{ $materiaprima->cliente_id }}
+                        <td class="text-left negrita">RUC:</td>
+                        <td class="text-left">
+                            {{ empty($materiaprima->cliente_id)?'PENDIENTE':$materiaprima->cliente->numdoc }}
+                        </td>
+                        <td class="text-left negrita">Razón Social:</td>
+                        <td class="text-left" width='45%' colspan="3">
+                            {{ empty($materiaprima->cliente_id)?'PENDIENTE':$materiaprima->cliente->razsoc }}
+                        </td>
+                    </tr>
+                        <td class="text-left negrita" width='17%'>Tipo Comprobante:</td>
+                        <td class="text-left" width='25%'>
+                            @if ($materiaprima->rcompra_id)
+                            {{ $materiaprima->rcompra->tipocomprobante_codigo.'-'.$tipocomprobante[$materiaprima->rcompra->tipocomprobante_codigo] }}
+                            @endif
+                        </td>
+                        <td class="text-left negrita" width='13%'>Número:</td>
+                        <td class="text-left">
+                            @if ($materiaprima->rcompra_id)
+                            {{ $materiaprima->rcompra->serie_numero }}
+                            @endif
+                        </td>
+                        <td class="text-left negrita" >N° Certif. Procedencia:</td>
+                        <td>{{ $materiaprima->certprocedencia }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="letra6">{!! htmlspecialchars_decode("&nbsp;") !!}</div>
+        <div class="letra9 negrita">DATOS DEL TRANSPORTE</div>
+        <div class="detalle">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="text-left negrita" width='17%'>RUC:</td>
+                        <td class="text-left" width='13%'>
+                            {{ empty($materiaprima->transportista_id)?'PENDIENTE':$materiaprima->transportista->ruc }}
+                        </td>
+                        <td class="text-left negrita" width='17%'>Razón Social:</td>
+                        <td class="text-left" width='53%'>
+                            {{ empty($materiaprima->transportista_id)?'PENDIENTE':$materiaprima->transportista->nombre }}
+                        </td>
+                    </tr>
+                    <tr> {{ $materiaprima->transportista_guia }}
+                        <td class="text-left negrita" width='17%'>Guía Remitente:</td>
+                        <td class="text-left" width='13%'>{{ $materiaprima->remitente_guia }}</td>
+                        <td class="text-left negrita" width='15%'>Guía Tranportista:</td>
+                        <td class="text-left" width='55%'>{{ $materiaprima->transportista_guia }} </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table>
+                <tbody>
+                    <tr>
+                        <td colspan="3" class="text-center negrita">CÁMARA</td>
+                        <td colspan="2" class="text-center negrita">CHOFER</td>
+                    </tr>
+                    <tr>
+                        <td class="negrita">Marca Placa</td>
+                        <td class="negrita">Protocolo</td>
+                        <td class="negrita">Capacidad</td>
+                        <td class="negrita">Licencia</td>
+                        <td class="negrita">Nombre</td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">
+                            {{ empty($materiaprima->camara_id)?'PENDIENTE':$materiaprima->camara->marca_placa }}
+                        </td>
+                        <td class="text-left">
+                            {{ empty($materiaprima->camara_id)?'PENDIENTE':$materiaprima->camara->protocolo }}
+                        </td>
+                        <td class="text-left">
+                            {{ empty($materiaprima->camara_id)?'PENDIENTE':$materiaprima->camara->capacidad }}
+                        </td>
+                        <td class="text-left">
+                            {{ empty($materiaprima->camara_id)?'PENDIENTE':$materiaprima->chofer->licencia }}
+                        </td>
+                        <td class="text-left">
+                            {{ empty($materiaprima->camara_id)?'PENDIENTE':$materiaprima->chofer->nombre }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="letra6">{!! htmlspecialchars_decode("&nbsp;") !!}</div>
+        <div class="letra9 negrita">DATOS DEL MUELLE O DESEMBARCADERO DE DESCARGA</div>
+        <div class="detalle">
+            <table>
+                <tbody>
+                    <tr>
+                        <td width="17%" class="text-left negrita">Nombre:</td>
+                        <td width="48%" class="text-left">
+                            {{ empty($materiaprima->muelle_id)?'PENDIENTE':$materiaprima->muelle->nombre }}
+                        </td>
+                        <td width="10%" class="text-left negrita">Protocolo:</td>
+                        <td width="25%" class="text-left">
+                            {{ empty($materiaprima->muelle_id)?'PENDIENTE':$materiaprima->muelle->protocolo }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="letra6">{!! htmlspecialchars_decode("&nbsp;") !!}</div>
+        <div class="letra9 negrita">DATOS DE LA EMBARCACIÓN</div>
+        <div class="detalle">
+            <table>
+                <tbody>
+                    <tr>
+                        <td width='48%' class="negrita">Nombre</td>
+                        <td width='15%' class="negrita">Matrícula</td>
+                        <td width='25%' class="negrita">Protocolo</td>
+                        <td width='12%' class="negrita">Capacidad</td>
+                    </tr>
+                    @if ($embarcaciones)
+                    @foreach ($embarcaciones as $embarcacion)
+                    <tr>
+                        <td>{{ $enombre[$embarcacion] }}</td>
+                        <td>{{ $ematricula[$embarcacion] }}</td>
+                        <td>{{ $eprotocolo[$embarcacion] }}</td>
+                        <td>{{ $ecapacidad[$embarcacion] }}</td>
+                    </tr>
+                    @endforeach                        
+                    @endif()
+                </tbody>
+            </table>
+        </div>
+        <div class="letra6">{!! htmlspecialchars_decode("&nbsp;") !!}</div>
+        {{-- <table class="tabla">
             <tr>
                 <th class="text-left letra9">
                     INFORMACIÓN PLANTA
                 </th>
             </tr>
-        </table>
+        </table> --}}
+        <div class="letra9 negrita">INFORMACIÓN DE PLANTA</div>
         <div class="detalle">
             <table>
                 <tbody>
@@ -90,7 +218,7 @@
                         <td class="text-left" width='10%'>{{ number_format($materiaprima->pplanta,2) }} </td>
                         <td class="text-left negrita" width='10%'>N° Batch: </td>
                         <td class="text-left" width='10%'>{{ $materiaprima->batch }} </td>
-                        <td class="text-left negrita" width='10%'>Cajas: </td>
+                        <td class="text-left negrita" width='10%'>N° Cajas: </td>
                         <td class="text-left" width='10%'>{{ $materiaprima->cajas }} </td>
                     </tr>
                     <tr>
@@ -99,37 +227,74 @@
                         <td class="text-left negrita">Observaciones:</td>
                         <td class="text-left" colspan="5">{{ $materiaprima->observaciones }} </td>
                     </tr>
-
                 </tbody>
             </table>
-        </div>
-
-
-        <br>
-        <table class="tabla">
-            <tr>
-                <th class="text-left letra9">
-                    INFORMACIÓN DEL PROVEEDOR
-                </th>
-            </tr>
-        </table>
-        <div class="detalle">
             <table>
                 <tbody>
-                    <tr> {{ $materiaprima->cliente_id }}
-                        <td class="text-left negrita" width='17%'>RUC:</td>
-                        <td class="text-left" width='10%'>
-                            {{ empty($materiaprima->cliente_id)?'PENDIENTE':$materiaprima->cliente->numdoc }}
+                    <tr>
+                        <td width='48%'>
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td class="negrita">Pesada</td>
+                                        <td class="negrita">P.Bruto</td>
+                                        <td class="negrita">Tara</td>
+                                        <td class="negrita">P.Neto</td>
+                                        <td class="negrita">Acumulado</td>
+                                    </tr>
+                                    @php
+                                        $acumulado = 0;
+                                    @endphp
+                                    @foreach ($tabla1 as $t1)
+                                    @php
+                                        $acumulado += $t1->pesoneto;
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $t1->pesada }}</td>
+                                        <td>{{ $t1->pesobruto }}</td>
+                                        <td>{{ $t1->tara }}</td>
+                                        <td>{{ $t1->pesoneto }}</td>
+                                        <td>{{ number_format($acumulado,2) }}</td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </td>
-                        <td class="text-left negrita" width='16%'>Razón Social:</td>
-                        <td class="text-left" width='57%'>
-                            {{ empty($materiaprima->cliente_id)?'PENDIENTE':$materiaprima->cliente->razsoc }}
+                        {{-- <td width='2%'></td> --}}
+                        <td width='48%' valign='top'>
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td class="negrita">Pesada</td>
+                                        <td class="negrita">P.Bruto</td>
+                                        <td class="negrita">Tara</td>
+                                        <td class="negrita">P.Neto</td>
+                                        <td class="negrita">Acumulado</td>
+                                    </tr>
+                        
+                                    @foreach ($tabla2 as $t1)
+                                    @php
+                                        $acumulado += $t1->pesoneto;
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $t1->pesada }}</td>
+                                        <td>{{ $t1->pesobruto }}</td>
+                                        <td>{{ $t1->tara }}</td>
+                                        <td>{{ $t1->pesoneto }}</td>
+                                        <td>{{ number_format($acumulado,2) }}</td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </td>
                     </tr>
-
                 </tbody>
             </table>
         </div>
+
+
+
+        
         
         {{-- <table class="header">
             <tr>

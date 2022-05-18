@@ -244,6 +244,23 @@
             }
         });
 
+		$('#cliente_id').on('select2:close',function(){
+			var lote = $('#lote').val();
+            var proveedor = this.value;
+            $.get(url_global+"/admin/rcompras/"+proveedor+"/"+lote+"/materiaprima/",function(response){
+                $('#rcompra_id').empty();
+                for(i=0;i<response.length;i++){
+                    $('#rcompra_id').append("<option value='"+response[i].id+"'>"
+                        + response[i].serie + '-' + response[i].numero
+                        + "</option>");
+                }
+                $('#rcompra_id').val(null);
+                $('#rcompra_id').select2({
+                    placeholder:"Seleccione Comprobante"
+                });
+            });
+        });
+
 		$('#rcompra_id').select2({
 			placeholder:"Seleccione Comprobante de Pago"
 		});
@@ -338,7 +355,7 @@
             $('#formpeso').hide();
             $('#detalles').show();
             $('#pesobruto').val(null);
-			$('#tara').val(null);
+			// $('#tara').val(null);
 			$('#pesoneto').val(null)
         });
 

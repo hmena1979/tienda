@@ -51,6 +51,11 @@ class Materiaprima extends Model
         return $this->belongsTo('App\Models\Producto');
     }
 
+    public function rcompra()
+    {
+        return $this->belongsTo('App\Models\Rcompra');
+    }
+    
     public function detmateriaprimas()
     {
         return $this->hasMany('App\Models\Detmateriaprima');

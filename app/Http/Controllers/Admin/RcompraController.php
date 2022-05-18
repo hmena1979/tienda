@@ -277,7 +277,7 @@ class RcompraController extends Controller
             'total' => 'required'
         ];
         if($request->input('fpago') == 1){
-            $pagos = $request->input('total');
+            $pagado = $request->input('total');
             $saldo = 0;
             $rules = array_merge($rules,[
                 'mediopago' => 'required',
@@ -285,8 +285,8 @@ class RcompraController extends Controller
                 'numerooperacion' => 'required'
             ]);
         }else{
-            $pagos = $rcompra->pagos;
-            $saldo = $total - $pagos;
+            $pagado = $rcompra->pagado;
+            $saldo = $total - $pagado;
         }
         $tipcomp = TipoComprobante::where('codigo',$request->input('tipocomprobante_codigo'))->value('tipo');
         if($tipcomp == 1){
@@ -318,7 +318,7 @@ class RcompraController extends Controller
             $data = array_merge($data,[
                 'peringreso' => $peringreso,
                 'tipocomprobante_tipo' => $tipcomp,
-                'pagado' => $pagos,
+                'pagado' => $pagado,
                 'saldo' => $saldo
             ]);
             $rcompra->update($data);

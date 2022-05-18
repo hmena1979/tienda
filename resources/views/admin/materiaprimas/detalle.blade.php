@@ -73,8 +73,9 @@
         $('#idd').val($('#id').val());
         $('#tipo').val(1);
         $('#pesobruto').val(null);
-        $('#tara').val(null);
-        $('#pesoneto').val(null)
+        // $('#tara').val(null);
+        $('#pesoneto').val(null);
+        $('#pesobruto').focus();
     });
 
 </script>

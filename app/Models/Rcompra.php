@@ -36,6 +36,11 @@ class Rcompra extends Model
         return $this->hasOne('App\Models\Detmasivo');
     }
 
+    public function materiaprima()
+    {
+        return $this->hasOne('App\Models\Materiaprima');
+    }
+
     // Relaciones Uno a Muchos Inversa
     public function cliente()
     {
