@@ -413,7 +413,7 @@ class MasivoController extends Controller
             }
             
             $codigo = str_pad($codCabecera+$codDetalle,15,'0',STR_PAD_LEFT);
-            $cabecera = '1'.$numope.$fecha.'M'.$moneda.$cuenta.$esp7.$pentera.'.'.$decimal.$glosa.'N'.$codigo;
+            $cabecera = '1'.$numope.$fecha.'C'.$moneda.$cuenta.$esp7.$pentera.'.'.$decimal.$glosa.'N'.$codigo;
             $detalles = '';
             foreach($masivo->detmasivos as $det) {
                 if($det->tipo == 'I') {
