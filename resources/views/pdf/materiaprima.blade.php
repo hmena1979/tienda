@@ -291,6 +291,31 @@
                 </tbody>
             </table>
         </div>
+        @if ($materiaprima->rcompra_id)
+        <div class="letra6">{!! htmlspecialchars_decode("&nbsp;") !!}</div>
+        <div class="letra9 negrita">DIFERENCIA PRECIO PLANTA | COMPROBANTE DE PAGO</div>
+        <div class="detalle">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="negrita text-center">Peso Planta</td>
+                        <td class="negrita text-center">Precio</td>
+                        <td class="negrita text-center">Total Planta</td>
+                        <td class="negrita text-center">Total Comprobante</td>
+                        <td class="negrita text-center">Diferencia</td>
+                    </tr>
+                    <tr>
+                        <td class="text-center">{{ number_format($materiaprima->pplanta,2) }}</td>
+                        <td class="text-center">{{ number_format($materiaprima->precio,2) }}</td>
+                        <td class="text-center">{{ number_format($materiaprima->pplanta * $materiaprima->precio,2) }}</td>
+                        <td class="text-center">{{ number_format($materiaprima->rcompra->total,2) }}</td>
+                        <td class="text-center">{{ number_format(($materiaprima->pplanta * $materiaprima->precio) - $materiaprima->rcompra->total,2) }}</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+        @endif
 
 
 

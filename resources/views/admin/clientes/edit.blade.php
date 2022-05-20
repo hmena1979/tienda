@@ -118,11 +118,11 @@
                             </div>
                             <div class="col-md-3 form-group">
 								{!! Form::label('cuenta', 'Número Cuenta:') !!}
-								{!! Form::text('cuenta', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
+								{!! Form::text('cuenta', null, ['class'=>'form-control numero','autocomplete'=>'off']) !!}
 							</div>
                             <div class="col-md-3 form-group">
 								{!! Form::label('cci', 'CCI:') !!}
-								{!! Form::text('cci', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
+								{!! Form::text('cci', null, ['class'=>'form-control numero','autocomplete'=>'off']) !!}
 							</div>
                             <div class="col-md-1">
                                 {!! Form::submit('+', ['class'=>'btn btn-block btn-convertir mtop20', 'id'=>'add']) !!}
@@ -334,6 +334,25 @@
                     // + document.getElementById("nombre2").value;
                 $('#nomcomercial').val($('#razsoc').val());
             }
+        });
+
+        $('#cuenta').blur(function(){
+            var longitud = this.value.length;
+            if ($('#banco_id').val() == 2 && (longitud <= 13)) {
+                Swal.fire(
+                    'Error!',
+                    'Cuenta Ahorro BCP debe contener 14 dígitos!<br>Cuenta Corriente BCP debe contener 13 dígitos!',
+                    'error'
+                    );
+            }
+            if ($('#banco_id').val() == 3 && longitud != 18) {
+                Swal.fire(
+                    'Error!',
+                    'Cuenta BBVA debe contener 18 dígitos!',
+                    'error'
+                    );
+            }
+            
         });
 
         function veritems(){

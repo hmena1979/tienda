@@ -406,8 +406,14 @@ class MasivoController extends Controller
                     $codDetalle += substr($det->cuenta, 11);
                 }
             }
+            if ($masivo->cuenta->moneda == 'PEN') {
+                $moneda = '0001';
+            } else {
+                $moneda = '1001';
+            }
+            
             $codigo = str_pad($codCabecera+$codDetalle,15,'0',STR_PAD_LEFT);
-            $cabecera = '1'.$numope.$fecha.'C0001'.$cuenta.$esp7.$pentera.'.'.$decimal.$glosa.'N'.$codigo;
+            $cabecera = '1'.$numope.$fecha.'M'.$moneda.$cuenta.$esp7.$pentera.'.'.$decimal.$glosa.'N'.$codigo;
             $detalles = '';
             foreach($masivo->detmasivos as $det) {
                 if($det->tipo == 'I') {
