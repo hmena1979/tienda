@@ -447,7 +447,7 @@ class MasivoController extends Controller
                 } else {
                     $tcomp = 'D';
                 }
-                $numcomprobante = str_pad($det->rcompra->serie .' '. $det->rcompra->numero,15,'0',STR_PAD_LEFT);
+                $numcomprobante = str_pad($det->rcompra->serie . $det->rcompra->numero,15,'0',STR_PAD_LEFT);
                 $dets = '3'.$tcomp.$numcomprobante.$pentera.'.'.$decimal;
                 $detalles .= "\r\n".$item."\r\n".$dets;
             }
