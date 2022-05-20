@@ -64,6 +64,7 @@ class ConnectController extends Controller
 					session(['fecha' => \Carbon\Carbon::now()->format('Y-m-d')]);
 					session(['igv' => $empresa->por_igv]);
 					session(['renta' => $empresa->por_renta]);
+					session(['rentalq' => $empresa->por_rentalq]);
 					session(['mrenta' => $empresa->monto_renta]);
 					session(['icbper' => $empresa->icbper]);
 					session(['maximoboleta' => $empresa->maximoboleta]);

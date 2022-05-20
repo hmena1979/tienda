@@ -99,7 +99,7 @@
                                         {!! Form::text('impuesto', null, ['class'=>'form-control decimal activo','autocomplete'=>'off']) !!}
                                     </div>
                                     <div class="col-md-3 form-group">
-                                        {!! Form::label('renta', 'Renta('.session('renta').'%)') !!}
+                                        {!! Form::label('renta', 'Renta') !!}
                                         {!! Form::text('renta', null, ['class'=>'form-control decimal activo','autocomplete'=>'off']) !!}
                                     </div>
                                 </div>
@@ -254,8 +254,13 @@
         $('#numerooperacion').prop('disabled',true);
     }
 
+    if ($('#detraccion').val() == 1) {
+        $('#detraccion_codigo').prop('disabled',false);
+        $('#detraccion_tasa').prop('disabled',false);
+        $('#detraccion_monto').prop('disabled',false);
+        $('#detraccion_constancia').prop('disabled',false);
+    }
     
-   
     if($('#tipocomprobante_tipo2').val() == 1){
         $('#afecto').prop('disabled',false);
         $('#exonerado').prop('disabled',false);
@@ -267,16 +272,21 @@
         $('#tipooperacion_id').prop('disabled',false);
         $('#detraccion').prop('disabled',false);
     }else if($('#tipocomprobante_tipo2').val() == 2){
-        
-        $('#afecto').prop('disabled',true);
+        if ($('#tipocomprobante_codigo').val() == '04') {
+            $('#afecto').prop('disabled',false);
+            $('#tipooperacion_id').prop('disabled',false);
+            $('#detraccion').prop('disabled',false);
+        } else {
+            $('#afecto').prop('disabled',true);
+            $('#tipooperacion_id').prop('disabled',true);
+            $('#detraccion').prop('disabled',true);
+        }
         $('#exonerado').prop('disabled',false);
         $('#impuesto').prop('disabled',true);
         $('#renta').prop('disabled',false);
         $('#isc').prop('disabled',true);
         $('#otros').prop('disabled',true);
         $('#icbper').prop('disabled',true);
-        $('#tipooperacion_id').prop('disabled',true);
-        $('#detraccion').prop('disabled',true);
     }else{
         $('#afecto').prop('disabled',true);
         $('#exonerado').prop('disabled',true);
@@ -379,7 +389,7 @@
         });
 
         $('#tipocomprobante_codigo').change(function(){
-            // alert(this.value);
+            var td = this.value;
             if(this.value == '07' || this.value == '08'){
                 $('.referencia').show();
             }else{
@@ -396,7 +406,6 @@
                 $('#total').val(null);
                 $('#tipooperacion_id').val(null);
                 $('#detraccion').val(2);
-
                 switch (response){
                     case '1':
                         $('#afecto').prop('disabled',false);
@@ -410,14 +419,20 @@
                         $('#detraccion').prop('disabled',false);
                         break;
                     case '2':
-                        $('#afecto').prop('disabled',true);
+                        if (td == '04') {
+                            $('#afecto').prop('disabled',false);
+                            $('#tipooperacion_id').prop('disabled',false);
+                        } else {
+                            $('#afecto').prop('disabled',true);
+                            $('#tipooperacion_id').prop('disabled',true);
+                        }
+                        // $('#afecto').prop('disabled',true);
                         $('#exonerado').prop('disabled',false);
                         $('#impuesto').prop('disabled',true);
                         $('#renta').prop('disabled',false);
                         $('#isc').prop('disabled',true);
                         $('#otros').prop('disabled',true);
                         $('#icbper').prop('disabled',true);
-                        $('#tipooperacion_id').prop('disabled',true);
                         $('#detraccion').prop('disabled',true);
                         break;
                     case '3':
@@ -445,7 +460,12 @@
 
         $('#afecto').blur(function(){
             var igv = {{ session('igv') }} / 100;
-            $('#impuesto').val(Redondea(igv * this.value,2));
+            var renta = {{ session('rentalq') }} / 100;
+            if ($('#tipocomprobante_codigo').val() == '04') {
+                $('#renta').val(Redondea(renta * this.value,2));
+            } else {
+                $('#impuesto').val(Redondea(igv * this.value,2));
+            }
             suma();
         });
 

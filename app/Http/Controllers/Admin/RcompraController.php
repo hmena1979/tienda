@@ -19,9 +19,13 @@ use App\Models\Detraccion;
 use App\Models\Detrcompra;
 use App\Models\Tesoreria;
 use App\Models\Dettesor;
+use App\Models\Empresa;
 use DOMDocument;
 use DOMXPath;
+use phpDocumentor\Reflection\Types\This;
 use SimpleXMLElement;
+
+use function GuzzleHttp\json_decode;
 
 class RcompraController extends Controller
 {
@@ -89,11 +93,8 @@ class RcompraController extends Controller
 
     public function create()
     {
-        // $clientes = Cliente::get();
-        // return $clientes;
         $moneda = Categoria::where('modulo', 4)->pluck('nombre','codigo');
         $tipocomprobante = TipoComprobante::orderBy('codigo')->pluck('nombre','codigo');
-        // $clientes = Cliente::where('numdoc','<>','00000000')->get()->pluck('numdoc_razsoc','id');
         $tipooperacion = Categoria::where('modulo', 7)->pluck('nombre','codigo');
         $mediopago = Categoria::where('modulo', 5)->pluck('nombre','codigo');
         $cuenta = Cuenta::where('empresa_id',session('empresa'))
@@ -101,13 +102,18 @@ class RcompraController extends Controller
                 ->where('moneda','PEN')
                 ->pluck('nombre','id');
         $detraccions = Detraccion::orderBy('codigo')->get()->pluck('codigo_nombre','codigo');
+        $proveedores = [];
 
         $tipdoc = Categoria::where('modulo', 1)->orderBy('codigo')->pluck('nombre','codigo');
         $sexo = Categoria::where('modulo', 2)->pluck('nombre','codigo');
         $estciv = Categoria::where('modulo', 3)->pluck('nombre','codigo');
 
+        $rcompra = new Rcompra;
+        $rcompra->moneda = 'PEN';
+
         return view('admin.rcompras.create',
-            compact('moneda','tipocomprobante','tipooperacion','mediopago','cuenta','detraccions','tipdoc','sexo','estciv'));
+            compact('moneda','tipocomprobante','tipooperacion','mediopago','cuenta',
+                'detraccions','tipdoc','sexo','estciv','rcompra','proveedores'));
     }
 
     public function store(Request $request)
@@ -467,6 +473,26 @@ class RcompraController extends Controller
         }
     }
 
+    public function BusTcXML($fecha)
+    {
+        $context = stream_context_create(array(
+            'http' => array('ignore_errors' => true),
+        ));
+
+        // return $fecha;
+        $url = 'https://api.apis.net.pe/v1/tipo-cambio-sunat?fecha='.$fecha;
+
+        $api = file_get_contents($url,false,$context);
+
+        if($api == false){
+            return 0;
+        }else{
+            $api = str_replace('&Ntilde;','Ñ',$api);
+            $api = json_decode($api);
+            return $api->venta;
+        }
+    }
+
     public function detrcompra(Rcompra $rcompra)
     {
         $tipocomprobante = TipoComprobante::orderBy('codigo')->pluck('nombre','codigo');
@@ -530,83 +556,173 @@ class RcompraController extends Controller
     
     public function leerXML(Request $request)
     {
+        $empresa = Empresa::findOrFail(session('empresa'));
         $extencion = $request->file('xml')->getClientOriginalExtension();
         if ($extencion <> 'xml' && $extencion <> 'XML') {
-            return back()->with('message', 'Error: Solo se pueden importar archivos XML')->with('typealert', 'danger');
+            return back()->with('message', 'Error: Solo se pueden importar archivos XML.')->with('typealert', 'danger');
         }
-        $texto = $_FILES["xml"];// file($request->file('xml'));
-        // $xml_content = file_get_contents($texto['tmp_name']);
-        // $xml_content = str_replace("<SelfBilledInvoice","<",$xml_content);
-        // $xml_content = str_replace("</SelfBilledInvoice","</",$xml_content);
-        // $xml_content = str_replace("<cac:","<",$xml_content);
-        // $xml_content = str_replace("</cac:","</",$xml_content);
-        // $xml_content = str_replace("<cbc:","<",$xml_content);
-        // $xml_content = str_replace("</cbc:","</",$xml_content);
-        // $xml_content = simplexml_load_string(utf8_encode($xml_content));
-        // return $texto;
-        // $xml = simplexml_load_string($texto);
-        // return $xml_content;
-        // return $texto['tmp_name'];
-        // $xmlDataString = file_get_contents(public_path('/import/sample-course.xml'));
+        $texto = $_FILES["xml"];
+        $xmlp = file_get_contents($texto['tmp_name']);
+        $xmlp = str_replace('cbc:','',$xmlp);
+        $xmlp = str_replace('/cbc:','',$xmlp);
+        $xmlp = str_replace('cac:','',$xmlp);
+        $xmlp = str_replace('/cac:','',$xmlp);
+        $xmlp = str_replace('ext:','',$xmlp);
+        $xmlp = str_replace('/ext:','',$xmlp);
+        $xmlp = str_replace('ds:','',$xmlp);
+        $xmlp = str_replace('/ds:','',$xmlp);
+        $xml = str_replace('\n','',$xmlp);
+        $xml = str_replace('\t','',$xmlp);
+        // $cac = "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2";
+        // $cac = "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2";
+        $xml = simplexml_load_string($xmlp);
 
-        $xml = file_get_contents($texto['tmp_name']);
-        $xml = str_replace('\n','',$xml);
-        $xml = str_replace('\t','',$xml);
-        // $xml = str_replace('cac:','',$xml);
-        // $xml = str_replace('/cac:','',$xml);
-        // $xml = str_replace('cbc:','',$xml);
-        // $xml = str_replace('/cbc:','',$xml);
-        $cbc = "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2";
-        $cac = "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2";
-        $document = new DOMDocument('1.0', 'utf-8');
-        $document->loadXml($xml);
-        // $xpath = new DOMXPath($document);
-        $lineas = '';
-        $identificacion = $document->getElementsByTagName("SignatoryParty");
-        foreach($identificacion as $lin){
-            $lineas .= $lin->getElementsByTagName('PartyIdentification')->item(0)->nodeValue;
-            $lineas .= '-';
-            $lineas .= $lin->getElementsByTagName('PartyName')->item(0)->nodeValue;
+        $emisor = trim($xml->AccountingCustomerParty->Party->PartyIdentification->ID);
+        $numero = trim($xml->ID);
+        if ($emisor <> $empresa->ruc) {
+            return back()->with('message', 'Error: XML no fue emitido para esta Empresa.')->with('typealert', 'danger');
         }
-        $ruc = $document->getElementsByTagName("SignatoryParty")[0]->childNodes[1]->nodeValue;
-        $nombre = $document->getElementsByTagName("SignatoryParty")[0]->childNodes[3]->nodeValue;
-        return $ruc.'-'.$nombre;
-        // $p = $document->getElementsByTagNameNS($cac,"SignatoryParty")[0]->childNodes[0]->nodeValue;
-        // $p = $document->getElementsByTagName("InvoiceTypeCode")[0]->getAttribute['listAgencyName'];
-        // foreach($document->getElementsByTagName("SignatoryParty") as $lin) {
-        //     $lineas .= $lin->nodeName(0).'1-';
-        // }
-        return $lineas;
-        foreach($document->getElementsByTagName("SignatoryParty") as $lin){
-            // $lineas .= $lin->getAttribute('ID') . ' - ';
+        $numDocProveedor = trim($xml->AccountingSupplierParty->Party->PartyIdentification->ID);
+        // $numDocProveedor = '10804869161';
+        $proveedor = Cliente::where('numdoc',$numDocProveedor)->first();
+        if ($proveedor) {
+            $rc = Rcompra::where('cliente_id',$proveedor->id)
+                ->where('serie', serieNumero($numero, 1))
+                ->where('numero', serieNumero($numero, 2))
+                ->count();
+            if ($rc > 0) {
+                return back()->with('message', 'Error: Comprobante ya fue Ingresado.')->with('typealert', 'danger');
+            }
         }
-        $lineas .= $document->getElementsByTagName("PartyIdentification")[0]->childNodes['ID']->textContent.' ';
-        $lineas .= $document->getElementsByTagName("PartyIdentification")[1]->getattribute('schemeAgencyName');
-
-        // childNodes[0]->nodeName => Nombre del Nodo
-        // childNodes[0]->childNodes[0]->nodeValue => Valor del Nodo
-        // getElementsByTagName("PartyIdentification")[0]->getAttribute("nombre") => Valor Attributo
-
-        return $lineas;
-        $numero = $document->getElementsByTagNameNS($cbc, "ID")[0]->textContent;
-        $fecha = $document->getElementsByTagNameNS($cbc, "IssueDate")[0]->textContent;
-        $emisor = trim($document->getElementsByTagNameNS($cac, "PartyIdentification")[0]->textContent);
-        $proveedor = trim($document->getElementsByTagNameNS($cac, "PartyIdentification")[2]->textContent);
-        $factura = [
-            'fecha' => $fecha,
-            'numero' => $numero,
-            'emisor' => $emisor,
-            'proveedor' => $proveedor,
-        ];
-        return $factura;
-        return json_decode($document->getElementsByTagNameNS($cbc, "IssueDate")[0]);
-        // $reader = new \Sabre\Xml\Reader();
-        // $reader->xml($xml);
-        // $result = $reader->parse();
-
-
-   
-        // dd($phpArray);
+        if ($proveedor == null) {
+            $perm = new ClienteController();
+            if (strlen($numDocProveedor) == 8) {
+                $infProveedor = $perm->BusApiXML('1',$numDocProveedor);
+                if ($infProveedor) {
+                    $razsoc = $infProveedor->apellidoPaterno.' '.$infProveedor->apellidoMaterno.' '.$infProveedor->nombres;
+                    $proveedor = Cliente::create([
+                        'tipdoc_id' => 1,
+                        'numdoc' => $infProveedor->dni,
+                        'ape_pat' => $infProveedor->apellidoPaterno,
+                        'ape_mat' => $infProveedor->apellidoMaterno,
+                        'nombres' => $infProveedor->nombres,
+                        'razsoc' => $razsoc,
+                        'nomcomercial' => $razsoc,
+                    ]);
+                    $proveedores = [$proveedor->id => $proveedor->numdoc.'-'.$proveedor->razsoc];
+                } else {
+                    $proveedores = [];
+                }
+            }
+            if (strlen($numDocProveedor) == 11) {
+                $infProveedor = $perm->BusApiXML('6',$numDocProveedor);
+                if ($infProveedor) {
+                    $nomcomercial = $infProveedor->nombreComercial==null?$infProveedor->razonSocial:$infProveedor->nombreComercial;
+                    $proveedor = Cliente::create([
+                        'tipdoc_id' => 6,
+                        'numdoc' => $infProveedor->ruc,
+                        'razsoc' => $infProveedor->razonSocial,
+                        'nomcomercial' => $nomcomercial
+                    ]);
+                    $proveedores = [$proveedor->id => $proveedor->numdoc.'-'.$proveedor->razsoc];
+                } else {
+                    $proveedores = [];
+                }
+            }
+        } else {
+            $proveedores = [$proveedor->id => $proveedor->numdoc.'-'.$proveedor->razsoc];
+        }
+        if ($proveedor == null) {
+            return back()->with('message', 'Error: No se pudo crear el Proveedor, Ingréselo y vuelva a Importar XML.')->with('typealert', 'danger');
+        }
+        $td = trim($xml->InvoiceTypeCode);
+        $fecha = trim($xml->IssueDate);
+        $moneda = trim($xml->DocumentCurrencyCode);
+        $tc = $this->BusTcXML($fecha);
+        $afecto = floatval($xml->LegalMonetaryTotal->LineExtensionAmount);
+        $exonerado = 0;
+        $igv = 0;
+        $isc = 0;
+        $renta = 0;
+        $icbper = 0;
+        $total = floatval($xml->LegalMonetaryTotal->PayableAmount);
+        foreach ($xml->TaxTotal->TaxSubtotal as $det) {
+            if ($det->TaxCategory->TaxScheme->Name == 'IGV') {
+                if (floatval($det->TaxAmount) > 0.00) {
+                    $igv = floatval($det->TaxAmount);
+                }
+            }
+            if ($det->TaxCategory->TaxScheme->Name == 'ISC') {
+                if (floatval($det->TaxAmount) > 0.00) {
+                    $isc = floatval($det->TaxAmount);
+                }
+            }
+            if ($det->TaxCategory->TaxScheme->Name == 'IR') {
+                if (floatval($det->TaxAmount) > 0.00) {
+                    $renta = floatval($det->TaxAmount);
+                }
+            }
+            if ($det->TaxCategory->TaxScheme->Name == 'EXONERADO') {
+                if (floatval($det->TaxableAmount) > 0.00) {
+                    $exonerado = $exonerado + floatval($det->TaxableAmount);
+                }
+            }
+            if ($det->TaxCategory->TaxScheme->Name == 'INAFECTO') {
+                if (floatval($det->TaxableAmount) > 0.00) {
+                    $exonerado = $exonerado + floatval($det->TaxableAmount);
+                }
+            }
+            if ($det->TaxCategory->TaxScheme->Name == 'ICBPER') {
+                if (floatval($det->TaxAmount) > 0.00) {
+                    $icbper = floatval($det->TaxAmount);
+                }
+            }
+        }
+        $rcompra = new Rcompra;
+        $rcompra->empresa_id = session('empresa');
+        $rcompra->sede_id = session('sede');
+        $rcompra->periodo = session('periodo');
+        $rcompra->fpago = 2;
+        $rcompra->dias = 0;
+        $rcompra->vencimiento = $fecha;
+        $rcompra->tipocomprobante_codigo = $td;
+        if ($td == '04') {
+            $rcompra->tipocomprobante_tipo = 2;
+        } else {
+            $rcompra->tipocomprobante_tipo = 1;
+        }
+        $rcompra->fecha = $fecha;
+        $rcompra->tc = $tc;
+        $rcompra->moneda = $moneda;
+        $rcompra->serie = serieNumero($numero, 1);
+        $rcompra->numero = serieNumero($numero, 2);
+        if ($proveedor){
+            $rcompra->cliente_id = $proveedor->id;
+        }
+        if ($afecto > 0) {
+            $rcompra->afecto = $afecto;
+        }
+        if ($exonerado > 0) {
+            $rcompra->exonerado = $exonerado;
+        }
+        if ($igv > 0) {
+            $rcompra->igv = $igv;
+        }
+        if ($isc > 0) {
+            $rcompra->isc = $isc;
+        }
+        if ($renta > 0) {
+            $rcompra->renta = $renta;
+        }
+        if ($icbper > 0) {
+            $rcompra->icbper = $icbper;
+        }
+        if ($total > 0) {
+            $rcompra->total = $total;
+            $rcompra->saldo = $total;
+        }
+        $rcompra->save();
+        return redirect()->route('admin.rcompras.edit', $rcompra)->with('store', 'Comprobante Agregado, revise Forma de Pago');
 
     }
 }

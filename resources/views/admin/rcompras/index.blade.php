@@ -96,8 +96,9 @@
 					<div class="inside">
 						<div class="row">
 							<div class="col-md-6">
+								@can('admin.rcompras.create')
 								{!! Form::open(['route'=>'admin.rcompras.leerxml','files' => true,"enctype"=>"multipart/form-data"]) !!}
-								<table class="table table-hover table-sm table-bordered oculto">
+								<table class="table table-hover table-sm table-bordered">
 									<thead>
 										<tr>
 											<th colspan="2">Importar XML</th>
@@ -121,6 +122,7 @@
 									</div>
 								</div>
 								{!! Form::close() !!}
+								@endcan
 							</div>
 							<div class="col-md-2"></div>
 							<div class="col-md-4">

@@ -210,6 +210,29 @@ class ClienteController extends Controller
             }
         }
     }
+    public function BusApiXML($tipo, $numero)
+    {
+        $parametro = Empresa::findOrFail(session('empresa'));
+        $token = $parametro->apitoken;
+        $context = stream_context_create(array(
+            'http' => array('ignore_errors' => true),
+        ));
+        if($tipo=='1'){
+            $api = file_get_contents('https://dniruc.apisperu.com/api/v1/dni/'.$numero.'?token='.$token,false,$context);
+
+        }else{
+            $api = file_get_contents('https://dniruc.apisperu.com/api/v1/ruc/'.$numero.'?token='.$token,false,$context);
+        }
+        if($api == false){
+            return null;
+        }else{
+            $api = str_replace('&Ntilde;','Ñ',$api);
+            $api = json_decode($api);
+            return $api;
+            // return response()->json($api);
+            //return $api;
+        }
+    }
 
     public function repetido($numdoc)
     {

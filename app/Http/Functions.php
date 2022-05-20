@@ -82,6 +82,23 @@
 		}
 	}
 
+	function serieNumero($numero, $tipo = 1) {
+		$guion = strpos($numero, '-');
+		if ($tipo == 1) {
+			if ($guion === false) {
+				return '';
+			} else {
+				return substr($numero, 0, $guion);
+			}
+		} else {
+			if ($guion === false) {
+				return $numero;
+			} else {
+				return ltrim(substr($numero, $guion+1),'0');
+			}
+		}
+	}
+
 	function numeroOperacion($fecha){
 		return
 			substr($fecha, 8,2)

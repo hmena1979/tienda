@@ -15,7 +15,7 @@
 	<div class="container-fluid">
 		<div class="row"  id = 'agregarcomprobante'>
             <div class="col-md-12">
-                {!! Form::open(['route'=>'admin.rcompras.store']) !!}
+                {!! Form::model($rcompra,['route'=>'admin.rcompras.store']) !!}
 				<div class="panelprin shadow">
                     <div class="headercontent">
 						<h2 class="title"><i class="fas fa-cart-plus"></i> Registro de Compras | Servicios</h2>
@@ -25,6 +25,7 @@
                             </li>
 						</ul>
 					</div>
+                    {{-- {{ dd($comprobante) }} --}}
 					<div class="inside">
                         {!! Form::hidden('empresa_id', session('empresa')) !!}
                         {!! Form::hidden('sede_id', session('sede')) !!}
@@ -67,13 +68,14 @@
                                 <div class="row">
                                     <div class="col-md-3 form-group">
                                         {!! Form::label('moneda', 'Moneda:') !!}
-                                        {!! Form::select('moneda',$moneda,1,['class'=>'custom-select activo']) !!}
+                                        {!! Form::select('moneda',$moneda,null,['class'=>'custom-select activo']) !!}
                                     </div>
                                     <div class="col-md-3 form-group">
                                         {!! Form::label('tc', 'TC:') !!}
                                         {!! Form::text('tc', null, ['class'=>'form-control decimal activo','autocomplete'=>'off']) !!}
                                     </div>
                                     <div class="col-md-6 form-group">
+                                        {!! Form::text('tipocomprobante_tipo', null, ['class'=>'form-control','id'=>'tipocomprobante_tipo2','hidden']) !!}
                                         {!! Form::label('tipocomprobante_codigo', 'Tipo Comprobante:') !!}
                                         {!! Form::select('tipocomprobante_codigo',$tipocomprobante,null,['class'=>'custom-select activo','placeholder'=>'']) !!}
                                     </div>
@@ -94,7 +96,7 @@
                                 {!! Form::label('cliente_id', 'Proveedor:') !!}
                                 <div class="row no-gutters">
                                     <div class="col-md-10">
-                                        {!! Form::select('cliente_id',[],null,['class'=>'custom-select activo','id'=>'cliente_id','placeholder'=>'']) !!}
+                                        {!! Form::select('cliente_id',$proveedores,null,['class'=>'custom-select activo','id'=>'cliente_id','placeholder'=>'']) !!}
                                     </div>
                                     <div class="col-md-2">
                                         <button class="btn btn-block btn-convertir" type="button" id="addcliente" title="Agregar Cliente"><i class="fas fa-user-plus"></i></button>
@@ -118,7 +120,7 @@
                                         {!! Form::text('impuesto', null, ['class'=>'form-control decimal activo','autocomplete'=>'off']) !!}
                                     </div>
                                     <div class="col-md-3 form-group">
-                                        {!! Form::label('renta', 'Renta('.session('renta').'%)') !!}
+                                        {!! Form::label('renta', 'Renta') !!}
                                         {!! Form::text('renta', null, ['class'=>'form-control decimal activo','autocomplete'=>'off']) !!}
                                     </div>
                                 </div>
@@ -371,6 +373,42 @@
             $('.activo').prop('disabled',false);
         });
 
+        if($('#tipocomprobante_tipo2').val() == 1){
+            $('#afecto').prop('disabled',false);
+            $('#exonerado').prop('disabled',false);
+            $('#impuesto').prop('disabled',false);
+            $('#renta').prop('disabled',true);
+            $('#isc').prop('disabled',false);
+            $('#otros').prop('disabled',false);
+            $('#icbper').prop('disabled',false);
+            $('#tipooperacion_id').prop('disabled',false);
+            $('#detraccion').prop('disabled',false);
+        }else if($('#tipocomprobante_tipo2').val() == 2){
+            if ($('#tipocomprobante_codigo').val() == '04') {
+                $('#afecto').prop('disabled',false);
+            } else {
+                $('#afecto').prop('disabled',true);
+            }
+            $('#exonerado').prop('disabled',false);
+            $('#impuesto').prop('disabled',true);
+            $('#renta').prop('disabled',false);
+            $('#isc').prop('disabled',true);
+            $('#otros').prop('disabled',true);
+            $('#icbper').prop('disabled',true);
+            $('#tipooperacion_id').prop('disabled',true);
+            $('#detraccion').prop('disabled',true);
+        }else{
+            $('#afecto').prop('disabled',true);
+            $('#exonerado').prop('disabled',true);
+            $('#impuesto').prop('disabled',true);
+            $('#renta').prop('disabled',true);
+            $('#isc').prop('disabled',true);
+            $('#otros').prop('disabled',false);
+            $('#icbper').prop('disabled',true);
+            $('#tipooperacion_id').prop('disabled',true);
+            $('#detraccion').prop('disabled',true);
+        }
+
         $('#fpago').change(function(){
             if(this.value == 1){
                 $('#dias').prop('disabled',true);
@@ -436,7 +474,7 @@
         });
 
         $('#tipocomprobante_codigo').change(function(){
-            // alert(this.value);
+            var td = this.value;
             if(this.value == '07' || this.value == '08'){
                 $('.referencia').show();
             }else{
@@ -467,14 +505,19 @@
                         $('#detraccion').prop('disabled',false);
                         break;
                     case '2':
+                        if (td == '04') {
+                            $('#afecto').prop('disabled',false);
+                            $('#tipooperacion_id').prop('disabled',false);
+                        } else {
+                        }
                         $('#afecto').prop('disabled',true);
+                        $('#tipooperacion_id').prop('disabled',true);
                         $('#exonerado').prop('disabled',false);
                         $('#impuesto').prop('disabled',true);
                         $('#renta').prop('disabled',false);
                         $('#isc').prop('disabled',true);
                         $('#otros').prop('disabled',true);
                         $('#icbper').prop('disabled',true);
-                        $('#tipooperacion_id').prop('disabled',true);
                         $('#detraccion').prop('disabled',true);
                         break;
                     case '3':
@@ -502,7 +545,12 @@
 
         $('#afecto').blur(function(){
             var igv = {{ session('igv') }} / 100;
-            $('#impuesto').val(Redondea(igv * this.value,2));
+            var renta = {{ session('rentalq') }} / 100;
+            if ($('#tipocomprobante_codigo').val() == '04') {
+                $('#renta').val(Redondea(renta * this.value,2));
+            } else {
+                $('#impuesto').val(Redondea(igv * this.value,2));
+            }
             suma();
         });
 
