@@ -225,6 +225,44 @@ class MasivoController extends Controller
         }
     }
 
+    public function revertir(Masivo $masivo)
+    {
+        if ($masivo->estado == 2) {
+            $masivo->update(['estado' => 1]);
+        } else {
+            foreach($masivo->detmasivos as $det) {
+                if($masivo->cuenta->moneda == 'PEN'){
+                    $montotal = $det->montopen;
+                }else{
+                    $montotal = $det->montousd;
+                }
+                $tesoreria = Tesoreria::where('detmasivo_id',$det->id)->first();
+                Dettesor::where('tesoreria_id',$tesoreria->id)->delete();
+                Tesoreria::where('id',$tesoreria->id)->delete();
+
+                $r = Rcompra::find($det->rcompra_id);
+                $pagado = $r->pagado - $montotal;
+                $saldo = $r->saldo + $montotal;
+                $tmasivo = $r->total_masivo + $montotal;
+                $masrc = 1;
+                if ($saldo > 0) {
+                    $r->update([
+                        'pagado' => $pagado,
+                        'saldo' => $saldo,
+                        'total_masivo' => $tmasivo,
+                        'masivo' => $masrc,
+                        'cancelacion' => null,
+                        'mediopago' => null,
+                        'cuenta_id' => null,
+                    ]);
+                }
+            }
+            $masivo->update(['estado' => 1]);
+        }
+        return true;
+        // return redirect()->route('admin.masivos.edit',$masivo)->with('update', 'Masivo revertido, puede modificar detalle de pagos');
+    }
+
     public function generar(Masivo $masivo)
     {
         $masivo->update(['estado' => 3]);
@@ -283,6 +321,26 @@ class MasivoController extends Controller
         //---------------------------------------------------------------------------------------
         
         return true;
+    }
+
+    public function actualiza()
+    {
+        $detmasivos = Detmasivo::get();
+        foreach ($detmasivos as $det) {
+            $detTesoreria = Dettesor::where('dettesorable_id', $det->rcompra_id)
+                ->where('dettesorable_type','App\Models\Rcompra')->first();
+            if ($detTesoreria) {
+                Tesoreria::where('id', $detTesoreria->tesoreria_id)
+                    ->update([
+                        'detmasivo_id' => $det->id
+                    ]);
+            }
+            Rcompra::where('id',$det->rcompra_id)->update([
+                'cancelacion' => $det->masivo->fecha,
+                'mediopago' => '001',
+                'cuenta_id' => $det->masivo->cuenta_id,
+            ]);
+        }
     }
     
     public function destroyitem(Detmasivo $detmasivo)

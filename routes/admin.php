@@ -179,9 +179,11 @@ Route::post('/masivos/change', [MasivoController::class,'change'])->name('admin.
 Route::get('/masivos/{masivo}/tablaitem', [MasivoController::class,'tablaitem'])->name('admin.masivos.tablaitem');
 Route::get('/masivos/{masivo}/pendientes', [MasivoController::class,'pendientes'])->name('admin.masivos.pendientes');
 Route::post('/masivos/procesa', [MasivoController::class,'procesa'])->name('admin.masivos.procesa');
+Route::get('/masivos/actualiza', [MasivoController::class,'actualiza'])->name('admin.masivos.actualiza');
 Route::get('/masivos/{masivo}/autorizar', [MasivoController::class,'autorizar'])->name('admin.masivos.autorizar');
 Route::get('/masivos/{masivo}/generar', [MasivoController::class,'generar'])->name('admin.masivos.generar');
 Route::get('/masivos/{masivo}/download_macro', [MasivoController::class,'download_macro'])->name('admin.masivos.download_macro');
+Route::get('/masivos/{masivo}/revertir', [MasivoController::class,'revertir'])->name('admin.masivos.revertir');
 Route::get('/masivos/{detmasivo}/destroyitem', [MasivoController::class,'destroyitem'])->name('admin.masivos.destroyitem');
 Route::resource('masivos', MasivoController::class)->names('admin.masivos');
 Route::get('/masivos/{periodo?}', [MasivoController::class,'index'])->name('admin.masivos.index');

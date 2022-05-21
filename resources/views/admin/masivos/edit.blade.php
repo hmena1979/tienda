@@ -39,6 +39,14 @@
                                 <a class="btn btn-convertir mt-2" href="{{ route('admin.masivos.download_macro',$masivo) }}">Descargar</a>
                             </li>
                             @endif
+                            @if ($masivo->estado <> 1)
+                            {{-- <li>
+                                <a class="btn btn-convertir mt-2" href="{{ route('admin.masivos.revertir',$masivo) }}">Revertir</a>
+                            </li> --}}
+                            <li>
+                                <button type="button" id='revertir' class="btn btn-convertir mt-2">Revertir</button>
+                            </li>
+                            @endif
                             @endcan
                             <li><a class="btn btn-convertir mt-2" href="{{ route('admin.pdf.masivos',$masivo) }}" target="_blank" datatoggle="tooltip" data-placement="top" title="Imprimir"><i class="fas fa-print"></i></a></li>
 						</ul>
@@ -145,6 +153,27 @@
                 // alert(response);
                 location.reload();
             });
+        });
+
+        $('#revertir').click(function(){
+            var id = $('#id').val();
+            Swal.fire({
+            title: 'Está Seguro que desea Revertir el Pago Masivo?',
+            text: "",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '¡Si, revertir!',
+            cancelButtonText: 'Cancelar'
+            }).then((result) => {
+            if (result.value) {
+                $.get(url_global+"/admin/masivos/"+id+"/revertir/",function(response){
+                    location.reload();
+                });
+            }
+            })
+            
         });
 
     });

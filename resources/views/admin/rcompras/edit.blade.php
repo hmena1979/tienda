@@ -123,6 +123,7 @@
                             <div class="col-md-2 form-group">
                                 {!! Form::label('total', 'Total:') !!}
                                 {!! Form::text('total', null, ['class'=>'form-control activo','autocomplete'=>'off','disabled']) !!}
+                                {{-- {!! Form::hidden('saldo', null, ['id'=>'saldo']) !!} --}}
                             </div>
                         </div>
                         <div class="row">
@@ -232,6 +233,10 @@
     }else{
         $('#tc').prop('disabled',false);
     }
+
+    // if($('#saldo').val() <= 0) {
+    //     $('.activo').prop('disabled',true);
+    // }
 
     if($('#tipocomprobante_codigo').val() == '07' || $('#tipocomprobante_codigo').val() == '08'){
         // alert($('#tipocomprobante_codigo').val())

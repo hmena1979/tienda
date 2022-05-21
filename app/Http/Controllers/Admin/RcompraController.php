@@ -321,12 +321,14 @@ class RcompraController extends Controller
                 $peringreso = null;
             }
             $data = $request->all();
+            // $data = $request->except('saldo');
             $data = array_merge($data,[
                 'peringreso' => $peringreso,
                 'tipocomprobante_tipo' => $tipcomp,
                 'pagado' => $pagado,
                 'saldo' => $saldo
             ]);
+            // return $data;
             $rcompra->update($data);
 
             // Elimina Registro en Tesoreria
