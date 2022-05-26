@@ -5,7 +5,10 @@
 {{-- @section('content_header')
     <h1>Dashboard</h1>
 @stop --}}
-
+@section('css')
+@yield('style')
+<link rel="stylesheet" href="{{ url('/static/css/admin.css?v='.time()) }}">
+@stop
 @section('content')
 
     {{-- Content Wrapper --}}
@@ -50,10 +53,6 @@
         @yield('contenido')
         {{-- @endsection --}}
     {{-- </div> --}}
-@stop
-
-@section('css')
-    <link rel="stylesheet" href="{{ url('/static/css/admin.css?v='.time()) }}">
 @stop
 
 @section('js')

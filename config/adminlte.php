@@ -292,6 +292,15 @@ return [
                                 ,'admin/materiaprimas/*/edit'],
                 ],
                 [
+                    'text' => 'Cotizaciones',
+                    'icon'    => 'fas fa-file-alt',
+                    'icon_color' => 'cyan',
+                    'route'  => 'admin.cotizacions.index',
+                    'can'  => 'admin.cotizacions.index',
+                    'active' => ['admin/cotizacions','admin/cotizacions/*','admin/cotizacions/create'
+                                ,'admin/cotizacions/*/edit'],
+                ],
+                [
                     'text' => 'Reportes',
                     'icon'    => 'fas fa-print',
                     'icon_color' => 'cyan',
@@ -338,6 +347,15 @@ return [
                     'icon'    => 'fas fa-window-restore',
                     'icon_color' => 'cyan',
                     'url'  => '#',
+                ],              
+                [
+                    'text' => 'Pedidos',
+                    'icon'    => 'fas fa-file-archive',
+                    'icon_color' => 'cyan',
+                    'route'  => 'admin.pedidos.index',
+                    'can'  => 'admin.pedidos.index',
+                    'active' => ['admin/pedidos','admin/pedidos/*','admin/pedidos/create'
+                                ,'admin/pedidos/*/edit'],
                 ],              
                 [
                     'text' => 'Reportes',

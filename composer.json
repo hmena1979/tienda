@@ -13,6 +13,7 @@
         "greenter/xml": "^4.3",
         "greenter/xmldsig": "^5.0",
         "guzzlehttp/guzzle": "^7.3",
+        "intervention/image": "^2.7",
         "jeroennoten/laravel-adminlte": "^3.5",
         "laravel/framework": "^8.12",
         "laravel/tinker": "^2.5",

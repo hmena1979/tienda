@@ -27,4 +27,8 @@ class Detdestino extends Model
     public function rventa(){
         return $this->hasOne('App\Models\Rventa');
     }
+
+    public function pedido(){
+        return $this->hasOne('App\Models\Pedido');
+    }
 }

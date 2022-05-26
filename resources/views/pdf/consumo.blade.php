@@ -49,10 +49,10 @@
                     <td width="42%">: {{ trim($rventa->detdestino->nombre) }}</td>
                 </tr>
                 <tr>
-                    <td class="negrita">C.COSTO</td>
-                    <td>: {{ $rventa->ccosto->nombre }}</td>
                     <td class="negrita">FECHA</td>
                     <td>: {{date('d-m-Y',strtotime($rventa->fecha))}}</td>
+                    <td class="negrita"></td>
+                    <td></td>
                 </tr>
             </table>
         </div>
@@ -86,12 +86,26 @@
                         <table class="letras">
                             <tr>
                                 <td class="borde-inferior" colspan="2">
-                                    <span class="negrita">ENTREGADO POR:</span> {{ $rventa->detalle }}
+                                    <span class="negrita">RECIBIDO POR:</span> {{ $rventa->detalle }}
                                 </td>
                             </tr>
                         </table>
                     </td>
                 </tr>
+            </table>
+        </div>
+        <div class="detalle mtop5">
+            <table>
+                <tbody>
+                    <tr>
+                        <td width='50%' class="altura70"></td>
+                        <td width='50%' class="altura70"></td>
+                    </tr>
+                    <tr>
+                        <td class="negrita">RECIBÍ CONFORME</td>
+                        <td class="negrita">ENTREGADO POR</td>
+                    </tr>
+                </tbody>
             </table>
         </div>
 	</body>

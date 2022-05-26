@@ -1,12 +1,16 @@
 {{-- @extends('adminlte::page') --}}
 @extends('admin.master')
 @section('title','Parametros')
-@php
+{{-- @php
 	$aleatorio = '';
-	for ($i = 1; $i <= 10; $i++) {
-		$aleatorio .= rand(1,80) . ' - ';
+	$valores = [];
+	for ($i = 1; $i <= 6; $i++) {
+		array_push ( $valores , rand(1,40) );
 	}
-@endphp
+	asort($valores);
+	var_export($valores);
+@endphp --}}
+	{{-- {{ dd($valores) }} --}}
 
 @section('breadcrumb')
 	<li class="breadcrumb-item">
@@ -57,7 +61,7 @@
 					</div>
                     
 					<div class="inside">
-						{{$aleatorio;}}
+						{{-- {{$aleatorio;}} --}}
 						<table id= "grid" class="table table-hover table-sm">
 							<thead>
 								<tr>

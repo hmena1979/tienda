@@ -16,6 +16,9 @@ colorsec = #343A40
 	padding 0px
 	font-size 15px
 
+.negro
+	color black
+	
 .rojo
 	color red
 
@@ -241,9 +244,6 @@ label
 .oculto
 	display none
 
-.rojo
-	color red
-
 .borde-derecho
 	border-right 2px solid colorprin
 
@@ -252,6 +252,13 @@ label
 
 .cuadro
     border 1px solid black !important
+
+.informacion-producto
+	height 37px
+	background-color colorprin !important
+	color #fff !important
+	&:hover
+		background-color colorsec !important
 
 .btn-agregar
 	margin-top -1px
@@ -267,6 +274,15 @@ label
 	height 37px
 	// line-height: 15px
 	background-color colorprin !important
+	color #fff !important
+	&:hover
+		background-color colorsec !important
+
+.btn-rechazar
+	// margin-top -1px
+	height 37px
+	// line-height: 15px
+	background-color red !important
 	color #fff !important
 	&:hover
 		background-color colorsec !important
@@ -338,6 +354,12 @@ label
 	color colorprin !important
 	&:hover
 		color colorsec !important	
+
+.txt-convertir-conmarco
+	border 1px solid colorprin
+	padding 8px
+	margin-left 8px
+	margin-right -8px
 
 .form-group
 	margin-bottom 0.3rem

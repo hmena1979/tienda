@@ -205,7 +205,6 @@
 				'capacidad' : $('#capacidad').val(),
 			};
 			var envio = JSON.stringify(det);
-            alert(envio);
             $.get(url_global+"/admin/transportistas/"+envio+"/aedetcamara/",function(response){
                 if (response == 1) {
                     veritemscamara();

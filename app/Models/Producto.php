@@ -48,4 +48,14 @@ class Producto extends Model
     {
         return $this->hasOne('App\Models\Materiaprima');
     }
+
+    public function detcotizacion()
+    {
+        return $this->hasOne('App\Models\Detcotizacion');
+    }
+
+    public function detpedido()
+    {
+        return $this->hasOne('App\Models\Detpedido');
+    }
 }

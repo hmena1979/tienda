@@ -49,9 +49,16 @@ return [
             'visibility' => 'public',
         ],
 
-        'masivos' => [
+        'cotizaciones' => [
             'driver' => 'local',
-            'root' => public_path().'/masivos',
+            'root' => public_path().'/cotizaciones',
+            //'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+        ],
+
+        'products' => [
+            'driver' => 'local',
+            'root' => public_path().'/products',
             //'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
         ],

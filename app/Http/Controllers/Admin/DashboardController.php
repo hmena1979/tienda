@@ -201,6 +201,7 @@ class DashboardController extends Controller
 		// $this->agregar_permiso('7','PRODUCTOS','admin.productos.edit','Puede editar Productos');
 		// $this->agregar_permiso('7','PRODUCTOS','admin.productos.destroy','Puede eliminar Productos');
 		// $this->agregar_permiso('7','PRODUCTOS','admin.productos.price','Puede Asignar Precio Productos');
+		$this->agregar_permiso('7','PRODUCTOS','admin.productos.stock','Puede Ver Stock de Productos');
 		
 		// $this->agregar_permiso('8','TIPO DE COMPROBANTES','admin.tipocomprobantes.index','Puede ver listado Tipo de Comprobantes');
 		// $this->agregar_permiso('8','TIPO DE COMPROBANTES','admin.tipocomprobantes.create','Puede agregar Tipo de Comprobantes');
@@ -307,6 +308,22 @@ class DashboardController extends Controller
 		// $this->agregar_permiso('27','MUELLES','admin.muelles.create','Puede agregar Muelles');
 		// $this->agregar_permiso('27','MUELLES','admin.muelles.edit','Puede editar Muelles');
 		// $this->agregar_permiso('27','MUELLES','admin.muelles.destroy','Puede eliminar Muelles');
+
+		$this->agregar_permiso('28','COTIZACIONES','admin.cotizacions.index','Puede ver listado Cotizaciones');
+		$this->agregar_permiso('28','COTIZACIONES','admin.cotizacions.create','Puede agregar Cotizaciones');
+		$this->agregar_permiso('28','COTIZACIONES','admin.cotizacions.edit','Puede editar Cotizaciones');
+		$this->agregar_permiso('28','COTIZACIONES','admin.cotizacions.destroy','Puede eliminar Cotizaciones');
+
+		$this->agregar_permiso('29','ORDENES DE COMPRA','admin.ordcompras.index','Puede ver listado Ordenes de Compra');
+		$this->agregar_permiso('29','ORDENES DE COMPRA','admin.ordcompras.create','Puede agregar Ordenes de Compra');
+		$this->agregar_permiso('29','ORDENES DE COMPRA','admin.ordcompras.edit','Puede editar Ordenes de Compra');
+		$this->agregar_permiso('29','ORDENES DE COMPRA','admin.ordcompras.destroy','Puede eliminar Ordenes de Compra');
+
+		$this->agregar_permiso('30','PEDIDOS','admin.pedidos.index','Puede ver listado Pedidos');
+		$this->agregar_permiso('30','PEDIDOS','admin.pedidos.create','Puede agregar Pedidos');
+		$this->agregar_permiso('30','PEDIDOS','admin.pedidos.edit','Puede editar Pedidos');
+		$this->agregar_permiso('30','PEDIDOS','admin.pedidos.destroy','Puede eliminar Pedidos');
+		$this->agregar_permiso('30','PEDIDOS','admin.pedidos.procesar','Puede Procesar Pedidos');
 
 		// return redirect()->route('admin.inicio')->with('update', 'Permisos Agregados');
 		// return redirect()->route('admin.inicio')->with('update', 'Registro Actualizado');		

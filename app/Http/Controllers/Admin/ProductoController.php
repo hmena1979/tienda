@@ -9,7 +9,9 @@ use App\Models\Detingreso;
 use App\Models\Detproducto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+Use Illuminate\Support\Facades\Config;
 
 use App\Models\Producto;
 use App\Models\Rcompra;
@@ -19,6 +21,7 @@ use App\Models\TipoProducto;
 use App\Models\Tmpdetsalida;
 use App\Models\Umedida;
 use App\Models\Vencimiento;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class ProductoController extends Controller
 {
@@ -96,7 +99,7 @@ class ProductoController extends Controller
                 $codigo = $grupo.str_pad(intval(substr($ultimo->codigo,2,8))+1,8,'0',STR_PAD_LEFT);
             }
             $data = $request->all();
-            $data = array_merge($data,['codigo'=>$codigo]);
+            $data = array_merge($data,['codigo'=>$codigo,'stock'=>0.00]);
             Producto::create($data);
             return redirect()->route('admin.productos.index')->with('store', 'Producto | Servicio Agregado');
         }
@@ -150,6 +153,19 @@ class ProductoController extends Controller
     	if($validator->fails()){
             return back()->withErrors($validator)->with('message', 'Se ha producido un error')->with('typealert', 'danger')->withinput();
         }else{
+            if($request->hasFile('imagen')){
+                $ruta = Config::get('filesystems.disks.products.root');
+                $extencion = trim($request->file('imagen')->getClientOriginalExtension());
+                $img = Image::make($request->file('imagen'));
+                $img->resize(700, null, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+                Storage::disk('products')->makeDirectory($producto->id);
+                $archivo = '/'.$producto->id.'/'.$producto->id.'.'.$extencion;
+                $img->save($ruta.$archivo);
+            } else {
+                $archivo = $producto->imagen;
+            }
             $producto->update([
                 'tipoproducto_id' => $request->input('tipoproducto_id'),
                 'nombre' => $request->input('nombre'),
@@ -166,6 +182,8 @@ class ProductoController extends Controller
                 'preventa_pen' => $request->input('preventa_pen'),
                 'preventa_usd' => $request->input('preventa_usd'),
                 'codigobarra' => $request->input('codigobarra'),
+                'detallada' => $request->input('detallada'),
+                'imagen' => $archivo,
                 ]);
             return redirect()->route('admin.productos.index')->with('update', 'Producto | Servicio Actualizado');
         }
@@ -299,6 +317,36 @@ class ProductoController extends Controller
                 // if ($producto->color_id <> 1){
                 //     $nombre = $nombre . ' '.$color[$producto->color_id];
                 // }
+
+                $respuesta[] = [
+                    'id' => $producto->id,
+                    'text' => $nombre,
+                ];            
+            }
+            return $respuesta;
+        }
+    }
+
+    public function seleccionadot(Request $request)
+    {
+        if($request->ajax()){
+            $term = trim($request->q);
+            if (empty($term)) {
+                return response()->json([]);
+            }
+            $umedida = Umedida::orderBy('nombre')->pluck('nombre','codigo');
+
+            $productos = Producto::select('id','nombre','productos.umedida_id')
+                ->where('nombre','like','%'.$term.'%')
+                ->where('empresa_id',session('empresa'))
+                ->where('sede_id',session('sede'))
+                ->orderBy('nombre')
+                ->limit(10)
+                ->get();
+
+            $respuesta = array();
+            foreach($productos as $producto){
+                $nombre = $producto->nombre . ' X ' .$umedida[$producto->umedida_id];
 
                 $respuesta[] = [
                     'id' => $producto->id,

@@ -43,6 +43,11 @@ class Cliente extends Model
     	return $this->hasOne('App\Models\Guia');
     }
 
+    public function cotizacion()
+    {
+    	return $this->hasOne('App\Models\Cotizacion');
+    }
+
     public function transferencias()
     {
     	return $this->hasMany('App\Models\Transferencia');

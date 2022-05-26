@@ -95,7 +95,7 @@ class ConsumoController extends Controller
             'tc' => $request->input('tc'),
             'cliente_id' => 2,
             'detdestino_id' => $request->input('detdestino_id'),
-            'ccosto_id' => $request->input('ccosto_id'),
+            // 'ccosto_id' => $request->input('ccosto_id'),
             'detalle' => $request->input('detalle'),
         ];
 

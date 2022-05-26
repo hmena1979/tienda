@@ -26,7 +26,7 @@ class StoreConsumoRequest extends FormRequest
         return [
             'destino_id' => 'required',
             'detdestino_id' => 'required',
-            'ccosto_id' => 'required',
+            // 'ccosto_id' => 'required',
             'fecha' => 'required',
             'tc' => 'required',
             'detalle' => 'required',

@@ -129,14 +129,16 @@
 								<table class="table table-hover table-sm table-bordered">
 									<thead>
 										<tr>
-											<th class="text-center" width='50%'>IGV S/</th>
-											<th class="text-center" width='50%'>Renta S/</th>
+											<th class="text-center" width='33%'>IGV S/</th>
+											<th class="text-center" width='33%'>Renta 4ta S/</th>
+											<th class="text-center" width='33%'>Renta Liq S/</th>
 										</tr>
 									</thead>
 									<tbody>
 										<tr>
 											<td class="text-center">{{ number_format($impuesto,2) }}</td>
 											<td class="text-center">{{ number_format($renta,2) }}</td>
+											<td class="text-center">{{ number_format($rentalq,2) }}</td>
 										</tr>
 									</tbody>
 								</table>

@@ -11,7 +11,7 @@
 
 @section('contenido')
 	<div class="container-fluid">
-		{!! Form::model($producto,['route'=>['admin.productos.update',$producto],'method'=>'put']) !!}
+		{!! Form::model($producto,['route'=>['admin.productos.update',$producto],'method'=>'put', 'files' => 'true']) !!}
 		<div class="row">
 			<div class="col-md-12">
 				<div class="panelprin shadow">
@@ -78,6 +78,49 @@
 						
 					</div>				
 				</div>
+			</div>
+		</div>
+		<div class="row mtop16">
+			<div class="col-md-10 d-flex">
+				<div class="panelprin shadow">
+					<div class="headercontent">
+						<h2 class="title"><i class="fas fa-window-restore"></i> Detalle de Producto</h2>
+					</div>
+					<div class="inside">
+						<div class="row">
+							<div class="col-md-12 form-group">
+								{!! Form::label('detallada', 'Descripción Detallada:') !!}
+								{!! Form::textarea('detallada',null,['class'=>'form-control mayuscula', 'id'=>'detallada']) !!}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-2 d-flex">
+				<div class="panelprin shadow">
+					<div class="inside">
+                        <div class="row justify-content-center">
+                            @if ($producto->imagen)
+							<a href="{{ url('products/'.$producto->imagen) }}" data-fancybox="gallery">
+								<img id='imgimagen' class="img img-fluid" src="{{ url('products/'.$producto->imagen) }}" alt="">
+							</a>
+                            @else
+							{{-- <i class="fas fa-window-restore"></i> --}}
+                            <img id='imgimagen' class="img img-fluid" src="{{ url('/static/images/sinproducto.jpg') }}" alt="">
+                            @endif
+                        </div>
+						<div class="row">
+							<div class="col-md-4 oculto">
+                                {!! Form::file('imagen', ['id' => 'imagen', 'accept'=>'image/*']) !!}
+                            </div>
+						</div>
+                        <div class="row mt-3 text-center">
+                            <div class="col-md-12">
+                                <a class="btn btn-convertir" href="#" id="btnimagen">Cambiar Imagen</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 			</div>
 		</div>
 		@can('admin.productos.price')
@@ -273,10 +316,36 @@
 		{!! Form::close() !!}
 	</div>
 @endsection
-{{-- @section('css')
-    <link rel="stylesheet" href="{{ url('/static/css/admin.css?v='.time()) }}">
-@stop --}}
+@section('style')
+    <link href="{{ asset('css/jquery.fancybox.min.css') }}" rel="stylesheet">
+@stop
 @section('script')
+<script src="{{ asset('/static/js/ckeditor5.js') }}"></script>
+<script src="{{ asset('/js/jquery.fancybox.min.js') }}"></script>
+<script>
+	ClassicEditor
+        .create( document.querySelector( '#detallada' ) )
+        .catch( error => {
+            console.error( error );
+        } );
+</script>
+<script>
+    $(document).ready(function(){
+        $('#btnimagen').click(function(){
+            $('#imagen').click();
+        });
+    });
+    document.getElementById('imagen').addEventListener('change',cambiarImagen);
+
+    function cambiarImagen(event){
+        var file = event.target.files[0];
+        var reader = new FileReader();
+        reader.onload = (event) => {
+            document.getElementById('imgimagen').setAttribute('src',event.target.result);
+        }
+        reader.readAsDataURL(file);
+    }
+</script>
 <script>
     // $('.alertmensaje').slideDown();
     $(document).ready(function(){

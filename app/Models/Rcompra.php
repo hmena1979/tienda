@@ -79,10 +79,20 @@ class Rcompra extends Model
 
     public function getRentaSolAttribute()
     {
-        if($this->moneda == 'PEN'){
+        if($this->moneda == 'PEN' && $this->tipocomprobante_codigo == '02'){
             return $this->renta;
         }
-        if($this->moneda == 'USD'){
+        if($this->moneda == 'USD' && $this->tipocomprobante_codigo == '02'){
+            return $this->renta * $this->tc;
+        }
+    }
+
+    public function getRentaLqSolAttribute()
+    {
+        if($this->moneda == 'PEN' && $this->tipocomprobante_codigo == '04'){
+            return $this->renta;
+        }
+        if($this->moneda == 'USD' && $this->tipocomprobante_codigo == '04'){
             return $this->renta * $this->tc;
         }
     }

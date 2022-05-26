@@ -63,8 +63,14 @@ class RcompraController extends Controller
             ->where('sede_id',session('sede'))
             ->get()
             ->sum('rentasol'),2);
+
+        $rentalq = round(Rcompra::where('periodo',$periodo)
+            ->where('empresa_id',session('empresa'))
+            ->where('sede_id',session('sede'))
+            ->get()
+            ->sum('rentalqsol'),2);
             
-        return view('admin.rcompras.index', compact('rcompras','periodo','impuesto','renta'));
+        return view('admin.rcompras.index', compact('rcompras','periodo','impuesto','renta','rentalq'));
     }
 
     public function change(Request $request)
@@ -87,8 +93,14 @@ class RcompraController extends Controller
             ->where('sede_id',session('sede'))
             ->get()
             ->sum('rentasol'),2);
+        
+        $rentalq = round(Rcompra::where('periodo',$periodo)
+            ->where('empresa_id',session('empresa'))
+            ->where('sede_id',session('sede'))
+            ->get()
+            ->sum('rentalqsol'),2);
 
-        return view('admin.rcompras.index', compact('rcompras','periodo','impuesto','renta'));
+        return view('admin.rcompras.index', compact('rcompras','periodo','impuesto','renta','rentalq'));
     }
 
     public function create()
@@ -449,7 +461,7 @@ class RcompraController extends Controller
         //Elimina Registro de Compras
         $rcompra->delete();
 
-        return redirect()->route('admin.rcompras.index')->with('destroy', 'Registro II Eliminado');
+        return redirect()->route('admin.rcompras.index')->with('destroy', 'Registro Eliminado');
     }
 
     public function BusTc(Request $request, $fecha)

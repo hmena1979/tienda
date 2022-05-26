@@ -46,7 +46,7 @@
 									<th width="10%">Número</th>
 									<th width="25%">Destino</th>
 									<th width="25%">Detalle</th>
-									<th width="25%">C.Costo</th>
+									{{-- <th width="25%">C.Costo</th> --}}
 									<th width="5%"></th>
 								</tr>
 							</thead>
@@ -59,7 +59,7 @@
 									<td>{{ numDoc($rventa->serie,$rventa->numero) }}</td>
 									<td>{{ trim($rventa->detdestino->destino->nombre) }}</td>
 									<td>{{ trim($rventa->detdestino->nombre) }}</td>
-									<td>{{ trim($rventa->ccosto->nombre) }}</td>
+									{{-- <td>{{ trim($rventa->ccosto->nombre) }}</td> --}}
 									<td class="text-center">
 										<div class="opts">
 											<a class="" href="{{ route('admin.pdf.facturacion',$rventa) }}" target="_blank" datatoggle="tooltip" data-placement="top" title="Imprimir"><i class="fas fa-print"></i></a>

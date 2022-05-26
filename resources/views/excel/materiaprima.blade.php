@@ -26,6 +26,10 @@
                     <th class="text-center"><strong>Acopiador</strong></th>
                     <th class="text-center"><strong>Marca</strong></th>
                     <th class="text-center"><strong>Placa</strong></th>
+                    <th class="text-center"><strong>Embarcación<br>Nombre</strong></th>
+                    <th class="text-center"><strong>Embarcación<br>Matrícula</strong></th>
+                    <th class="text-center"><strong>Embarcación<br>Protocolo</strong></th>
+                    <th class="text-center"><strong>Embarcación<br>Capacidad</strong></th>
                     <th class="text-center"><strong>Lote</strong></th>
                     <th class="text-center"><strong>Cajas <br> Declaradas</strong></th>
                     <th class="text-center"><strong>Peso <br> Planta KG</strong></th>
@@ -42,7 +46,13 @@
                 </tr>
             </thead>
             <tbody>
+                {{-- {{ dd($materiaprimas) }} --}}
                 @foreach($materiaprimas as $materiaprima)
+                @php
+                    if (!empty($materiaprima->embarcacion_id)) {
+                        $cantidad = count(json_decode($materiaprima->embarcacion_id));
+                    }
+                @endphp
                 <tr>
                     <td>
                         {{ empty($materiaprima->chofer_id)?'PENDIENTE':$materiaprima->chofer->nombre }}
@@ -61,6 +71,70 @@
                     </td>
                     <td>
                         {{ empty($materiaprima->camara_id)?'PENDIENTE':$materiaprima->camara->placa }}
+                    </td>
+                    <td>
+                        @if (empty($materiaprima->embarcacion_id))
+                            'PENDIENTE'
+                        @else
+                            @php
+                                $i = 0;
+                            @endphp
+                            @foreach (json_decode($materiaprima->embarcacion_id) as $embarcacion)
+                                @php
+                                $i += 1;
+                                @endphp
+                                {{ $enombre[$embarcacion] }} @if ($i <> $cantidad) <br> @endif
+                            @endforeach
+                            
+                        @endif
+                    </td>
+                    <td>
+                        @if (empty($materiaprima->embarcacion_id))
+                            'PENDIENTE'
+                        @else
+                            @php
+                                $i = 0;
+                            @endphp
+                            @foreach (json_decode($materiaprima->embarcacion_id) as $embarcacion)
+                                @php
+                                $i += 1;
+                                @endphp
+                                {{ $ematricula[$embarcacion] }} @if ($i <> $cantidad) <br> @endif
+                            @endforeach
+                            
+                        @endif
+                    </td>
+                    <td>
+                        @if (empty($materiaprima->embarcacion_id))
+                            'PENDIENTE'
+                        @else
+                            @php
+                            $i = 0;
+                            @endphp
+                            @foreach (json_decode($materiaprima->embarcacion_id) as $embarcacion)
+                                @php
+                                $i += 1;
+                                @endphp
+                                {{ $eprotocolo[$embarcacion] }} @if ($i <> $cantidad) <br> @endif
+                            @endforeach
+                            
+                        @endif
+                    </td>
+                    <td>
+                        @if (empty($materiaprima->embarcacion_id))
+                            'PENDIENTE'
+                        @else
+                            @php
+                            $i = 0;
+                            @endphp
+                            @foreach (json_decode($materiaprima->embarcacion_id) as $embarcacion)
+                                @php
+                                $i += 1;
+                                @endphp
+                                {{ $ecapacidad[$embarcacion] }} @if ($i <> $cantidad) <br> @endif
+                            @endforeach
+                            
+                        @endif
                     </td>
                     <td>{{ $materiaprima->lote }}</td>
                     <td>{{ $materiaprima->cajas }}</td>

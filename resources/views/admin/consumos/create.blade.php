@@ -36,22 +36,22 @@
                                 {!! Form::label('periodo', 'Periodo:') !!}
 								{!! Form::text('periodo', session('periodo'), ['class'=>'form-control activo','disabled']) !!}
 							</div>
-                            <div class="col-md-8">
+                            <div class="col-md-3 form-group">
+                                {!! Form::label('destino_id', 'Destino:') !!}
+                                {!! Form::select('destino_id',$destinos,null,['class'=>'custom-select','placeholder'=>'']) !!}
+                            </div>
+                            <div class="col-md-3 form-group">
+                                {!! Form::label('detdestino_id', 'Detalle:') !!}
+                                {!! Form::select('detdestino_id',[],null,['class'=>'custom-select','placeholder'=>'']) !!}
+                            </div>
+                            {{-- <div class="col-md-8">
                                 <div class="row">
-                                    <div class="col-md-4 form-group">
-                                        {!! Form::label('destino_id', 'Destino:') !!}
-                                        {!! Form::select('destino_id',$destinos,null,['class'=>'custom-select','placeholder'=>'']) !!}
-                                    </div>
-                                    <div class="col-md-4 form-group">
-                                        {!! Form::label('detdestino_id', 'Detalle:') !!}
-                                        {!! Form::select('detdestino_id',[],null,['class'=>'custom-select','placeholder'=>'']) !!}
-                                    </div>
                                     <div class="col-md-4 form-group">
                                         {!! Form::label('ccosto_id', 'C.Costo:') !!}
                                         {!! Form::select('ccosto_id',$ccosto,null,['class'=>'custom-select','placeholder'=>'']) !!}
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
                             
                             <div class="col-md-2 form-group">
                                 {!! Form::label('fecha', 'Fecha:') !!}

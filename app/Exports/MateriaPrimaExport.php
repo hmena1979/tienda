@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Models\Embarcacion;
 use App\Models\Materiaprima;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Illuminate\Contracts\View\View;
@@ -35,28 +36,32 @@ class MateriaPrimaExport implements FromView, WithColumnWidths, WithColumnFormat
             'D' => 20,
             'E' => 8,
             'F' => 8,
-            'G' => 12,
-            'H' => 11,
-            'I' => 9,
-            'J' => 10,
-            'K' => 10,
-            'L' => 10,
+            'G' => 35,
+            'H' => 15,
+            'I' => 26,
+            'J' => 12,
+            'K' => 12,
+            'L' => 11,
             'M' => 9,
-            'N' => 32,
-            'O' => 6,
-            'P' => 6,
-            'Q' => 30,
-            'R' => 11,
-            'S' => 25,
+            'N' => 10,
+            'O' => 10,
+            'P' => 10,
+            'Q' => 9,
+            'R' => 32,
+            'S' => 6,
+            'T' => 6,
+            'U' => 30,
+            'V' => 11,
+            'W' => 25,
         ];
     }
 
     public function columnFormats(): array
     {
         return [
-            'I' => '#,##0.00',
-            'O' => '#,##0.00',
-            'R' => '#,##0.00',
+            'M' => '#,##0.00',
+            'S' => '#,##0.00',
+            'V' => '#,##0.00',
             // 'I' => NumberFormat::FORMAT_NUMBER,
             // 'O' => NumberFormat::FORMAT_NUMBER,
             // 'R' => NumberFormat::FORMAT_NUMBER,
@@ -65,9 +70,17 @@ class MateriaPrimaExport implements FromView, WithColumnWidths, WithColumnFormat
     
     public function view(): View
     {
+        $enombre = Embarcacion::pluck('nombre','id');
+        $ematricula = Embarcacion::pluck('matricula','id');
+        $eprotocolo = Embarcacion::pluck('protocolo','id');
+        $ecapacidad = Embarcacion::pluck('capacidad','id');
         $materiasPrimas = Materiaprima::whereBetween('ingplanta',[$this->desde, $this->hasta])->get();
         return view('excel.materiaprima', [
-            'materiaprimas' =>  $materiasPrimas
+            'materiaprimas' =>  $materiasPrimas,
+            'enombre' => $enombre,
+            'ematricula' => $ematricula,
+            'eprotocolo' => $eprotocolo,
+            'ecapacidad' => $ecapacidad,
             // 'materiaprimas' => Materiaprima::all()
         ]);
     }

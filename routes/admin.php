@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\CcostoController;
 use App\Http\Controllers\Admin\ImportController;
 use App\Http\Controllers\Admin\ClienteController;
 use App\Http\Controllers\Admin\ConsumoController;
+use App\Http\Controllers\Admin\CotizacionController;
 use App\Http\Controllers\Admin\CuentaController;
 use App\Http\Controllers\Admin\DestinoController;
 use App\Http\Controllers\Admin\TipoProductoController;
@@ -28,6 +29,7 @@ use App\Http\Controllers\Admin\MateriaPrimaController;
 use App\Http\Controllers\Admin\MuelleController;
 use App\Http\Controllers\Admin\ParametroController;
 use App\Http\Controllers\Admin\PDFController;
+use App\Http\Controllers\Admin\PedidoController;
 // use App\Http\Controllers\Admin\RegistroCompraController;
 use App\Http\Controllers\Admin\RcompraController;
 use App\Http\Controllers\Admin\RventaController;
@@ -86,7 +88,7 @@ Route::get('/clientes/{detcliente}/destroyitem', [ClienteController::class,'dest
 Route::resource('clientes', ClienteController::class)->except('show')->names('admin.clientes');
 // Route::get('/usuario', UsuarioController::class);
 
-Route::resource('tipoproductos', TipoProductoController::class)->names('admin.tipoproductos');
+// Route::resource('tipoproductos', TipoProductoController::class)->names('admin.tipoproductos');
 
 Route::resource('umedidas', UMedidaController::class)->names('admin.umedidas');
 
@@ -98,6 +100,7 @@ Route::get('/productos/{detproducto}/destroydetp', [ProductoController::class, '
 Route::get('/productos/seleccionado/{grupo?}', [ProductoController::class, 'seleccionado'])->name('admin.productos.seleccionado');
 Route::get('/productos/seleccionadov/{moneda?}/{grupo?}', [ProductoController::class, 'seleccionadov'])->name('admin.productos.seleccionadov');
 Route::get('/productos/seleccionadoc/{moneda?}/{grupo?}', [ProductoController::class, 'seleccionadoc'])->name('admin.productos.seleccionadoc');
+Route::get('/productos/seleccionadot', [ProductoController::class, 'seleccionadot'])->name('admin.productos.seleccionadot');
 Route::get('/productos/{vencimiento}/selectlote', [ProductoController::class, 'selectlote'])->name('admin.productos.selectlote');
 Route::get('/productos/{producto}/{bus}/findlote', [ProductoController::class, 'findlote'])->name('admin.productos.findlote');
 Route::get('/productos/{producto}/{lote}/buslote', [ProductoController::class, 'buslote'])->name('admin.productos.buslote');
@@ -225,6 +228,28 @@ Route::get('/tesoreria/{tesoreria}/edit', [TesoreriaController::class,'edit'])->
 Route::put('/tesoreria/{tesoreria}/update', [TesoreriaController::class,'update'])->name('admin.tesorerias.update');
 Route::delete('/tesoreria/{tesoreria}/destroy', [TesoreriaController::class,'destroy'])->name('admin.tesorerias.destroy');
 Route::get('/tesoreria/{cuenta?}/create', [TesoreriaController::class,'create'])->name('admin.tesorerias.create');
+
+// Cotizaciones
+Route::post('/cotizacions/change', [CotizacionController::class,'change'])->name('admin.cotizacions.change');
+Route::get('/cotizacions/{cotizacion}/tablaitem', [CotizacionController::class,'tablaitem'])->name('admin.cotizacions.tablaitem');
+Route::get('/cotizacions/{detcotizacion}/destroyitem', [CotizacionController::class,'destroyitem'])->name('admin.cotizacions.destroyitem');
+Route::post('/cotizacions/additem', [CotizacionController::class,'additem'])->name('admin.cotizacions.additem');
+Route::resource('cotizacions', CotizacionController::class)->names('admin.cotizacions');
+Route::get('/cotizacions/{periodo?}', [CotizacionController::class,'index'])->name('admin.cotizacions.index');
+
+// Pedidos
+Route::post('/pedidos/change', [PedidoController::class,'change'])->name('admin.pedidos.change');
+Route::get('/pedidos/{pedido}/tablaitem', [PedidoController::class,'tablaitem'])->name('admin.pedidos.tablaitem');
+Route::get('/pedidos/{detpedido}/destroyitem', [PedidoController::class,'destroyitem'])->name('admin.pedidos.destroyitem');
+Route::post('/pedidos/additem', [PedidoController::class,'additem'])->name('admin.pedidos.additem');
+Route::get('/pedidos/{pedido}/enviar', [PedidoController::class,'enviar'])->name('admin.pedidos.enviar');
+Route::get('/pedidos/{pedido}/recepcionado', [PedidoController::class,'recepcionado'])->name('admin.pedidos.recepcionado');
+Route::get('/pedidos/{pedido}/rechazar', [PedidoController::class,'rechazar'])->name('admin.pedidos.rechazar');
+Route::get('/pedidos/{pedido}/atender', [PedidoController::class,'atender'])->name('admin.pedidos.atender');
+Route::get('/pedidos/{detpedido}/detpedido', [PedidoController::class,'detpedido'])->name('admin.pedidos.detpedido');
+Route::get('/pedidos/{envio}/editdetpedido', [PedidoController::class,'editdetpedido'])->name('admin.pedidos.editdetpedido');
+Route::resource('pedidos', PedidoController::class)->names('admin.pedidos');
+Route::get('/pedidos/{periodo?}', [PedidoController::class,'index'])->name('admin.pedidos.index');
 
 //Parámetros: Empresa | Sede
 Route::get('/parametros/empresacreate', [ParametroController::class,'empresaCreate'])->name('admin.parametros.empresaCreate');

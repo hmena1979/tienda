@@ -3,6 +3,8 @@
 /public/storage
 /public/invoice
 /public/masivos
+/public/cotizaciones
+/public/products
 /public/xml
 /storage/*.key
 /vendor
