@@ -251,6 +251,9 @@ Route::get('/pedidos/{envio}/editdetpedido', [PedidoController::class,'editdetpe
 Route::resource('pedidos', PedidoController::class)->names('admin.pedidos');
 Route::get('/pedidos/{periodo?}', [PedidoController::class,'index'])->name('admin.pedidos.index');
 
+//Orden de Compra
+
+
 //Parámetros: Empresa | Sede
 Route::get('/parametros/empresacreate', [ParametroController::class,'empresaCreate'])->name('admin.parametros.empresaCreate');
 Route::post('/parametros/empresastore', [ParametroController::class,'empresaStore'])->name('admin.parametros.empresaStore');

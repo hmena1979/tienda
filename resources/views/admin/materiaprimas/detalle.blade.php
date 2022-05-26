@@ -7,7 +7,7 @@
             <th width="20%">Neto</th>
             <th width="20%">Acumulado</th>
             <th width="10%">
-                <button class="btn btn-block btn-addventa" type="button" id="btnadd">+</button>
+                <button class="btn btn-block btn-addventa" type="button" id="addpeso">+</button>
             </th>
         </tr>
     </thead>
