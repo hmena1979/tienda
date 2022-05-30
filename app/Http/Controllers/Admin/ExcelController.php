@@ -138,22 +138,22 @@ class ExcelController extends Controller
         $sheet->getStyle('D'.$linea)
             ->getAlignment()
             ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
-        $sheet->mergeCells('A'.$linea.':A'.$linea+1);
-        $sheet->mergeCells('B'.$linea.':B'.$linea+1);
-        $sheet->mergeCells('C'.$linea.':C'.$linea+1);
-        $sheet->mergeCells('H'.$linea.':H'.$linea+1);
-        $sheet->mergeCells('I'.$linea.':I'.$linea+1);
-        $sheet->mergeCells('J'.$linea.':J'.$linea+1);
-        $sheet->mergeCells('K'.$linea.':K'.$linea+1);
-        $sheet->mergeCells('L'.$linea.':L'.$linea+1);
-        $sheet->mergeCells('M'.$linea.':M'.$linea+1);
-        $sheet->mergeCells('N'.$linea.':N'.$linea+1);
-        $sheet->mergeCells('O'.$linea.':O'.$linea+1);
-        $sheet->mergeCells('P'.$linea.':P'.$linea+1);
-        $sheet->mergeCells('Q'.$linea.':Q'.$linea+1);
-        $sheet->mergeCells('R'.$linea.':R'.$linea+1);
-        $sheet->mergeCells('S'.$linea.':S'.$linea+1);
-        $sheet->mergeCells('T'.$linea.':T'.$linea+1);
+        $sheet->mergeCells('A'.$linea.':A'.($linea+1));
+        $sheet->mergeCells('B'.$linea.':B'.($linea+1));
+        $sheet->mergeCells('C'.$linea.':C'.($linea+1));
+        $sheet->mergeCells('H'.$linea.':H'.($linea+1));
+        $sheet->mergeCells('I'.$linea.':I'.($linea+1));
+        $sheet->mergeCells('J'.$linea.':J'.($linea+1));
+        $sheet->mergeCells('K'.$linea.':K'.($linea+1));
+        $sheet->mergeCells('L'.$linea.':L'.($linea+1));
+        $sheet->mergeCells('M'.$linea.':M'.($linea+1));
+        $sheet->mergeCells('N'.$linea.':N'.($linea+1));
+        $sheet->mergeCells('O'.$linea.':O'.($linea+1));
+        $sheet->mergeCells('P'.$linea.':P'.($linea+1));
+        $sheet->mergeCells('Q'.$linea.':Q'.($linea+1));
+        $sheet->mergeCells('R'.$linea.':R'.($linea+1));
+        $sheet->mergeCells('S'.$linea.':S'.($linea+1));
+        $sheet->mergeCells('T'.$linea.':T'.($linea+1));
         $sheet->getStyle('A'.$linea.':T'.$linea)
             ->getAlignment()
             ->setVertical(StyleAlignment::VERTICAL_CENTER);
@@ -365,10 +365,10 @@ class ExcelController extends Controller
         $sheet->setCellValue('J'.$linea,'Peso (tm.)');
         $sheet->setCellValue('K'.$linea,'Hora');
         $sheet->setCellValue('L'.$linea,'Hora');
-        $sheet->mergeCells('A'.$linea.':A'.$linea+1);
-        $sheet->mergeCells('C'.$linea.':C'.$linea+1);
-        $sheet->mergeCells('E'.$linea.':E'.$linea+1);
-        $sheet->mergeCells('F'.$linea.':F'.$linea+1);
+        $sheet->mergeCells('A'.$linea.':A'.($linea+1));
+        $sheet->mergeCells('C'.$linea.':C'.($linea+1));
+        $sheet->mergeCells('E'.$linea.':E'.($linea+1));
+        $sheet->mergeCells('F'.$linea.':F'.($linea+1));
         $sheet->getStyle('A'.$linea.':T'.$linea)
             ->getAlignment()
             ->setVertical(StyleAlignment::VERTICAL_CENTER)
