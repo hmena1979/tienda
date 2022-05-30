@@ -39,17 +39,21 @@
                                 {!! Form::label('user_id', 'Solicita:') !!}
                                 {!! Form::select('user_id',$users,null,['class'=>'custom-select activo','id'=>'user_id']) !!}
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-5">
                                 <div class="row">
-                                    <div class="col-md-4 form-group">
+                                    <div class="col-md-6 form-group">
                                         {!! Form::label('destino_id', 'Destino:') !!}
                                         {!! Form::select('destino_id',$destinos,null,['class'=>'custom-select','placeholder'=>'']) !!}
                                     </div>
-                                    <div class="col-md-4 form-group">
+                                    <div class="col-md-6 form-group">
                                         {!! Form::label('detdestino_id', 'Detalle:') !!}
                                         {!! Form::select('detdestino_id',[],null,['class'=>'custom-select','placeholder'=>'']) !!}
                                     </div>
                                 </div>
+                            </div>
+                            <div class="col-md-2 form-group">
+                                {!! Form::label('lote', 'Lote:') !!}
+                                {!! Form::text('lote', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
                             </div>
                         </div>
                         <div class="row">

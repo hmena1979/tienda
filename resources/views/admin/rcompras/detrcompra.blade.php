@@ -102,17 +102,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-5">
-                                        <div class="row">
-                                            <div class="col-md-9 form-group">
-                                                {!! Form::label('ccosto_id', 'C.Costo:') !!}
-                                                {!! Form::select('ccosto_id',$ccosto,null,['class'=>'custom-select','placeholder'=>'']) !!}
-                                            </div>
-                                            <div class="col-md-3 form-group">
-                                                {!! Form::label('monto', 'Monto:') !!}
-                                                {!! Form::text('monto',null,['class'=>'form-control decimal']) !!}
-                                            </div>
-                                        </div>
+                                    <div class="col-md-2 form-group">
+                                        {!! Form::label('monto', 'Monto:') !!}
+                                        {!! Form::text('monto',null,['class'=>'form-control decimal']) !!}
                                     </div>
                                     
                                 </div>

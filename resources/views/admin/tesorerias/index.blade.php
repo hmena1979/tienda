@@ -102,6 +102,7 @@
 											@can('admin.tesorerias.edit')
 											<a class="" href="{{ route('admin.tesorerias.edit',$tesoreria) }}"datatoggle="tooltip" data-placement="top" title="Editar"><i class="fas fa-edit"></i></a>
 											@endcan
+											@if (!$tesoreria->detmasivo_id)
 											@can('admin.tesorerias.destroy')
 											<form action="{{ route('admin.tesorerias.destroy',$tesoreria) }}" method="POST" class="formulario_eliminars">
 												@csrf
@@ -111,6 +112,7 @@
 												</button>
 											</form>
                                             @endcan
+											@endif
 											@endif
 											<a class="" href="{{ route('admin.pdf.tesoreria',$tesoreria) }}" target="_blank" datatoggle="tooltip" data-placement="top" title="Imprimir"><i class="fas fa-print"></i></a>
 										</div>

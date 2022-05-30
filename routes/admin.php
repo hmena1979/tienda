@@ -140,11 +140,13 @@ Route::resource('/embarcaciones', EmbarcacionController::class)->names('admin.em
 
 Route::resource('/muelles', MuelleController::class)->names('admin.muelles');
 
+Route::post('/materiaprimas/change', [MateriaPrimaController::class,'change'])->name('admin.materiaprimas.change');
 Route::get('/materiaprimas/{materiaprima}/tablaitem', [MateriaPrimaController::class,'tablaitem'])->name('admin.materiaprimas.tablaitem');
 Route::get('/materiaprimas/{envio}/aedet', [MateriaPrimaController::class, 'aedet'])->name('admin.materiaprimas.aedet');
 Route::get('/materiaprimas/{detmateriaprima}/detmateriaprima', [MateriaPrimaController::class,'detmateriaprima'])->name('admin.materiaprimas.detmateriaprima');
 Route::get('/materiaprimas/{detmateriaprima}/destroyitem', [MateriaPrimaController::class,'destroyitem'])->name('admin.materiaprimas.destroyitem');
 Route::resource('/materiaprimas', MateriaPrimaController::class)->names('admin.materiaprimas');
+Route::get('/materiaprimas/{periodo?}', [MateriaPrimaController::class,'index'])->name('admin.materiaprimas.index');
 
 Route::resource('ccostos', CcostoController::class)->names('admin.ccostos');
 
@@ -279,6 +281,9 @@ Route::get('/pdf/{materiaprima}/materiaprima', [PDFController::class,'materiapri
 
 //EXCEL
 Route::get('/excel/{desde}/{hasta}/materiaprima', [ExcelController::class,'materiaprima'])->name('admin.excel.materiaprima');
+Route::get('/excel/{desde}/{hasta}/materiaprimaii', [ExcelController::class,'materiaprimaii'])->name('admin.excel.materiaprimaii');
+Route::get('/excel/tolvasindex', [ExcelController::class,'tolvasindex'])->name('admin.excel.tolvasindex');
+Route::post('/excel/tolvasview', [ExcelController::class,'tolvasview'])->name('admin.excel.tolvasview');
 
 //Modulo importaciones
 Route::get('/import', [ImportController::class,'index'])->name('admin.imports.index');

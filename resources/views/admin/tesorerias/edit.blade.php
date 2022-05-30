@@ -103,7 +103,9 @@
                                             {!! Form::text('montusd', null, ['class'=>'form-control decimal activo','autocomplete'=>'off']) !!}
                                         </div>
                                         <div class="col-md-2">
+                                            @if (!$tesoreria->detmasivo_id)
                                             {!! Form::submit('+', ['class'=>'btn btn-convertir mtop20', 'id'=>'agregar']) !!}
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -133,6 +135,7 @@
 									<td class="text-right">{{ number_format(abs($det->montousd),2) }}</td>
 									<td class="text-center">
 										<div class="opts">
+                                            @if (!$tesoreria->detmasivo_id)
                                             @can('admin.tesorerias.edit')
                                             <form action="{{ route('admin.tesorerias.detdestroy',$det) }}" method="POST" class="formulario_eliminars">
                                                 @csrf
@@ -142,6 +145,7 @@
                                                 </button>
                                             </form>
                                             @endcan
+                                            @endif
 										</div>
 									</td>
 								</tr>

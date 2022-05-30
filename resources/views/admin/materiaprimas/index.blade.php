@@ -16,6 +16,20 @@
 					<div class="headercontent">
 						<h2 class="title"><i class="fas fa-fish"></i> Materias Primas</h2>
 						<ul>
+							<li>
+                                <div class="cita mt-2">
+                                    {!! Form::open(['route'=>'admin.materiaprimas.change']) !!}
+                                    <div class="input-group tamvar">
+                                        {!! Form::select('mes',getMeses(),substr($periodo,0,2),['class'=>'custom-select']) !!}
+                                        {!! Form::text('año', substr($periodo,2,4), ['class'=>'form-control','maxlength'=>'4','autocomplete'=>'off']) !!}
+                                        <div class="input-group-append">
+                                            {!! Form::submit('Mostar', ['class'=>'btn btn-convertir']) !!}
+                                        </div>
+                                        
+                                    </div>
+                                    {!! Form::close() !!}
+                                </div>
+                            </li>
 							@can('admin.materiaprimas.create')
 							<li>
 								<a href="{{ route('admin.materiaprimas.create') }}">
@@ -31,7 +45,7 @@
 						</ul>
 					</div>
 					<div class="inside">
-						<table id= "grid" class="table table-bordered table-responsive table-hover">
+						<table id= "gridv" class="table table-bordered table-responsive table-hover">
 							<thead>
 								<tr>
 									<th width='10%' class="align-middle">Ingreso <br> Planta</th>
@@ -44,7 +58,15 @@
 							</thead>
 							<tbody>
 								@foreach($materiaprimas as $materiaprima)
-								<tr>
+								<tr class="
+								@if ($materiaprima->rcompra_id)
+									@if ($materiaprima->rcompra->saldo == 0)
+									verde negrita
+									@else
+									azul negrita
+									@endif
+								@endif
+								">
 									<td>{{ $materiaprima->ingplanta }}</td>
 									<td>{{ $materiaprima->lote }}</td>
 									<td class="@if (empty($materiaprima->cliente_id)) rojo @endif">
@@ -162,7 +184,8 @@
 										</div>
 									</div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-convertir" id='btnexcel'>Mostrar</button>
+                                        <button type="button" class="btn btn-convertir" id='btnexcel'>Modelo 01</button>
+                                        <button type="button" class="btn btn-convertir" id='btnexcelii'>Modelo 02</button>
                                         <button type="button" class="btn btn-convertir" data-dismiss='modal'>Salir</button>
                                     </div>
                                 </div>
@@ -191,6 +214,41 @@
 			window.open(url,'_blank');
 			$('#print').modal('hide')
 		});
+		$('#btnexcelii').click(function(){
+			let desde = $('#finicio').val();
+			let hasta = $('#ffin').val();
+			let url = url_global + '/admin/excel/' + desde + '/' + hasta +'/materiaprimaii';
+			window.open(url,'_blank');
+			$('#print').modal('hide')
+		});
+
+		$('#gridv').DataTable({
+				"order": [[0, 'desc'],[1, 'desc']],
+                "paging":   true,
+                "ordering": true,
+                "info":     true,
+                "language":{
+                    "info": "_TOTAL_ Registros",
+                    "search": "Buscar",
+                    "paginate":{
+                        "next": "Siguiente",
+                        "previous": "Anterior"
+                    },
+                    "lengthMenu": "Mostrar <select>"+
+                                    "<option value='10'>10</option>"+
+                                    "<option value='25'>25</option>"+
+                                    "<option value='50'>50</option>"+
+                                    "<option value='100'>100</option>"+
+                                    "<option value='-1'>Todos</option>"+
+                                    "</select> Registros",
+                    "loadingRecords": "Cargando...",
+                    "processing": "Procesando...",
+                    "emptyTable": "No se encontraton coincidencias",
+                    "zeroRecords": "No se encontraton coincidencias",
+                    "infoEmpty": "",
+                    "infoFiltered": ""
+                }
+            });
 	});
 </script>
 @endsection

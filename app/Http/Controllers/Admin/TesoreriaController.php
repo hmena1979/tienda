@@ -48,7 +48,7 @@ class TesoreriaController extends Controller
             $cuenta = $cuentas[0]->id;
         }
         $tesorerias = Tesoreria::with(['mediopagos'])
-            ->select('id','cuenta_id','tipo','edit','fecha','mediopago','numerooperacion','glosa','monto')
+            ->select('id','cuenta_id','tipo','edit','fecha','mediopago','numerooperacion','glosa','monto','detmasivo_id')
             ->where('periodo',$periodo)
             ->where('cuenta_id',$cuenta)
             ->get();
@@ -70,7 +70,7 @@ class TesoreriaController extends Controller
         }
         $cuenta = $request->input('cuenta');
         $tesorerias = Tesoreria::with(['mediopagos'])
-            ->select('id','cuenta_id','tipo','edit','fecha','mediopago','numerooperacion','glosa','monto')
+            ->select('id','cuenta_id','tipo','edit','fecha','mediopago','numerooperacion','glosa','monto','detmasivo_id')
             ->where('periodo',$periodo)
             ->where('cuenta_id',$cuenta)
             ->get();

@@ -40,7 +40,7 @@ class PedidoController extends Controller
         $permiso = User::permission('admin.pedidos.procesar')->where('id',Auth::user()->id)->count();
         if ($permiso) {
             $pedidos = Pedido::with(['user'])
-                ->select('id','fecha','user_id','estado','detdestino_id','observaciones','obslogistica') 
+                ->select('id','fecha','user_id','estado','detdestino_id','lote','observaciones','obslogistica') 
                 ->where('periodo',$periodo)
                 ->where('estado','!=', 1)
                 ->where('empresa_id',session('empresa'))
@@ -48,7 +48,7 @@ class PedidoController extends Controller
                 ->get();
         } else {
             $pedidos = Pedido::with(['user'])
-                ->select('id','fecha','user_id','estado','detdestino_id','observaciones','obslogistica') 
+                ->select('id','fecha','user_id','estado','detdestino_id','lote','observaciones','obslogistica') 
                 ->where('periodo',$periodo)
                 ->where('user_id',Auth::user()->id)
                 ->where('empresa_id',session('empresa'))
@@ -80,7 +80,7 @@ class PedidoController extends Controller
         $permiso = User::permission('admin.pedidos.procesar')->where('id',Auth::user()->id)->count();
         if ($permiso) {
             $pedidos = Pedido::with(['user'])
-                ->select('id','fecha','user_id','estado','detdestino_id','observaciones','obslogistica') 
+                ->select('id','fecha','user_id','estado','detdestino_id','lote','observaciones','obslogistica') 
                 ->where('periodo',$periodo)
                 ->where('estado','!=', 1)
                 ->where('empresa_id',session('empresa'))
@@ -88,7 +88,7 @@ class PedidoController extends Controller
                 ->get();
         } else {
             $pedidos = Pedido::with(['user'])
-                ->select('id','fecha','user_id','estado','detdestino_id','observaciones','obslogistica') 
+                ->select('id','fecha','user_id','estado','detdestino_id','lote','observaciones','obslogistica') 
                 ->where('periodo',$periodo)
                 ->where('user_id',Auth::user()->id)
                 ->where('empresa_id',session('empresa'))
@@ -258,6 +258,7 @@ class PedidoController extends Controller
             'tc' => $this->BusTcXML(date('Y-m-d')),
             'cliente_id' => 2,
             'detdestino_id' => $pedido->detdestino_id,
+            'lote' => $pedido->lote,
             'detalle' => $pedido->user->name,
         ];
 

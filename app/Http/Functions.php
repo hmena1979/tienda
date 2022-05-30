@@ -43,6 +43,37 @@
 		return $m;
 	}
 
+	function getMes($mes){
+		switch ($mes){
+			case '01':
+				return 'ENERO';
+			case '02':
+				return 'FEBRERO';
+			case '03':
+				return 'MARZO';
+			case '04':
+				return 'ABRIL';
+			case '05':
+				return 'MAYO';
+			case '06':
+				return 'JUNIO';
+			case '07':
+				return 'JULIO';
+			case '08':
+				return 'AGOSTO';
+			case '09':
+				return 'SEPTIEMBRE';
+			case '10':
+				return 'OCTUBRE';
+			case '11':
+				return 'NOVIEMBRE';
+			case '12':
+				return 'DICIEMBRE';
+		}
+	}
+
+
+
 	//Key Value From JSon
 	function kvfj($json, $key){
 		if($json == null):
@@ -150,6 +181,95 @@
 	function decimal($n,$cantidad){
 		$respuesta = explode('.',number_format($n, 2))[1];
 		return $respuesta;
+	}
+
+	function colorExcel($color) {
+		switch ($color) {
+			case 1:
+				return 'FF'.'9999FF';
+				break;
+			case 2:
+				return 'FF'.'C0C0C0';
+				break;
+			case 3:
+				return 'FF'.'FFFFCC';
+				break;
+			case 4:
+				return 'FF'.'FFA7F0';
+				break;
+			case 5:
+				return 'FF'.'FFFF2B';
+				break;
+			case 6:
+				return 'FF'.'CCFFFF';
+				break;
+			case 7:
+				return 'FF'.'008080';
+				break;
+			case 8:
+				return 'FF'.'993366';
+				break;
+			case 9:
+				return 'FF'.'FF8080';
+				break;
+			case 10:
+				return 'FF'.'CCCCFF';
+				break;
+			case 11:
+				return 'FF'.'808000';
+				break;
+			case 12:
+				return 'FF'.'808080';
+				break;
+			case 13:
+				return 'FF'.'008000';
+				break;
+			case 14:
+				return 'FF'.'008080';
+				break;
+			case 15:
+				return 'FF'.'00CCFF';
+				break;
+			case 16:
+				return 'FF'.'CCFFCC';
+				break;
+			case 17:
+				return 'FF'.'FF99CC';
+				break;
+			case 18:
+				return 'FF'.'CC99FF';
+				break;
+			case 19:
+				return 'FF'.'FFCC99';
+				break;
+			case 20:
+				return 'FF'.'33AAFF';
+				break;
+			case 21:
+				return 'FF'.'993366';
+				break;
+			case 22:
+				return 'FF'.'993300';
+				break;
+			case 'rojo':
+				return 'FF'.'FF0000';
+				break;
+			case 'azul':
+				return 'FF'.'0000FF';
+				break;
+			case 'verde':
+				return 'FF'.'008000';
+				break;
+			case 'amarillo':
+				return 'FF'.'FFFF00';
+				break;
+			case 'magenta':
+				return 'FF'.'FF00FF';
+				break;
+			case 'cyan':
+				return 'FF'.'00FFFF';
+				break;
+		}
 	}
 
 

@@ -5,7 +5,7 @@
                 <tr>
                     <th width="28%">Destino</th>
                     <th width="28%">Detalle</th>
-                    <th width="29%">C.Costo</th>
+                    {{-- <th width="29%">C.Costo</th> --}}
                     <th width="10%">Monto</th>
                     <th width="5%">
                         <button type="button" id='additem' class="btn btn-block btn-addventa" datatoggle="tooltip" data-placement="top" title="Agregar Item">
@@ -19,7 +19,7 @@
                 <tr>
                     <td>{{ $det->detdestino->destino->nombre }}</td>
                     <td>{{ $det->detdestino->nombre }}</td>
-                    <td>{{ $det->ccosto->nombre }}</td>
+                    {{-- <td>{{ $det->ccosto->nombre }}</td> --}}
                     <td>{{ $det->monto }}</td>
                     <td>
                         <div class="opts">

@@ -25,7 +25,7 @@ class StoreDetrcompraRequest extends FormRequest
     {
         return [
                 'detdestino_id' => 'required',
-                'ccosto_id' => 'required',
+                // 'ccosto_id' => 'required',
                 'monto' => 'required',
             ];
     }

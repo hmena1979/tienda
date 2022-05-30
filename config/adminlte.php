@@ -304,7 +304,16 @@ return [
                     'text' => 'Reportes',
                     'icon'    => 'fas fa-print',
                     'icon_color' => 'cyan',
-                    'url'  => '#',
+                    'submenu' => [
+                        [
+                            'text' => 'Mensual Tolvas',
+                            'icon'    => 'fas fa-print',
+                            'icon_color' => 'white',
+                            'route'  => 'admin.excel.tolvasindex',
+                            // 'can'  => 'admin.rcompras.index',
+                            'active' => ['admin/excel/tolvasindex'],
+                        ],
+                    ],
                 ]
             ],
         ],
@@ -361,7 +370,6 @@ return [
                     'text' => 'Reportes',
                     'icon'    => 'fas fa-print',
                     'icon_color' => 'cyan',
-                    'url'  => '#',
                 ]
             ],
         ],

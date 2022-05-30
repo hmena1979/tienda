@@ -51,8 +51,8 @@
                 <tr>
                     <td class="negrita">FECHA</td>
                     <td>: {{date('d-m-Y',strtotime($rventa->fecha))}}</td>
-                    <td class="negrita"></td>
-                    <td></td>
+                    <td class="negrita">LOTE</td>
+                    <td>: {{ $rventa->lote }}</td>
                 </tr>
             </table>
         </div>

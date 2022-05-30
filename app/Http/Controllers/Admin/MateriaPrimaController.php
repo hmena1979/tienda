@@ -32,10 +32,24 @@ class MateriaPrimaController extends Controller
 		// $this->middleware('can:admin.categorias.password')->only('editpassword','updatepassword');
     }
 
-    public function index()
+    public function index($periodo = '000000')
     {
-        $materiaprimas = Materiaprima::where('empresa_id',session('empresa'))->orderBy('ingplanta')->get();
-        return view('admin.materiaprimas.index',compact('materiaprimas'));
+        if($periodo == '000000'){
+            $periodo = session('periodo');
+        }
+        $materiaprimas = Materiaprima::where('empresa_id',session('empresa'))
+            ->where('periodo',$periodo)
+            ->orderBy('ingplanta','desc')->get();
+        return view('admin.materiaprimas.index',compact('materiaprimas','periodo'));
+    }
+
+    public function change(Request $request)
+    {
+        $periodo = $request->input('mes').$request->input('año');
+        $materiaprimas = Materiaprima::where('empresa_id',session('empresa'))
+            ->where('periodo',$periodo)
+            ->orderBy('ingplanta','desc')->get();
+        return view('admin.materiaprimas.index',compact('materiaprimas','periodo'));
     }
 
     public function create()
