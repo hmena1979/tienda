@@ -38,3 +38,28 @@ body
 .logo__img
     padding 0 30px
     width 400px
+
+.container
+    width 400px
+    height 400px
+    background white
+    margin 40px auto
+    overflow hidden
+
+.pesquera
+    width 200px
+    margin: 0 auto
+    display: block
+    animation: pesquera 5s infinite
+
+@keyframes pesquera
+    0%
+        transform: translateY(-50px)
+    30%
+        transform: translateY(0) rotate(5deg)
+    50%
+        transform: rotate(-5deg)
+    75%
+        transform: rotate(5deg)
+    100%
+        transform: translateY(-50px)

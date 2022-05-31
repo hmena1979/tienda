@@ -30,7 +30,7 @@ class CotizacionController extends Controller
             $periodo = session('periodo');
         }
         $cotizacions = Cotizacion::with(['cliente'])
-            ->select('id','fecha','cliente_id','moneda','numero','contacto')
+            ->select('id','fecha','cliente_id','moneda','numero','contacto','total')
             ->where('periodo',$periodo)
             ->where('empresa_id',session('empresa'))
             ->where('sede_id',session('sede'))
@@ -42,7 +42,7 @@ class CotizacionController extends Controller
     {
         $periodo = $request->input('mes').$request->input('año');
         $cotizacions = Cotizacion::with(['cliente'])
-            ->select('id','fecha','cliente_id','numero','contacto')
+            ->select('id','fecha','cliente_id','moneda','numero','contacto','total')
             ->where('periodo',$periodo)
             ->where('empresa_id',session('empresa'))
             ->where('sede_id',session('sede'))

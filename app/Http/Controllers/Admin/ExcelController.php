@@ -75,7 +75,7 @@ class ExcelController extends Controller
         $logo->setWorksheet($excel->getActiveSheet());
 
         $sheet->setCellValue('A2','REPORTE DE INGRESO DE MATERIA PRIMA');
-        $sheet->mergeCells('A2:T2');
+        $sheet->mergeCells('A2:V2');
         $sheet->getStyle('A2')->getFont()->setSize(12)->setBold(true);
         $sheet->getStyle('A2')
             ->getAlignment()
@@ -83,7 +83,7 @@ class ExcelController extends Controller
         $linea = 5;
         $salto = "\r\n";
         $sheet->setCellValue('A3','DESDE: '.$desde.' HASTA '.$hasta);
-        $sheet->mergeCells('A3:T3');
+        $sheet->mergeCells('A3:V3');
         $sheet->getStyle('A3')->getFont()->setSize(10)->setBold(true);
         $sheet->getStyle('A3')
             ->getAlignment()
@@ -104,18 +104,20 @@ class ExcelController extends Controller
         $sheet->getColumnDimension('M')->setWidth(10);
         $sheet->getColumnDimension('N')->setWidth(10);
         $sheet->getColumnDimension('O')->setWidth(70);
-        $sheet->getColumnDimension('P')->setWidth(10);
-        $sheet->getColumnDimension('Q')->setWidth(10);
-        $sheet->getColumnDimension('R')->setWidth(15);
-        $sheet->getColumnDimension('S')->setWidth(12);
-        $sheet->getColumnDimension('T')->setWidth(20);
+        $sheet->getColumnDimension('P')->setWidth(11);
+        $sheet->getColumnDimension('Q')->setWidth(15);
+        $sheet->getColumnDimension('R')->setWidth(10);
+        $sheet->getColumnDimension('S')->setWidth(10);
+        $sheet->getColumnDimension('T')->setWidth(15);
+        $sheet->getColumnDimension('U')->setWidth(12);
+        $sheet->getColumnDimension('V')->setWidth(20);
 
         $sheet->getStyle('I')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_NUMBER);
         $sheet->getStyle('K')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1);
-        $sheet->getStyle('P')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1);
-        $sheet->getStyle('S')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1);
+        $sheet->getStyle('R')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1);
+        $sheet->getStyle('U')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1);
 
-        $sheet->getStyle('A'.$linea.':T'.$linea)->getFont()->setBold(true);
+        $sheet->getStyle('A'.$linea.':V'.$linea)->getFont()->setBold(true);
         $sheet->setCellValue('A'.$linea,'EMPRESA TRANSPORTISTA');
         $sheet->setCellValue('B'.$linea,'MARCA');
         $sheet->setCellValue('C'.$linea,'PLACA');
@@ -128,11 +130,13 @@ class ExcelController extends Controller
         $sheet->setCellValue('M'.$linea,'HORA'.$salto.'DESCARGA');
         $sheet->setCellValue('N'.$linea,'FECHA'.$salto.'LLEGADA');
         $sheet->setCellValue('O'.$linea,'PROVEEDOR');
-        $sheet->setCellValue('P'.$linea,'PRECIO');
-        $sheet->setCellValue('Q'.$linea,'LUGAR');
-        $sheet->setCellValue('R'.$linea,'TIPO PRODUCTO');
-        $sheet->setCellValue('S'.$linea,'DESTARE KG');
-        $sheet->setCellValue('T'.$linea,'OBSERVACIONES');
+        $sheet->setCellValue('P'.$linea,'GUÍA'.$salto.'REMITENTE');
+        $sheet->setCellValue('Q'.$linea,'GUÍA'.$salto.'TRANSPORTISTA');
+        $sheet->setCellValue('R'.$linea,'PRECIO');
+        $sheet->setCellValue('S'.$linea,'LUGAR');
+        $sheet->setCellValue('T'.$linea,'TIPO PRODUCTO');
+        $sheet->setCellValue('U'.$linea,'DESTARE KG');
+        $sheet->setCellValue('V'.$linea,'OBSERVACIONES');
         $sheet->mergeCells('D'.$linea.':G'.$linea);
         $sheet->getStyle('D'.$linea)->getFont()->setBold(true);
         $sheet->getStyle('D'.$linea)
@@ -154,7 +158,9 @@ class ExcelController extends Controller
         $sheet->mergeCells('R'.$linea.':R'.($linea+1));
         $sheet->mergeCells('S'.$linea.':S'.($linea+1));
         $sheet->mergeCells('T'.$linea.':T'.($linea+1));
-        $sheet->getStyle('A'.$linea.':T'.$linea)
+        $sheet->mergeCells('U'.$linea.':U'.($linea+1));
+        $sheet->mergeCells('V'.$linea.':V'.($linea+1));
+        $sheet->getStyle('A'.$linea.':V'.$linea)
             ->getAlignment()
             ->setVertical(StyleAlignment::VERTICAL_CENTER);
         $sheet->getStyle('I'.$linea)->getAlignment()->setWrapText(true);
@@ -163,6 +169,8 @@ class ExcelController extends Controller
         $sheet->getStyle('L'.$linea)->getAlignment()->setWrapText(true);
         $sheet->getStyle('M'.$linea)->getAlignment()->setWrapText(true);
         $sheet->getStyle('N'.$linea)->getAlignment()->setWrapText(true);
+        $sheet->getStyle('P'.$linea)->getAlignment()->setWrapText(true);
+        $sheet->getStyle('Q'.$linea)->getAlignment()->setWrapText(true);
         $linea++;
         $sheet->getStyle('A'.$linea.':T'.$linea)->getFont()->setBold(true);
         // $sheet->setBreak('G'.$linea,Worksheet::BREAK_ROW);
@@ -194,15 +202,17 @@ class ExcelController extends Controller
             $sheet->setCellValue('M'.$linea, $materiaPrima->hfin);
             $sheet->setCellValue('N'.$linea, $materiaPrima->fllegada);
             $sheet->setCellValue('O'.$linea, $proveedor);
-            $sheet->setCellValue('P'.$linea, $materiaPrima->precio);
-            $sheet->setCellValue('Q'.$linea, $materiaPrima->lugar);
-            $sheet->setCellValue('R'.$linea, $materiaPrima->producto->nombre);
-            $sheet->setCellValue('S'.$linea, $materiaPrima->destare);
-            $sheet->setCellValue('T'.$linea, $materiaPrima->observaciones);
+            $sheet->setCellValue('P'.$linea, $materiaPrima->remitente_guia);
+            $sheet->setCellValue('Q'.$linea, $materiaPrima->transportista_guia);
+            $sheet->setCellValue('R'.$linea, $materiaPrima->precio);
+            $sheet->setCellValue('S'.$linea, $materiaPrima->lugar);
+            $sheet->setCellValue('T'.$linea, $materiaPrima->producto->nombre);
+            $sheet->setCellValue('U'.$linea, $materiaPrima->destare);
+            $sheet->setCellValue('V'.$linea, $materiaPrima->observaciones);
             if ($cantidad > 0) {
                 $lineaInicio = $linea;
                 foreach (json_decode($materiaPrima->embarcacion_id) as $embarcacion){
-                    $sheet->getStyle('A'.$linea.':T'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB(colorExcel($color));
+                    $sheet->getStyle('A'.$linea.':V'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB(colorExcel($color));
                     $sheet->setCellValue('D'.$linea, $enombre[$embarcacion]);
                     $sheet->setCellValue('E'.$linea, $ematricula[$embarcacion]);
                     $sheet->setCellValue('F'.$linea, $eprotocolo[$embarcacion]);
@@ -226,7 +236,9 @@ class ExcelController extends Controller
                 $sheet->mergeCells('R'.$lineaInicio.':R'.$linea);
                 $sheet->mergeCells('S'.$lineaInicio.':S'.$linea);
                 $sheet->mergeCells('T'.$lineaInicio.':T'.$linea);
-                $sheet->getStyle('A'.$lineaInicio.':T'.$linea)
+                $sheet->mergeCells('U'.$lineaInicio.':U'.$linea);
+                $sheet->mergeCells('V'.$lineaInicio.':V'.$linea);
+                $sheet->getStyle('A'.$lineaInicio.':V'.$linea)
                     ->getAlignment()
                     ->setVertical(StyleAlignment::VERTICAL_CENTER);
             }
@@ -246,7 +258,7 @@ class ExcelController extends Controller
             ],
         ];
         
-        $sheet->getStyle('A5'.':T'.$linea)->applyFromArray($estiloBorde);
+        $sheet->getStyle('A5'.':V'.$linea)->applyFromArray($estiloBorde);
 
         //Envio de Archivo para Descarga
         $fileName="MateriaPrima".$desde."_".$hasta.".xlsx";

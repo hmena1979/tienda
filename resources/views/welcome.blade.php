@@ -19,8 +19,7 @@
         </style>
     </head>
     <body>
-        <div class="contenedor">
-            
+        <div class="contenedor">            
             <div class="acceso">
                 @auth
                     <a href="{{ url('/admin') }}" class="acceso__btn">Inicio</a>
@@ -28,10 +27,12 @@
                     <a href="{{ route('login') }}" class="acceso__btn">Ingreso</a>
                 @endauth
             </div>
-            <div class="logo">
-                <img class="logo__img" src="{{ url('/static/images/logo.png') }}" alt="">
+            {{-- <div class="logo">
+                <img class="logo__img" src="{{ url('/static/images/logo2.jpg') }}" alt="">
+            </div> --}}
+            <div class="container">
+                <img class="pesquera" src="{{ url('/static/images/logo3.png') }}" alt="">
             </div>
-            
         </div>
     </body>
 </html>

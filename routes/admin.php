@@ -27,6 +27,7 @@ use App\Http\Controllers\Admin\IngresoController;
 use App\Http\Controllers\Admin\MasivoController;
 use App\Http\Controllers\Admin\MateriaPrimaController;
 use App\Http\Controllers\Admin\MuelleController;
+use App\Http\Controllers\Admin\OrdcomprasController;
 use App\Http\Controllers\Admin\ParametroController;
 use App\Http\Controllers\Admin\PDFController;
 use App\Http\Controllers\Admin\PedidoController;
@@ -254,6 +255,11 @@ Route::resource('pedidos', PedidoController::class)->names('admin.pedidos');
 Route::get('/pedidos/{periodo?}', [PedidoController::class,'index'])->name('admin.pedidos.index');
 
 //Orden de Compra
+Route::get('/ordcompras/{producto_id?}/busproducto', [OrdcomprasController::class,'busproducto'])->name('admin.ordcompras.busproducto');
+Route::get('/ordcompras/{producto_id}/{periodo}/consumos', [OrdcomprasController::class,'consumos'])->name('admin.ordcompras.consumos');
+Route::get('/ordcompras/{producto_id}/compras', [OrdcomprasController::class,'compras'])->name('admin.ordcompras.compras');
+Route::get('/ordcompras/{producto_id}/cotizaciones', [OrdcomprasController::class,'cotizaciones'])->name('admin.ordcompras.cotizaciones');
+Route::resource('ordcompras', OrdcomprasController::class)->names('admin.ordcompras');
 
 
 //Parámetros: Empresa | Sede

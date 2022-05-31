@@ -259,6 +259,7 @@ class PedidoController extends Controller
             'cliente_id' => 2,
             'detdestino_id' => $pedido->detdestino_id,
             'lote' => $pedido->lote,
+            'pedido_id' => $pedido->id,
             'detalle' => $pedido->user->name,
         ];
 
