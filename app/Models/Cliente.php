@@ -48,6 +48,11 @@ class Cliente extends Model
     	return $this->hasOne('App\Models\Cotizacion');
     }
 
+    public function ordcompra()
+    {
+    	return $this->hasOne('App\Models\Ordcompra');
+    }
+
     public function transferencias()
     {
     	return $this->hasMany('App\Models\Transferencia');

@@ -1,10 +1,10 @@
 {{-- @extends('adminlte::page') --}}
 @extends('admin.master')
-@section('title','Cotizaciones')
+@section('title','Orden de Compra')
 
 @section('breadcrumb')
 	<li class="breadcrumb-item">
-		<a href="{{ route('admin.cotizacions.index') }}"><i class="fas fa-file-alt"></i> Cotizaciones</a>
+		<a href="{{ route('admin.ordcompras.index') }}"><i class="fas fa-file-import"></i> Orden de Compra</a>
 	</li>
 @endsection
 
@@ -14,11 +14,11 @@
 			<div class="col-md-12">
 				<div class="panelprin shadow">
 					<div class="headercontent">
-						<h2 class="title"><i class="fas fa-file-alt"></i> Cotizaciones</h2>
+						<h2 class="title"><i class="fas fa-file-import"></i> Orden de Compra</h2>
 						<ul>
 							<li>
                                 <div class="cita mt-2">
-                                    {!! Form::open(['route'=>'admin.cotizacions.change']) !!}
+                                    {!! Form::open(['route'=>'admin.ordcompras.change']) !!}
                                     <div class="input-group tamvar">
                                         {!! Form::select('mes',getMeses(),substr($periodo,0,2),['class'=>'custom-select']) !!}
                                         {!! Form::text('año', substr($periodo,2,4), ['class'=>'form-control','maxlength'=>'4','autocomplete'=>'off']) !!}
@@ -30,11 +30,14 @@
                                     {!! Form::close() !!}
                                 </div>
                             </li>
-							@can('admin.cotizacions.create')
+							@can('admin.ordcompras.create')
 							<li>
-								<a href="{{ route('admin.cotizacions.create') }}">
+								<a href="{{ route('admin.ordcompras.create') }}">
 									Agregar registro
 								</a>
+							</li>
+							<li>
+								<a href="{{ route('admin.ordcompras.busproducto') }}"datatoggle="tooltip" data-placement="top" title="Buscar"><i class="fas fa-window-restore"></i></a>
 							</li>
 							@endcan
 						</ul>
@@ -53,20 +56,20 @@
 								</tr>
 							</thead>
 							<tbody>
-								@foreach($cotizacions as $cotizacion)
+								@foreach($ordcompras as $ordcompra)
 								<tr>
-									<td>{{ $cotizacion->fecha }}</td>
-									<td>{{ $cotizacion->moneda }}</td>
-									<td>{{ $cotizacion->numero }}</td>
-									<td>{{ $cotizacion->cliente->razsoc }}</td>
-									<td class="text-right">{{ number_format($cotizacion->total,2) }}</td>
+									<td>{{ $ordcompra->fecha }}</td>
+									<td>{{ $ordcompra->moneda }}</td>
+									<td>{{ str_pad($ordcompra->id, 5, '0', STR_PAD_LEFT) }}</td>
+									<td>{{ $ordcompra->cliente->razsoc }}</td>
+									<td class="text-right">{{ number_format($ordcompra->total*(1+(session('igv')/100)),2) }}</td>
 									<td>
 										<div class="opts">
-											@can('admin.cotizacions.edit')
-											<a class="" href="{{ route('admin.cotizacions.edit',$cotizacion) }}"datatoggle="tooltip" data-placement="top" title="Editar"><i class="fas fa-edit"></i></a>
+											@can('admin.ordcompras.edit')
+											<a class="" href="{{ route('admin.ordcompras.edit',$ordcompra) }}"datatoggle="tooltip" data-placement="top" title="Editar"><i class="fas fa-edit"></i></a>
 											@endcan
-											@can('admin.cotizacions.destroy')
-											<form action="{{ route('admin.cotizacions.destroy',$cotizacion) }}" method="POST" class="formulario_eliminars">
+											@can('admin.ordcompras.destroy')
+											<form action="{{ route('admin.ordcompras.destroy',$ordcompra) }}" method="POST" class="formulario_eliminars">
 												@csrf
 												@method('delete')
 												<button type="submit" datatoggle="tooltip" data-placement="top" title="Eliminar">
@@ -74,6 +77,7 @@
 												</button>
 											</form>
                                             @endcan
+											<a class="" href="{{ route('admin.pdf.ordcompra',$ordcompra) }}" target="_blank" datatoggle="tooltip" data-placement="top" title="Imprimir"><i class="fas fa-print"></i></a>
 										</div>
 									</td>
 								</tr>

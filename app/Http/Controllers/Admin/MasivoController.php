@@ -230,6 +230,21 @@ class MasivoController extends Controller
         if ($masivo->estado == 2) {
             $masivo->update(['estado' => 1]);
         } else {
+            foreach ($masivo->detmasivos as $det) {
+                $detTesoreria = Dettesor::where('dettesorable_id', $det->rcompra_id)
+                    ->where('dettesorable_type','App\Models\Rcompra')->first();
+                if ($detTesoreria) {
+                    Tesoreria::where('id', $detTesoreria->tesoreria_id)
+                        ->update([
+                            'detmasivo_id' => $det->id
+                        ]);
+                }
+                Rcompra::where('id',$det->rcompra_id)->update([
+                    'cancelacion' => $det->masivo->fecha,
+                    'mediopago' => '001',
+                    'cuenta_id' => $det->masivo->cuenta_id,
+                ]);
+            }
             foreach($masivo->detmasivos as $det) {
                 if($masivo->cuenta->moneda == 'PEN'){
                     $montotal = $det->montopen;
@@ -446,8 +461,9 @@ class MasivoController extends Controller
             // Storage::disk('masivos')->put($arcresul, $resultado);
         }
         if ($masivo->cuenta->banco_id == 2){
+            $hoy = date('Y-m-d');
             $numope = str_pad($masivo->detmasivos->count(),6,'0',STR_PAD_LEFT);
-            $fecha = substr($masivo->fecha, 0, 4).substr($masivo->fecha, 5, 2).substr($masivo->fecha, 8, 2);
+            $fecha = substr($hoy, 0, 4).substr($hoy, 5, 2).substr($hoy, 8, 2);
             $cuenta = str_pad($masivo->cuenta->numerocta, 13, '0', STR_PAD_RIGHT);
             $esp7 = '       ';
             $entera = floor($masivo->monto);
@@ -515,7 +531,7 @@ class MasivoController extends Controller
                 $dets = '3'.$tcomp.$numcomprobante.$pentera.'.'.$decimal;
                 $detalles .= "\r\n".$item."\r\n".$dets;
             }
-            $archivo =  'BCP'.$masivo->cuenta->moneda.substr($masivo->fecha, 0, 4).substr($masivo->fecha, 5, 2).substr($masivo->fecha, 8, 2).'.txt';
+            $archivo =  'BCP'.$masivo->cuenta->moneda.substr($hoy, 0, 4).substr($hoy, 5, 2).substr($hoy, 8, 2).'.txt';
             
             $resultado = $cabecera.$detalles;
             // $arcresul = $masivo->id.'/'.$archivo;

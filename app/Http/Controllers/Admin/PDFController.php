@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Categoria;
+use App\Models\Detcliente;
 use App\Models\Embarcacion;
 use App\Models\Empresa;
 use App\Models\Guia;
 use App\Models\Masivo;
 use App\Models\Materiaprima;
+use App\Models\Ordcompra;
 use Illuminate\Http\Request;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Luecano\NumeroALetras\NumeroALetras;
@@ -19,6 +21,7 @@ use App\Models\Rcompra;
 use App\Models\Sede;
 use App\Models\Tesoreria;
 use App\Models\TipoComprobante;
+use App\Models\User;
 
 class PDFController extends Controller
 {
@@ -234,5 +237,43 @@ class PDFController extends Controller
             str_pad($materiaprima->id, 8, '0', STR_PAD_LEFT).'.pdf', array('Attachment'=>false));
         
           // return view('pdf.materiaprima', $data);
+    }
+
+    public function ordcompra(Ordcompra $ordcompra)
+    {
+        $moneda = ['PEN' => 'SOLES', 'USD' => 'DOLARES'];
+        $empresa = Empresa::findOrFail(session('empresa'));
+        $sede = Sede::findOrFail(session('sede'));
+        $formatter = new NumeroALetras();
+        $monto = round($ordcompra->total+($ordcompra->total*(session('igv')/100)),2);
+        $users = User::orderBy('name')->pluck('name','id');
+        if ($ordcompra->detcliente_id) {
+            $dCliente = Detcliente::findOrFail($ordcompra->detcliente_id);
+            $cuenta = $dCliente->banco->nombre .' CUENTA N° '. $dCliente->cuenta;
+        } else {
+            $cuenta = '';
+        }
+        if($ordcompra->moneda=='PEN'){
+            $letra = $formatter->toInvoice($monto, 2, 'soles');
+        }else{
+            $letra = $formatter->toInvoice($monto, 2, 'dólares americanos');
+        }
+        $data = [
+            'ordcompra' => $ordcompra,
+            'moneda' => $moneda,
+            'empresa' => $empresa,
+            'sede' => $sede,
+            'letra' => $letra,
+            'cuenta' => $cuenta,
+            'users' => $users,
+        ];
+        $pdf = PDF::loadView('pdf.ordcompra', $data)->setPaper('A4', 'portrait');
+        return $pdf->stream(str_pad($ordcompra->sede_id, 2, '0', STR_PAD_LEFT).
+            str_pad($ordcompra->id, 8, '0', STR_PAD_LEFT).'.pdf', array('Attachment'=>false));
+        
+        //$pdf->stream($parametro->ruc.'-'.$factura->comprobante_id.'-'.$factura->serie.'-'.$factura->numero.'.pdf', array('Attachment'=>false));
+        //return redirect('/admin/factura/'.$factura->id.'/edit')->with('message', 'Factura generada')->with('typealert', 'success');
+        
+        // return view('pdf.boleta', $data);
     }
 }

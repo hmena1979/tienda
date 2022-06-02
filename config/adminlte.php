@@ -301,6 +301,15 @@ return [
                                 ,'admin/cotizacions/*/edit'],
                 ],
                 [
+                    'text' => 'Orden de Compra',
+                    'icon'    => 'fas fa-file-import',
+                    'icon_color' => 'cyan',
+                    'route'  => 'admin.ordcompras.index',
+                    'can'  => 'admin.ordcompras.index',
+                    'active' => ['admin/ordcompras','admin/ordcompras/*','admin/ordcompras/create'
+                                ,'admin/ordcompras/*/edit'],
+                ],
+                [
                     'text' => 'Reportes',
                     'icon'    => 'fas fa-print',
                     'icon_color' => 'cyan',

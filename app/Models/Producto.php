@@ -54,6 +54,11 @@ class Producto extends Model
         return $this->hasOne('App\Models\Detcotizacion');
     }
 
+    public function detordcompra()
+    {
+        return $this->hasOne('App\Models\Detordcompra');
+    }
+
     public function detpedido()
     {
         return $this->hasOne('App\Models\Detpedido');

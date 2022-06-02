@@ -1,57 +1,57 @@
 <table id= "grid" class="table table-hover table-sm">
     <thead>
         <tr>
-            <th>Producto</th>
+            <th width='35%'>Producto</th>
             <th width='10%'>Cantidad</th>
-            @if ($procesa)
-            <th>Stock</th>
-            @endif
-            <th>Glosa</th>
-            @if ($pedido->estado == 3)
-            <th>Aprobado</th>
-            <th>Motivo</th>
-            @endif
+            <th width='10%'>Precio</th>
+            <th width='25%'>Glosa</th>
+            <th class="text-right" width='10%'>SubTotal</th>
             <th width="10%">
-                @if ($pedido->estado == 1)
-                <button class="btn btn-block btn-addventa" type="button" id="additem">+</button>
+                @if ($ordcompra->estado == 1)
+                <button class="btn btn-block btn-addventa" type="button" id="additem">+</button>                    
                 @endif
             </th>
         </tr>
     </thead>
     <tbody>
-        @foreach($pedido->detpedidos as $det)
+        {{-- {{ $ordcompra->detordcompras->count() }} --}}
+        @foreach($ordcompra->detordcompras as $det)
         <tr>
             <td>{{ $det->producto->nombre . ' X ' . $det->producto->umedida->nombre }}</td>
             <td>{{ $det->cantidad }}</td>
-            @if ($procesa)
-            <td>{{ $det->producto->stock }}</td>
-            @endif
+            <td>{{ $det->precio }}</td>
             <td>{{ $det->glosa }}</td>
-            @if ($pedido->estado == 3)
-            <td>{{ $det->catendida }}</td>
-            <td>{{ $det->motivo }}</td>
-            @endif
+            <td class="text-right">{{ number_format($det->subtotal,2) }}</td>
             <td>
                 <div class="opts">
-                    @if ($procesa && $pedido->estado == 3)
-                    <button type="button" class="btn" title="Editar" onclick="edititem('{{ $det->id }}');">
+                    {{-- <button type="button" class="btn" title="Editar" onclick="edititem('{{ $det->id }}');">
                         <i class="fas fa-edit"></i>
-                    </button>
-                    @endif
-                    @if ($pedido->estado == 1)
+                    </button> --}}
+                    @if ($ordcompra->estado == 1)
                     <button type="button" class="btn" title="Eliminar" onclick="destroyitem('{{ $det->id }}');">
                         <i class="fas fa-trash-alt"></i>
                     </button>                        
-                    @endif
-                    @if ($procesa)
-                    {{-- <a href="{{ route('admin.ordcompras.busproducto',$det->producto_id) }}"><i class="fas fa-window-restore"></i></a> --}}
-                    <a href="{{ route('admin.ordcompras.busproducto',$det->producto_id) }}"datatoggle="tooltip" data-placement="top" title="Buscar"><i class="fas fa-window-restore"></i></a>
                     @endif
                 </div>
             </td>
         </tr>
         @endforeach
-    </tbody>
+        <tr>
+            <td class="text-right negrita" colspan="4">SUBTOTAL</td>
+            <td class="text-right">{{ number_format($total,2) }}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td class="text-right negrita" colspan="4">IGV {{ intval(session('igv')) }}%</td>
+            <td class="text-right">{{ number_format($total*(session('igv')/100),2) }}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td class="text-right negrita" colspan="4">TOTAL</td>
+            <td class="text-right">{{ number_format($total+($total*(session('igv')/100)),2) }}</td>
+            <td></td>
+        </tr>
+        </tbody>
 </table>
 <script>
     $('#additem').click(function(){

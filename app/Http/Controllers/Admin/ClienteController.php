@@ -333,4 +333,10 @@ class ClienteController extends Controller
         $detcliente->delete();
         return true;
     }
+
+    public function cuentas(Cliente $cliente)
+    {
+        $cuentas = Detcliente::with(['banco'])->where('cliente_id', $cliente->id)->get();
+        return response()->json($cuentas);
+    }
 }

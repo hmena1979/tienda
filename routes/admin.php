@@ -86,6 +86,7 @@ Route::post('/clientes/{cliente}/storedetalle', [ClienteController::class, 'stor
 Route::get('/clientes/seleccionado/{tipo?}', [ClienteController::class, 'seleccionado'])->name('admin.clientes.seleccionado');
 Route::get('/clientes/{cliente}/tablaitem', [ClienteController::class,'tablaitem'])->name('admin.clientes.tablaitem');
 Route::get('/clientes/{detcliente}/destroyitem', [ClienteController::class,'destroyitem'])->name('admin.clientes.destroyitem');
+Route::get('/clientes/{cliente}/cuentas', [ClienteController::class,'cuentas'])->name('admin.clientes.cuentas');
 Route::resource('clientes', ClienteController::class)->except('show')->names('admin.clientes');
 // Route::get('/usuario', UsuarioController::class);
 
@@ -255,12 +256,19 @@ Route::resource('pedidos', PedidoController::class)->names('admin.pedidos');
 Route::get('/pedidos/{periodo?}', [PedidoController::class,'index'])->name('admin.pedidos.index');
 
 //Orden de Compra
-Route::get('/ordcompras/{producto_id?}/busproducto', [OrdcomprasController::class,'busproducto'])->name('admin.ordcompras.busproducto');
-Route::get('/ordcompras/{producto_id}/{periodo}/consumos', [OrdcomprasController::class,'consumos'])->name('admin.ordcompras.consumos');
+Route::post('/ordcompras/change', [OrdcomprasController::class,'change'])->name('admin.ordcompras.change');
+Route::get('/ordcompras/busproducto/{producto_id?}', [OrdcomprasController::class,'busproducto'])->name('admin.ordcompras.busproducto');
+Route::get('/ordcompras/{detcotizacion}/genoc', [OrdcomprasController::class,'genoc'])->name('admin.ordcompras.genoc');
+Route::get('/ordcompras/{producto_id}/consumos', [OrdcomprasController::class,'consumos'])->name('admin.ordcompras.consumos');
 Route::get('/ordcompras/{producto_id}/compras', [OrdcomprasController::class,'compras'])->name('admin.ordcompras.compras');
 Route::get('/ordcompras/{producto_id}/cotizaciones', [OrdcomprasController::class,'cotizaciones'])->name('admin.ordcompras.cotizaciones');
+Route::get('/ordcompras/{ordcompra}/tablaitem', [OrdcomprasController::class,'tablaitem'])->name('admin.ordcompras.tablaitem');
+Route::get('/ordcompras/{detordcompra}/destroyitem', [OrdcomprasController::class,'destroyitem'])->name('admin.ordcompras.destroyitem');
+Route::get('/ordcompras/{ordcompra}/finalizar', [OrdcomprasController::class,'finalizar'])->name('admin.ordcompras.finalizar');
+Route::get('/ordcompras/{ordcompra}/autorizar', [OrdcomprasController::class,'autorizar'])->name('admin.ordcompras.autorizar');
+Route::post('/ordcompras/additem', [OrdcomprasController::class,'additem'])->name('admin.ordcompras.additem');
 Route::resource('ordcompras', OrdcomprasController::class)->names('admin.ordcompras');
-
+Route::get('/ordcompras/{periodo?}', [OrdcomprasController::class,'index'])->name('admin.ordcompras.index');
 
 //Parámetros: Empresa | Sede
 Route::get('/parametros/empresacreate', [ParametroController::class,'empresaCreate'])->name('admin.parametros.empresaCreate');
@@ -284,6 +292,7 @@ Route::get('/pdf/{rcompra}/ingresos', [PDFController::class,'ingresos'])->name('
 Route::get('/pdf/{tesoreria}/tesoreria', [PDFController::class,'tesoreria'])->name('admin.pdf.tesoreria');
 Route::get('/pdf/{masivo}/masivos', [PDFController::class,'masivos'])->name('admin.pdf.masivos');
 Route::get('/pdf/{materiaprima}/materiaprima', [PDFController::class,'materiaprima'])->name('admin.pdf.materiaprima');
+Route::get('/pdf/{ordcompra}/ordcompra', [PDFController::class,'ordcompra'])->name('admin.pdf.ordcompra');
 
 //EXCEL
 Route::get('/excel/{desde}/{hasta}/materiaprima', [ExcelController::class,'materiaprima'])->name('admin.excel.materiaprima');
