@@ -328,7 +328,7 @@ return [
         ],
         // ['header' => 'VEMTAS'],
         [
-            'text'    => 'VENTAS',
+            'text'    => 'VENTA | CONSUMO',
             'icon'    => 'fa fa-file-invoice-dollar',
             'icon_color' => 'yellow',
             'can'  => 'admin.ventas',
@@ -477,6 +477,15 @@ return [
                     'can'  => 'admin.productos.index',
                 ],
                 [
+                    'text' => 'Saldos Iniciales de Productos',
+                    'icon'    => 'fas fa-window-restore',
+                    'icon_color' => 'cyan',
+                    'route'  => 'admin.saldos.index',
+                    'active' => ['admin/saldos','admin/saldos/create'
+                                ,'admin/saldos/*/edit'],
+                    'can'  => 'admin.saldos.index',
+                ],
+                [
                     'text' => 'Unidad Medida',
                     'icon'    => 'fas fa-ruler-combined',
                     'icon_color' => 'cyan',
@@ -613,18 +622,21 @@ return [
                     'text' => 'Cierre Mes',
                     'icon'    => 'fas fa-cog',
                     'icon_color' => 'cyan',
+                    'can' => 'admin.utils.cierre',
                     'url'  => '#',
                 ],
                 [
                     'text' => 'Regenerar Saldos',
                     'icon'    => 'fas fa-cog',
                     'icon_color' => 'cyan',
-                    'url'  => '#',
+                    'can' => 'admin.utils.regenerasaldo',
+                    'route'  => 'admin.saldos.gregenera',
                 ],                
                 [
                     'text' => 'Vencimientos',
                     'icon'    => 'fas fa-cog',
                     'icon_color' => 'cyan',
+                    'can' => 'admin.utils.vencimiento',
                     'url'  => '#',
                 ],
                 [

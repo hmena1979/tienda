@@ -37,6 +37,7 @@ class PedidoController extends Controller
             $periodo = session('periodo');
         }
         
+        
         $permiso = User::permission('admin.pedidos.procesar')->where('id',Auth::user()->id)->count();
         if ($permiso) {
             $pedidos = Pedido::with(['user'])
@@ -57,7 +58,7 @@ class PedidoController extends Controller
         }
         $estados = [
             1 => 'PENDIENTE',
-            2 => 'ENVIADO',
+            2 => 'SOLICITADO',
             3 => 'RECEPCIONADO',
             4 => 'ATENDIDO',
             5 => 'RECHAZADO',
@@ -97,7 +98,7 @@ class PedidoController extends Controller
         }
         $estados = [
             1 => 'PENDIENTE',
-            2 => 'ENVIADO',
+            2 => 'SOLICITADO',
             3 => 'RECEPCIONADO',
             4 => 'ATENDIDO',
             5 => 'RECHAZADO',
@@ -158,6 +159,7 @@ class PedidoController extends Controller
         $destino = $pedido->detdestino->destino->id;
         $destinos = Destino::where('empresa_id',session('empresa'))->orderBy('nombre')->pluck('nombre','id');
         $detdestinos = Detdestino::where('destino_id',$destino)->orderBy('nombre')->pluck('nombre','id');
+        
         return view('admin.pedidos.edit',
             compact('pedido','users','destino','destinos','detdestinos','procesa'));
     }
@@ -225,122 +227,143 @@ class PedidoController extends Controller
         return true;
     }
 
-    public function recepcionado(Pedido $pedido)
+    public function recepcionado(Request $request, $envio)
     {
-        $pedido->update(['estado' => 3]);
-        return true;
-    }
-
-    public function rechazar(Pedido $pedido)
-    {
-        $pedido->update(['estado' => 5]);
-        return true;
-    }
-
-    public function atender(Pedido $pedido)
-    {
-        foreach ($pedido->detpedidos as $det) {
-            If ($det->producto->stock < $det->catendida) {
-                $response = ['codigo'=>2,'id'=>0];
-                return response()->json($response);
-            }
+        // notify()->preset('mensaje',['message' => 'Procesando ...']);
+        if ($request->ajax()) {
+            $det = json_decode($envio);
+            $pedido = Pedido::findOrFail($det->id);
+            $pedido->update([
+                'estado' => 3,
+                'obslogistica' => $det->respuesta,
+            ]);
+            return true;
         }
-        //----------------------------------------------------------------------------------------------------
-        $data = [
-            'periodo' => session('periodo'),
-            'tipo' => 2,
-            'contable' => 2,
-            'empresa_id' => session('empresa'),
-            'sede_id' => session('sede'),
-            'tipocomprobante_codigo' => '00',
-            'fecha' => date('Y-m-d'),
-            'moneda' => 'PEN',
-            'tc' => $this->BusTcXML(date('Y-m-d')),
-            'cliente_id' => 2,
-            'detdestino_id' => $pedido->detdestino_id,
-            'lote' => $pedido->lote,
-            'pedido_id' => $pedido->id,
-            'detalle' => $pedido->user->name,
-        ];
+    }
 
-        // $cliente = Cliente::find($request->input('cliente_id'));
-        $sede = Sede::find(session('sede'));
-        $correlativo = $sede->consumo_corr + 1;
-        $sede->update([
-            'consumo_corr' => $correlativo
-        ]);
-        $serie = $sede->consumo_serie;
-        $numero = str_pad($correlativo, 8, '0', STR_PAD_LEFT);
+    public function rechazar(Request $request, $envio)
+    {
+        if ($request->ajax()) {
+            $det = json_decode($envio);
+            $pedido = Pedido::findOrFail($det->id);
+            $pedido->update([
+                'estado' => 5,
+                'obslogistica' => $det->respuesta,
+            ]);
+            return true;
+        }
+    }
 
-        $key = 1;
-        $total = 0.00;
-        $pagado = 0.00;
-        $saldo = 0.00;
-        $data = array_merge($data, [
-            'serie' => $serie,
-            'numero' => $numero,
-            'status' => 1,
-            'total' => $total,
-            'pagado' => $pagado,
-            'saldo' => $saldo,
-        ]);
-        // Inicio
-        $rventa = Rventa::create($data);
-        // return $rventa;
-        // $detalle = Tmpdetsalida::where('user_id',Auth::user()->id)->where('key',$key)->get();
-        
-        foreach($pedido->detpedidos as $det){
-            if ($det->catendida > 0){
-                // Crea registro en Detalle de Comprobante
-                $detVenta = $rventa->detrventa()->create([
-                    'producto_id' => $det->producto_id,
-                    'adicional' => $det->motivo,
-                    'grupo' => 1,
-                    'cantidad' => $det->catendida,
-                    'preprom' => $det->producto->precompra,
-                    'precio' => $det->producto->precompra,
-                    'subtotal' => $det->catendida*$det->producto->precompra,
-                ]);
-    
-                $producto = Producto::find($det->producto_id);
-                if ($producto->ctrlstock == 1) {
-                    $stock = $producto->stock;
-                    $producto->update([
-                        'stock' => $stock - $det->catendida,
-                    ]);
-                    Kardex::create([
-                        'periodo' => $rventa->periodo,
-                        'tipo' => 2,
-                        'operacion_id' => $detVenta->id,
-                        'producto_id' => $detVenta->producto_id,
-                        'cliente_id' => $rventa->cliente_id,
-                        'documento' => numDoc($rventa->serie,$rventa->numero),
-                        'proveedor' => $rventa->cliente->razsoc,
-                        'fecha' => $rventa->fecha,
-                        'cant_sal' => $detVenta->cantidad,
-                        'cant_sald' => $stock - $detVenta->cantidad,
-                        'pre_prom' => $detVenta->preprom,
-                        'descrip' => 'CONSUMO TD:' . $rventa->tipocomprobante_codigo . ' ' . numDoc($rventa->serie,$rventa->numero),
-                    ]);
+    public function atender(Request $request, $envio)
+    {
+        if ($request->ajax()) {
+            $enviado = json_decode($envio);
+            $pedido = Pedido::findOrFail($enviado->id);
+            // notify()->preset('mensaje',['message' => 'Procesando ...']);
+            foreach ($pedido->detpedidos as $det) {
+                If ($det->producto->stock < $det->catendida) {
+                    $response = ['codigo'=>2,'id'=>0];
+                    return response()->json($response);
                 }
             }
-            // if ($producto->lotevencimiento == 1) {
-            //     $vencimiento_id = Vencimiento::where('producto_id',$detVenta->producto_id)
-            //         ->where('lote',$detVenta->lote)->value('id');
-            //     $vencimiento = Vencimiento::find($vencimiento_id);
-            //     $vencimientoSalidas = $vencimiento->salidas + $detVenta->cantidad;
-            //     $vencimientoSaldo = $vencimiento->saldo - $detVenta->cantidad;
-            //     $vencimiento->update([
-            //         'salidas' => $vencimientoSalidas,
-            //         'saldo' => $vencimientoSaldo,
-            //     ]);
-            // }
-            // Tmpdetsalida::where('user_id',Auth::user()->id)->where('key',$key)->where('tipo',2)->delete();
+            //----------------------------------------------------------------------------------------------------
+            $data = [
+                'periodo' => session('periodo'),
+                'tipo' => 2,
+                'contable' => 2,
+                'empresa_id' => session('empresa'),
+                'sede_id' => session('sede'),
+                'tipocomprobante_codigo' => '00',
+                'fecha' => date('Y-m-d'),
+                'moneda' => 'PEN',
+                'tc' => $this->BusTcXML(date('Y-m-d')),
+                'cliente_id' => 2,
+                'detdestino_id' => $pedido->detdestino_id,
+                'lote' => $pedido->lote,
+                'pedido_id' => $pedido->id,
+                'detalle' => $pedido->user->name,
+            ];
+            
+            // $cliente = Cliente::find($request->input('cliente_id'));
+            $sede = Sede::find(session('sede'));
+            $correlativo = $sede->consumo_corr + 1;
+            $sede->update([
+                'consumo_corr' => $correlativo
+            ]);
+            $serie = $sede->consumo_serie;
+            $numero = str_pad($correlativo, 8, '0', STR_PAD_LEFT);
+            
+            $key = 1;
+            $total = 0.00;
+            $pagado = 0.00;
+            $saldo = 0.00;
+            $data = array_merge($data, [
+                'serie' => $serie,
+                'numero' => $numero,
+                'status' => 1,
+                'total' => $total,
+                'pagado' => $pagado,
+                'saldo' => $saldo,
+            ]);
+            $rventa = Rventa::create($data);
+            
+            foreach($pedido->detpedidos as $det){
+                if ($det->catendida > 0){
+                    // Crea registro en Detalle de Comprobante
+                    $detVenta = $rventa->detrventa()->create([
+                        'producto_id' => $det->producto_id,
+                        'adicional' => $det->motivo,
+                        'grupo' => 1,
+                        'cantidad' => $det->catendida,
+                        'preprom' => $det->producto->precompra,
+                        'precio' => $det->producto->precompra,
+                        'subtotal' => $det->catendida*$det->producto->precompra,
+                    ]);
+                    
+                    $producto = Producto::find($det->producto_id);
+                    if ($producto->ctrlstock == 1) {
+                        $stock = $producto->stock;
+                        $producto->update([
+                            'stock' => $stock - $det->catendida,
+                        ]);
+                        Kardex::create([
+                            'periodo' => $rventa->periodo,
+                            'tipo' => 2,
+                            'operacion_id' => $detVenta->id,
+                            'producto_id' => $detVenta->producto_id,
+                            'cliente_id' => $rventa->cliente_id,
+                            'documento' => numDoc($rventa->serie,$rventa->numero),
+                            'proveedor' => $rventa->cliente->razsoc,
+                            'fecha' => $rventa->fecha,
+                            'cant_sal' => $detVenta->cantidad,
+                            'cant_sald' => $stock - $detVenta->cantidad,
+                            'pre_prom' => $detVenta->preprom,
+                            'descrip' => 'CONSUMO TD:' . $rventa->tipocomprobante_codigo . ' ' . numDoc($rventa->serie,$rventa->numero),
+                        ]);
+                    }
+                }
+                // if ($producto->lotevencimiento == 1) {
+                    //     $vencimiento_id = Vencimiento::where('producto_id',$detVenta->producto_id)
+                    //         ->where('lote',$detVenta->lote)->value('id');
+                    //     $vencimiento = Vencimiento::find($vencimiento_id);
+                    //     $vencimientoSalidas = $vencimiento->salidas + $detVenta->cantidad;
+                    //     $vencimientoSaldo = $vencimiento->saldo - $detVenta->cantidad;
+                    //     $vencimiento->update([
+                        //         'salidas' => $vencimientoSalidas,
+                        //         'saldo' => $vencimientoSaldo,
+                        //     ]);
+                        // }
+                        // Tmpdetsalida::where('user_id',Auth::user()->id)->where('key',$key)->where('tipo',2)->delete();
+            }
+                    //----------------------------------------------------------------------------------------------------
+                    // notify()->preset('mensaje',['message' => 'Actualizando Kardex']);
+            $pedido->update([
+                'estado' => 4,
+                'obslogistica' => $enviado->respuesta,
+            ]);
+            $response = ['codigo'=>1,'id'=>$rventa->id];
+            return response()->json($response);
         }
-        //----------------------------------------------------------------------------------------------------
-        $pedido->update(['estado' => 4]);
-        $response = ['codigo'=>1,'id'=>$rventa->id];
-        return response()->json($response);
     }
     
     public function detpedido(Detpedido $detpedido)

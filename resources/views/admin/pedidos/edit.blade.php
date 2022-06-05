@@ -13,6 +13,9 @@
         <strong id="contenido_error"></strong>
     </div>
 	<div class="container-fluid">
+        <div class="alert alert-warning" role="alert" style="display:none" id = 'buscando'>
+			Procesando...
+		</div>
 		<div class="row" id = 'agregarcomprobante'>
             <div class="col-md-12">
                 {!! Form::model($pedido,['route'=>['admin.pedidos.update',$pedido], 'method'=>'put']) !!}
@@ -84,7 +87,7 @@
                         <div class="row">
                             <div class="col-md-12 form-group">
                                 {!! Form::label('obslogistica', 'Respuesta Logística:') !!}
-                                {!! Form::textarea('obslogistica',null,['class'=>'form-control mayuscula', 'rows'=>'2']) !!}
+                                {!! Form::textarea('obslogistica',null,['class'=>'form-control mayuscula', 'rows'=>'2','id'=>'obslogistica']) !!}
                             </div>
                         </div>
                         @else
@@ -134,15 +137,21 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-10 txt-convertir-conmarco">
-                                <div>
-                                    <span id='descproducto' class="descproducto"></span>
+                            <div class="col-md-10 d-flex">
+                                <div class="card flex-fill">
+                                    <div class="card-body">
+                                        <span id='descproducto' class="descproducto"></span>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-2">
-                                <a id='enlaceimagen' href="{{ url('/static/images/sinproducto.jpg') }}" data-fancybox="gallery">
-                                    <img id='imgimagen' class="img img-fluid oculto" src="{{ url('/static/images/sinproducto.jpg') }}" alt="">
-                                </a>
+                            <div class="col-md-2 d-flex">
+                                <div class="card flex-fill">
+                                    <div class="card-body">
+                                        <a id='enlaceimagen' href="{{ url('/static/images/sinproducto.jpg') }}" data-fancybox="gallery">
+                                            <img id='imgimagen' class="img img-fluid oculto" src="{{ url('/static/images/sinproducto.jpg') }}" alt="">
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         {!! Form::close() !!}
@@ -390,7 +399,12 @@
             cancelButtonText: 'Cancelar'
             }).then((result) => {
             if (result.value) {
-                $.get(url_global+"/admin/pedidos/"+id+"/recepcionado/",function(response){
+                var det = {
+                    'id' : id,
+                    'respuesta' : $('#obslogistica').val(),
+                };
+                var envio = JSON.stringify(det);
+                $.get(url_global+"/admin/pedidos/"+envio+"/recepcionado/",function(response){
                     location.reload();
                 });
             }
@@ -410,7 +424,17 @@
             cancelButtonText: 'Cancelar'
             }).then((result) => {
             if (result.value) {
-                $.get(url_global+"/admin/pedidos/"+id+"/atender/",function(response){
+                // document.getElementById('buscando').style.display = 'block';
+                var det = {
+                    'id' : id,
+                    'respuesta' : $('#obslogistica').val(),
+                };
+                var envio = JSON.stringify(det);
+                $('#buscando').show();
+                // document.getElementById('buscando').style.display = 'block';
+                $.get(url_global+"/admin/pedidos/"+envio+"/atender/",function(response){
+                    document.getElementById('buscando').style.display = 'none';
+                    $('#buscando').hide();
                     if (response['codigo'] == 2) {
                         Swal.fire(
                             'Error, Saldo Insuficiente',
@@ -431,6 +455,7 @@
                         location.reload();
                     }
                 });
+                $('#buscando').hide();
             }
             })            
         });
@@ -448,7 +473,12 @@
             cancelButtonText: 'Cancelar'
             }).then((result) => {
             if (result.value) {
-                $.get(url_global+"/admin/pedidos/"+id+"/rechazar/",function(response){
+                var det = {
+                    'id' : id,
+                    'respuesta' : $('#obslogistica').val(),
+                };
+                var envio = JSON.stringify(det);
+                $.get(url_global+"/admin/pedidos/"+envio+"/rechazar/",function(response){
                     location.reload();
                 });
             }
@@ -456,7 +486,7 @@
         });
 
         $('#catendida').blur(function(){
-            if (this.value > $('#detstock').val() && $('#ctrlstock').val() == 1){
+            if (this.value > Number($('#detstock').val()) && $('#ctrlstock').val() == 1){
                 Swal.fire(
                     'Error, Saldo Insuficiente',
                     'Cantidad es mayor al Stock',

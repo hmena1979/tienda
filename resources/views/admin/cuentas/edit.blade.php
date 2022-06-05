@@ -44,9 +44,17 @@
 								{!! Form::label('banco_id', 'Banco:') !!}
 								{!! Form::select('banco_id',$bancos,null,['class'=>'custom-select activo','placeholder' => 'Seleccione Banco']) !!}
 							</div>
-							<div class="col-md-4 form-group">
-								{!! Form::label('numerocta', 'Número Cuenta:') !!}
-								{!! Form::text('numerocta', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
+							<div class="col-md-4">
+								<div class="row">
+									<div class="col-md-7 form-group">
+										{!! Form::label('numerocta', 'Número Cuenta:') !!}
+										{!! Form::text('numerocta', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
+									</div>
+									<div class="col-md-5 form-group">
+										{!! Form::label('maximo', 'Monto Máximo:') !!}
+										{!! Form::text('maximo', null, ['class'=>'form-control decimal','autocomplete'=>'off']) !!}
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>				

@@ -23,7 +23,6 @@ class Rventa extends Model
     public function cliente()
     {
     	return $this->belongsTo('App\Models\Cliente');
-    	// return $this->hasOne('App\Models\Cliente', 'id', 'cliente_id');
     }
 
     public function monedas()

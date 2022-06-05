@@ -325,6 +325,15 @@ class DashboardController extends Controller
 		// $this->agregar_permiso('30','PEDIDOS','admin.pedidos.destroy','Puede eliminar Pedidos');
 		// $this->agregar_permiso('30','PEDIDOS','admin.pedidos.procesar','Puede Procesar Pedidos');
 
+		$this->agregar_permiso('31','SALDO INICIAL PRODUCTOS','admin.saldos.index','Puede ver listado Saldos Iniciales');
+		$this->agregar_permiso('31','SALDO INICIAL PRODUCTOS','admin.saldos.create','Puede agregar Saldos Iniciales');
+		$this->agregar_permiso('31','SALDO INICIAL PRODUCTOS','admin.saldos.edit','Puede editar Saldos Iniciales');
+		$this->agregar_permiso('31','SALDO INICIAL PRODUCTOS','admin.saldos.destroy','Puede eliminar Saldos Iniciales');
+
+		$this->agregar_permiso('32','UTILITARIOS','admin.utils.regenerasaldo','Regenerar Saldo de Almacen');
+		$this->agregar_permiso('32','UTILITARIOS','admin.utils.cierre','Cierre de Mes');
+		$this->agregar_permiso('32','UTILITARIOS','admin.utils.vencimiento','Vencimiento de Productos');
+
 		// return redirect()->route('admin.inicio')->with('update', 'Permisos Agregados');
 		// return redirect()->route('admin.inicio')->with('update', 'Registro Actualizado');		
 				// $this->agregar_permiso('6','TIPO DE PRODUCTO','admin.tipoproductos.index','Puede ver listado Tipo de Productos');

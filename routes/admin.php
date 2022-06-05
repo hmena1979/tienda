@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\Admin\BusquedaController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\BusquedaController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UsuarioController;
 use App\Http\Controllers\Admin\RoleController;
@@ -14,7 +14,7 @@ use App\Http\Controllers\Admin\ConsumoController;
 use App\Http\Controllers\Admin\CotizacionController;
 use App\Http\Controllers\Admin\CuentaController;
 use App\Http\Controllers\Admin\DestinoController;
-use App\Http\Controllers\Admin\TipoProductoController;
+// use App\Http\Controllers\Admin\TipoProductoController;
 use App\Http\Controllers\Admin\UMedidaController;
 use App\Http\Controllers\Admin\ProductoController;
 use App\Http\Controllers\Admin\TipoComprobanteController;
@@ -31,9 +31,9 @@ use App\Http\Controllers\Admin\OrdcomprasController;
 use App\Http\Controllers\Admin\ParametroController;
 use App\Http\Controllers\Admin\PDFController;
 use App\Http\Controllers\Admin\PedidoController;
-// use App\Http\Controllers\Admin\RegistroCompraController;
 use App\Http\Controllers\Admin\RcompraController;
 use App\Http\Controllers\Admin\RventaController;
+use App\Http\Controllers\Admin\SaldoController;
 use App\Http\Controllers\Admin\SunatController;
 use App\Http\Controllers\Admin\TesoreriaController;
 use App\Http\Controllers\Admin\TransferenciaController;
@@ -247,9 +247,9 @@ Route::get('/pedidos/{pedido}/tablaitem', [PedidoController::class,'tablaitem'])
 Route::get('/pedidos/{detpedido}/destroyitem', [PedidoController::class,'destroyitem'])->name('admin.pedidos.destroyitem');
 Route::post('/pedidos/additem', [PedidoController::class,'additem'])->name('admin.pedidos.additem');
 Route::get('/pedidos/{pedido}/enviar', [PedidoController::class,'enviar'])->name('admin.pedidos.enviar');
-Route::get('/pedidos/{pedido}/recepcionado', [PedidoController::class,'recepcionado'])->name('admin.pedidos.recepcionado');
-Route::get('/pedidos/{pedido}/rechazar', [PedidoController::class,'rechazar'])->name('admin.pedidos.rechazar');
-Route::get('/pedidos/{pedido}/atender', [PedidoController::class,'atender'])->name('admin.pedidos.atender');
+Route::get('/pedidos/{envio}/recepcionado', [PedidoController::class,'recepcionado'])->name('admin.pedidos.recepcionado');
+Route::get('/pedidos/{envio}/rechazar', [PedidoController::class,'rechazar'])->name('admin.pedidos.rechazar');
+Route::get('/pedidos/{envio}/atender', [PedidoController::class,'atender'])->name('admin.pedidos.atender');
 Route::get('/pedidos/{detpedido}/detpedido', [PedidoController::class,'detpedido'])->name('admin.pedidos.detpedido');
 Route::get('/pedidos/{envio}/editdetpedido', [PedidoController::class,'editdetpedido'])->name('admin.pedidos.editdetpedido');
 Route::resource('pedidos', PedidoController::class)->names('admin.pedidos');
@@ -269,6 +269,10 @@ Route::get('/ordcompras/{ordcompra}/autorizar', [OrdcomprasController::class,'au
 Route::post('/ordcompras/additem', [OrdcomprasController::class,'additem'])->name('admin.ordcompras.additem');
 Route::resource('ordcompras', OrdcomprasController::class)->names('admin.ordcompras');
 Route::get('/ordcompras/{periodo?}', [OrdcomprasController::class,'index'])->name('admin.ordcompras.index');
+
+Route::get('/saldos/gregenera', [SaldoController::class,'gregenera'])->name('admin.saldos.gregenera');
+Route::post('/saldos/pregenera', [SaldoController::class,'pregenera'])->name('admin.saldos.pregenera');
+Route::resource('saldos', SaldoController::class)->names('admin.saldos');
 
 //Parámetros: Empresa | Sede
 Route::get('/parametros/empresacreate', [ParametroController::class,'empresaCreate'])->name('admin.parametros.empresaCreate');
@@ -317,6 +321,7 @@ Route::post('/import/empacopiadora', [ImportController::class,'empacopiadora'])-
 Route::post('/import/acopiador', [ImportController::class,'acopiador'])->name('admin.imports.empacopiadora');
 Route::post('/import/chofer', [ImportController::class,'chofer'])->name('admin.imports.chofer');
 Route::post('/import/embarcacion', [ImportController::class,'embarcacion'])->name('admin.imports.embarcacion');
+Route::post('/import/producto', [ImportController::class,'producto'])->name('admin.imports.producto');
 
 //Modulo Busquedas
 Route::get('/busquedas/departamento', [BusquedaController::class,'departamento'])->name('admin.busquedas.departamento');

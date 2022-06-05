@@ -43,10 +43,9 @@
                         <i class="fas fa-trash-alt"></i>
                     </button>                        
                     @endif
-                    @if ($procesa)
-                    {{-- <a href="{{ route('admin.ordcompras.busproducto',$det->producto_id) }}"><i class="fas fa-window-restore"></i></a> --}}
+                    @can('admin.ordcompras.create')
                     <a href="{{ route('admin.ordcompras.busproducto',$det->producto_id) }}"datatoggle="tooltip" data-placement="top" title="Buscar"><i class="fas fa-window-restore"></i></a>
-                    @endif
+                    @endcan
                 </div>
             </td>
         </tr>

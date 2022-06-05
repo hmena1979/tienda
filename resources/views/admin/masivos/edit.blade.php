@@ -9,6 +9,9 @@
 
 @section('contenido')
     <div class="container-fluid">
+        <div class="alert alert-warning" role="alert" style="display:none" id = 'buscando'>
+			Procesando...
+		</div>
 		<div class="row">
 			<div class="col-md-12">
                 <div class="panelprin shadow">
@@ -23,9 +26,11 @@
                             </li>                                
                             @endcan
                             @can('admin.masivos.autorizar')
+                            @if ($masivo->cuenta->maximo >= $masivo->detmasivos->sum('montopen'))
                             <li>
                                 <button type="button" id='autorizar' class="btn btn-convertir mt-2">Autorizar</button>
                             </li>
+                            @endif
                             @endcan
                             @endif
                             @can('admin.masivos.generar')
@@ -149,10 +154,13 @@
 
         $('#generar').click(function(){
             var id = $('#id').val();
+            $('#buscando').show();
             $.get(url_global+"/admin/masivos/"+id+"/generar/",function(response){
                 // alert(response);
+                $('#buscando').hide();
                 location.reload();
             });
+            $('#buscando').hide();
         });
 
         $('#revertir').click(function(){
@@ -168,9 +176,12 @@
             cancelButtonText: 'Cancelar'
             }).then((result) => {
             if (result.value) {
+                $('#buscando').show();
                 $.get(url_global+"/admin/masivos/"+id+"/revertir/",function(response){
+                    $('#buscando').hide();
                     location.reload();
                 });
+                $('#buscando').hide();
             }
             })            
         });

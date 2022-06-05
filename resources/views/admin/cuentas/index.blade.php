@@ -39,8 +39,9 @@
 						<table id= "grid" class="table table-hover table-sm">
 							<thead>
 								<tr>
-									<th width="60%">Nombre</th>
+									<th width="45%">Nombre</th>
 									<th width="10%">Moneda</th>
+									<th width="15%">Monto Máximo</th>
 									<th width="10%">Tipo</th>
 									<th width="10%"></th>
 								</tr>
@@ -50,6 +51,7 @@
 								<tr>
 									<td>{{ $cuenta->nombre }}</td>
 									<td>{{ $cuenta->moneda }}</td>
+									<td>{{ number_format($cuenta->maximo,2) }}</td>
 									<td>{{ $cuenta->tipo == 1 ? 'BANCO' : 'CAJA' }}</td>
 									<td>
 										<div class="opts">

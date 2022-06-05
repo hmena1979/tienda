@@ -6,7 +6,7 @@
     <thead>
         <tr>
             <th width="25%">Proveedor</th>
-            <th width="10%">Fecha</th>
+            <th width="10%">Vence</th>
             <th width="5%">TD</th>
             <th width="10%">Número</th>
             <th width="8%">Moneda</th>

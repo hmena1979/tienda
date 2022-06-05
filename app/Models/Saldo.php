@@ -12,4 +12,9 @@ class Saldo extends Model
     protected $table = 'saldos';
     protected $hidden = ['created_at','updated_at'];
     protected $guarded = [];
+
+    public function producto()
+    {
+        return $this->belongsTo('App\Models\Producto');
+    }
 }

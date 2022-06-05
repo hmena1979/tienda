@@ -22,6 +22,8 @@ use App\Models\Tmpdetsalida;
 use App\Models\Umedida;
 use App\Models\Vencimiento;
 use Intervention\Image\ImageManagerStatic as Image;
+use Mckenziearts\Notify\LaravelNotify;
+use Yajra\DataTables\DataTables;
 
 class ProductoController extends Controller
 {
@@ -36,27 +38,24 @@ class ProductoController extends Controller
 		// $this->middleware('can:admin.categorias.password')->only('editpassword','updatepassword');
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $principal = Sede::where('id',Auth::user()->sede)->value('principal');
-        $productos = Producto::with('umedida')->select('id','nombre','umedida_id','stock','preventa_pen','grupo')
-            ->where('empresa_id',Auth::user()->empresa)
-            ->get();
-        return view('admin.productos.index', compact('productos','principal'));
+        // notify()->preset('mensaje',['message' => 'Index']);
+        return view('admin.productos.index',compact('principal'));
     }
 
     public function registro(Request $request)
     {
-        //$prov = Paciente::select('id','numdoc','razsoc','telefono','email','tipo')->get();
         if($request->ajax()){
-            return datatables()
-                // ->of(Cliente::select('id','numdoc','razsoc','celular','email'))
-                ->of(Producto::with('Umedida')->select('id','nombre','umedida_id','stock','preventa_pen','grupo')
+            $productos = Producto::with(['umedida','tipoproducto'])
+                ->select('id','nombre','umedida_id','tipoproducto_id','stock','precompra','grupo')
                 ->where('empresa_id',session('empresa'))
-                ->where('sede_id',session('sede')))
+                ->where('sede_id',session('sede'));
+            return DataTables::of($productos)
                 ->addColumn('btn','admin.productos.action')
                 ->rawColumns(['btn'])
-                ->toJson();
+                ->make(true);
         }
     }
 

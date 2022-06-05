@@ -8,56 +8,61 @@
 @section('css')
 @yield('style')
 <link rel="stylesheet" href="{{ url('/static/css/admin.css?v='.time()) }}">
+@notifyCss
 @stop
 @section('content')
+    
 
-    {{-- Content Wrapper --}}
-    {{-- <div class="content-wrapper {{ config('adminlte.classes_content_wrapper') ?? '' }}"> --}}
-        <div class="pageprin">
-            <div class="container-fluid">
-                <nav aria-lavel="breadcrumb shadow">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item">
-                            <a href="{{ url('/admin/inicio') }}"><i class="fas fa-home"></i> Inicio</a>
-                        </li>
-                        @section('breadcrumb')
-                        @show
-                    </ol>
-                </nav>
-            </div>
+{{-- Content Wrapper --}}
+{{-- <div class="content-wrapper {{ config('adminlte.classes_content_wrapper') ?? '' }}"> --}}
+    <div class="pageprin">
+        <div class="container-fluid">
+            <nav aria-lavel="breadcrumb shadow">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="{{ url('/admin') }}"><i class="fas fa-home"></i> Inicio</a>
+                    </li>
+                    @section('breadcrumb')
+                    @show
+                </ol>
+            </nav>
         </div>
+    </div>
         {{-- Mensaje de registro --}}
-        @if(Session::has('message'))
-            <div class="container">
-                <div class="alert alert-{{ Session::get('typealert') }} alertmensaje" style="display:none;">
-                    {{ Session::get('message') }}
-                    @if ($errors->any())
-                        <ul>
-                            @foreach($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    @endif
-                    {{-- <script>
-                        $('.alertmensaje').slideDown();
-                        setTimeout(function(){ $('.alertmensaje').slideUp(); }, 10000);
-                    </script>                 --}}
-                </div>
-                
-            </div>        
-        @endif
-        {{-- <div id="mensaje_error" class="alert alert-danger" style="display:none;">
-            <strong id="contenido_error"></strong>
-        </div> --}}
-        {{-- Fin Mensaje de registro --}}
-        @yield('contenido')
-        {{-- @endsection --}}
+    @if(Session::has('message'))
+    <div class="container">
+        <div class="alert alert-{{ Session::get('typealert') }} alertmensaje" style="display:none;">
+            {{ Session::get('message') }}
+            @if ($errors->any())
+            <ul>
+                @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+            @endif
+            {{-- <script>
+                $('.alertmensaje').slideDown();
+                setTimeout(function(){ $('.alertmensaje').slideUp(); }, 10000);
+            </script>                 --}}
+        </div>
+    </div>        
+    @endif
+    {{-- <div id="mensaje_error" class="alert alert-danger" style="display:none;">
+        <strong id="contenido_error"></strong>
+    </div> --}}
+    {{-- Fin Mensaje de registro --}}
+    @yield('contenido')
+    {{-- @endsection --}}
     {{-- </div> --}}
-@stop
-
-@section('js')
+    @stop
+    
+    @section('js')
     <script src="{{ url('/vendor/select2/js/i18n/es.js') }}"></script>
     <script src="{{ url('/static/js/admin.js?v='.time()) }}"></script>
+    <x:notify-messages />
+
+    {{-- @include('notify::components.notify') --}}
+    @notifyJs
     <script>
         $(document).ready(function(){
             $('.alertmensaje').slideDown();

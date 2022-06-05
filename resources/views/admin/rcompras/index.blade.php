@@ -48,8 +48,9 @@
 									<th width="10%">Moneda</th>
 									<th width="10%">Número</th>
 									<th width="5%">TD</th>
-									<th width="45%">Proveedor</th>
+									<th width="35%">Proveedor</th>
 									<th class="text-right" width="10%">Total</th>
+									<th class="text-right" width="10%">Saldo</th>
 									<th width="10%"></th>
 								</tr>
 							</thead>
@@ -62,6 +63,7 @@
 									<td>{{ $rcompra->tipocomprobante_codigo }}</td>
 									<td>{{ $rcompra->cliente->razsoc }}</td>
 									<td class="text-right">{{ number_format($rcompra->total,2) }}</td>
+									<td class="text-right">{{ number_format($rcompra->saldo,2) }}</td>
 									<td>
 										<div class="opts">
 											@can('admin.rcompras.edit')
