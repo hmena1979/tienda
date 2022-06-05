@@ -29,7 +29,7 @@ class SaldoController extends Controller
         $saldos = Saldo::with(['producto'])
             ->whereRelation('producto',['empresa_id' => session('empresa'), 'sede_id' => session('sede')])
             ->where('periodo', '000000')
-            ->orderBy(Producto::select('nombre')->whereColumn('Saldos.producto_id','productos.id'))
+            ->orderBy(Producto::select('nombre')->whereColumn('saldos.producto_id','productos.id'))
             ->get();
         return view('admin.saldos.index',compact('saldos'));
     }
