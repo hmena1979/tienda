@@ -37,8 +37,6 @@
 								</a>
 							</li>
 							<li>
-								{{-- <a class="" href="{{ route('admin.pdf.facturacion',1) }}" target="_blank" datatoggle="tooltip" data-placement="top" title="Imprimir"><i class="fas fa-print"></i></a> --}}
-
 								<button class="btn btn-convertir" type="button" id="btnprint" data-toggle="modal" data-target="#print" onclick="limpia()"><i class="fas fa-print"></i></button>
 							</li>
 							@endcan
@@ -97,73 +95,7 @@
 								@endforeach
 								</tbody>
 						</table>
-						{{-- <table id= "grid" class="table table-bordered table-responsive table-hover table-sm table-materia-prima">
-							<thead>
-								<tr>
-									<th class="align-middle">Ingreso <br> Planta</th>
-									<th class="align-middle">Chofer</th>
-									<th class="align-middle">Empresa Transportista</th>
-									<th class="align-middle">Empresa Acopiadora</th>
-									<th class="align-middle">Acopiador</th>
-									<th class="align-middle">Marca</th>
-									<th class="align-middle">Placa</th>
-									<th class="align-middle">Lote</th>
-									<th class="align-middle">Cajas <br> Declaradas</th>
-									<th class="align-middle">Peso <br> Planta KG</th>
-									<th class="align-middle">Fecha <br> Partida</th>
-									<th class="align-middle">Fecha <br> Llegada</th>
-									<th class="align-middle">Hora <br> Descarga</th>
-									<th class="align-middle">Proveedor</th>
-									<th class="align-middle">Precio</th>
-									<th class="align-middle">Lugar</th>
-									<th class="align-middle">Tipo Producto</th>
-									<th class="align-middle">Destare KG</th>
-									<th class="align-middle">Observaciones</th>
-									<th class="align-middle"></th>
-								</tr>
-							</thead>
-							<tbody>
-								@foreach($materiaprimas as $materiaprima)
-								<tr>
-									<td>{{ $materiaprima->ingplanta }}</td>
-									<td>{{ $materiaprima->chofer->nombre }}</td>
-									<td>{{ $materiaprima->transportista->nombre }}</td>
-									<td>{{ $materiaprima->empacopiadora->nombre }}</td>
-									<td>{{ $materiaprima->acopiador->nombre }}</td>
-									<td>{{ $materiaprima->camara->marca }}</td>
-									<td>{{ $materiaprima->camara->placa }}</td>
-									<td>{{ $materiaprima->lote }}</td>
-									<td>{{ $materiaprima->cajas }}</td>
-									<td>{{ $materiaprima->pplanta }}</td>
-									<td>{{ $materiaprima->fpartida }}</td>
-									<td>{{ $materiaprima->fllegada }}</td>
-									<td>{{ $materiaprima->hdescarga }}</td>
-									<td>{{ $materiaprima->cliente->razsoc }}</td>
-									<td>{{ $materiaprima->precio }}</td>
-									<td>{{ $materiaprima->lugar }}</td>
-									<td>{{ $materiaprima->producto->nombre }}</td>
-									<td>{{ $materiaprima->destare }}</td>
-									<td>{{ $materiaprima->observaciones }}</td>
-									<td>
-										<div class="opts">
-											@can('admin.embarcaciones.edit')
-											<a class="" href="{{ route('admin.materiaprimas.edit',$materiaprima) }}"datatoggle="tooltip" data-placement="top" title="Editar"><i class="fas fa-edit"></i></a>
-											@endcan
-											@can('admin.umedidas.destroy')
-											<form action="{{ route('admin.materiaprimas.destroy',$materiaprima) }}" method="POST" class="formulario_eliminar">
-												@csrf
-												@method('delete')
-												<button type="submit" datatoggle="tooltip" data-placement="top" title="Eliminar">
-													<i class="fas fa-trash-alt"></i>
-												</button>
-											</form>
-                                            @endcan
-										</div>
-									</td>
-								</tr>
-								@endforeach
-								</tbody>
-						</table> --}}
+
 						<!-- Modal -->
                         <div class="modal fade" id="print" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">

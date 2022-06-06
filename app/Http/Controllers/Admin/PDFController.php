@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Categoria;
+use App\Models\Catproducto;
 use App\Models\Detcliente;
 use App\Models\Embarcacion;
 use App\Models\Empresa;
@@ -275,5 +276,24 @@ class PDFController extends Controller
         //return redirect('/admin/factura/'.$factura->id.'/edit')->with('message', 'Factura generada')->with('typealert', 'success');
         
         // return view('pdf.boleta', $data);
+    }
+
+    public function productos($tipo, $tipoproducto_id)
+    {
+        $empresa = Empresa::findOrFail(session('empresa'));
+        if ($tipo == 1) {
+            $tipoproductos = Catproducto::with(['productos'])->whereIn('modulo',['1'])
+                ->orderBy('nombre')->get();
+        } else {
+            $tipoproductos = Catproducto::with(['productos'])->whereIn('modulo',['1'])
+                ->where('id',$tipoproducto_id)
+                ->get();
+        }
+        $data = [
+            'empresa' => $empresa,
+            'tipoproductos' => $tipoproductos,
+        ];
+        $pdf = PDF::loadView('pdf.productos', $data)->setPaper('A4', 'portrait');
+        return $pdf->stream('Productos.pdf', array('Attachment'=>false));
     }
 }

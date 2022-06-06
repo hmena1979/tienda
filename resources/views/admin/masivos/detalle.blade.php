@@ -22,7 +22,7 @@
             <td>{{ $det->cuenta }}</td>
             <td>{{ $det->tipo }}</td>
             <td>{{ $det->rcompra->tipocomprobante_codigo }}</td>
-            <td>{{ numDoc($det->rcompra->serie,$det->rcompra->numero) }}</td>
+            <td datatoggle="tooltip" data-placement="top" title="{{ $det->rcompra->detalle }}">{{ numDoc($det->rcompra->serie,$det->rcompra->numero) }}</td>
             <td class="text-right">{{ number_format($det->montopen, 2) }}</td>
             <td class="text-right">{{ number_format($det->montousd,2) }}</td>
             <td class="text-center align-middle">

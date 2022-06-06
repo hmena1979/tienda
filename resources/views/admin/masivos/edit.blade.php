@@ -42,6 +42,7 @@
                             @if ($masivo->estado == 3)
                             <li>
                                 <a class="btn btn-convertir mt-2" href="{{ route('admin.masivos.download_macro',$masivo) }}">Descargar</a>
+                                <a class="btn btn-convertir mt-2" href="{{ route('admin.mensajerias.tesoreria',$masivo) }}"><i class="far fa-envelope"></i></a>
                             </li>
                             @endif
                             @if ($masivo->estado <> 1)

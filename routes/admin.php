@@ -24,8 +24,10 @@ use App\Http\Controllers\Admin\EmpAcopiadoraController;
 use App\Http\Controllers\Admin\ExcelController;
 use App\Http\Controllers\Admin\GuiaController;
 use App\Http\Controllers\Admin\IngresoController;
+use App\Http\Controllers\Admin\MailController;
 use App\Http\Controllers\Admin\MasivoController;
 use App\Http\Controllers\Admin\MateriaPrimaController;
+use App\Http\Controllers\Admin\MensajeriaController;
 use App\Http\Controllers\Admin\MuelleController;
 use App\Http\Controllers\Admin\OrdcomprasController;
 use App\Http\Controllers\Admin\ParametroController;
@@ -285,6 +287,16 @@ Route::get('/parametros/{sede}/sedeedit', [ParametroController::class,'sedeEdit'
 Route::put('/parametros/{sede}/sedeupdate', [ParametroController::class,'sedeUpdate'])->name('admin.parametros.sedeUpdate');
 Route::get('/parametros/{empresa?}', [ParametroController::class,'index'])->name('admin.parametros.index');
 
+//Mensajeria e-mail
+Route::get('/mensajerias/{modulo?}',[MensajeriaController::class,'index'])->name('admin.mensajerias.index');
+Route::get('/mensajerias/{modulo}/create',[MensajeriaController::class,'create'])->name('admin.mensajerias.create');
+Route::post('/mensajerias/store',[MensajeriaController::class,'store'])->name('admin.mensajerias.store');
+Route::get('/mensajerias/{mensajeria}/edit',[MensajeriaController::class,'edit'])->name('admin.mensajerias.edit');
+Route::put('/mensajerias/{mensajeria}/update',[MensajeriaController::class,'update'])->name('admin.mensajerias.update');
+Route::delete('/mensajerias/{mensajeria}/destroy',[MensajeriaController::class,'destroy'])->name('admin.mensajerias.destroy');
+Route::get('/mensajerias/{masivo}/tesoreria', [MensajeriaController::class,'tesoreria'])->name('admin.mensajerias.tesoreria');
+Route::get('/mensajerias/{pedido}/pedido', [MensajeriaController::class,'pedido'])->name('admin.mensajerias.pedido');
+
 //Sunat
 Route::get('/sunat/{rventa}/ventas', [SunatController::class, 'ventas'])->name('admin.sunat.ventas');
 Route::get('/sunat/{guia}/guias', [SunatController::class, 'guias'])->name('admin.sunat.guias');
@@ -297,6 +309,7 @@ Route::get('/pdf/{tesoreria}/tesoreria', [PDFController::class,'tesoreria'])->na
 Route::get('/pdf/{masivo}/masivos', [PDFController::class,'masivos'])->name('admin.pdf.masivos');
 Route::get('/pdf/{materiaprima}/materiaprima', [PDFController::class,'materiaprima'])->name('admin.pdf.materiaprima');
 Route::get('/pdf/{ordcompra}/ordcompra', [PDFController::class,'ordcompra'])->name('admin.pdf.ordcompra');
+Route::get('/pdf/{tipo}/{tipoproducto_id}/productos', [PDFController::class,'productos'])->name('admin.pdf.productos');
 
 //EXCEL
 Route::get('/excel/{desde}/{hasta}/materiaprima', [ExcelController::class,'materiaprima'])->name('admin.excel.materiaprima');

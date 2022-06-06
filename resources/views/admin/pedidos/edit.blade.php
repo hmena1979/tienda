@@ -381,6 +381,11 @@
             if (result.value) {
                 $.get(url_global+"/admin/pedidos/"+id+"/enviar/",function(response){
                     location.reload();
+                    Swal.fire(
+                        'Enviado',
+                        'Pedido enviado, este atento de la respuesta de Logística',
+                        'success'
+                        )
                 });
             }
             })            

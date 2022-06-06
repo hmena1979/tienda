@@ -74,7 +74,7 @@ class MateriaPrimaExport implements FromView, WithColumnWidths, WithColumnFormat
         $ematricula = Embarcacion::pluck('matricula','id');
         $eprotocolo = Embarcacion::pluck('protocolo','id');
         $ecapacidad = Embarcacion::pluck('capacidad','id');
-        $materiasPrimas = Materiaprima::whereBetween('ingplanta',[$this->desde, $this->hasta])->get();
+        $materiasPrimas = Materiaprima::whereBetween('ingplanta',[$this->desde, $this->hasta])->orderBy('ticket_balanza')->get();
         return view('excel.materiaprima', [
             'materiaprimas' =>  $materiasPrimas,
             'enombre' => $enombre,

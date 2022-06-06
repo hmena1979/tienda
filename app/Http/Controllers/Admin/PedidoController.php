@@ -4,19 +4,22 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreDetpedidoRequest;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+
+use App\Http\Controllers\Admin\MensajeriaController;
+
 use App\Models\Categoria;
 use App\Models\Destino;
 use App\Models\Detdestino;
 use App\Models\Detpedido;
 use App\Models\Kardex;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use App\Models\Pedido;
 use App\Models\Producto;
 use App\Models\Rventa;
 use App\Models\Sede;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 
 class PedidoController extends Controller
 {
@@ -224,6 +227,8 @@ class PedidoController extends Controller
     public function enviar(Pedido $pedido)
     {
         $pedido->update(['estado' => 2]);
+        $mensajeria = new MensajeriaController();
+        $mensajeria->pedido($pedido);
         return true;
     }
 

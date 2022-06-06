@@ -41,8 +41,9 @@ class ProductoController extends Controller
     public function index(Request $request)
     {
         $principal = Sede::where('id',Auth::user()->sede)->value('principal');
+        $tipoproductos = Catproducto::whereIn('modulo',['1'])->orderBy('nombre')->pluck('nombre','id');
         // notify()->preset('mensaje',['message' => 'Index']);
-        return view('admin.productos.index',compact('principal'));
+        return view('admin.productos.index',compact('principal','tipoproductos'));
     }
 
     public function registro(Request $request)

@@ -329,10 +329,15 @@ class DashboardController extends Controller
 		// $this->agregar_permiso('31','SALDO INICIAL PRODUCTOS','admin.saldos.create','Puede agregar Saldos Iniciales');
 		// $this->agregar_permiso('31','SALDO INICIAL PRODUCTOS','admin.saldos.edit','Puede editar Saldos Iniciales');
 		// $this->agregar_permiso('31','SALDO INICIAL PRODUCTOS','admin.saldos.destroy','Puede eliminar Saldos Iniciales');
-
+		
 		// $this->agregar_permiso('32','UTILITARIOS','admin.utils.regenerasaldo','Regenerar Saldo de Almacen');
 		// $this->agregar_permiso('32','UTILITARIOS','admin.utils.cierre','Cierre de Mes');
 		// $this->agregar_permiso('32','UTILITARIOS','admin.utils.vencimiento','Vencimiento de Productos');
+
+		$this->agregar_permiso('33','DESTINATARIOS E-MAIL','admin.mensajerias.index','Puede ver listado Destinatarios e-mail');
+		$this->agregar_permiso('33','DESTINATARIOS E-MAIL','admin.mensajerias.create','Puede agregar Destinatarios e-mail');
+		$this->agregar_permiso('33','DESTINATARIOS E-MAIL','admin.mensajerias.edit','Puede editar Destinatarios e-mail');
+		$this->agregar_permiso('33','DESTINATARIOS E-MAIL','admin.mensajerias.destroy','Puede eliminar Destinatarios e-mail');
 
 		// return redirect()->route('admin.inicio')->with('update', 'Permisos Agregados');
 		// return redirect()->route('admin.inicio')->with('update', 'Registro Actualizado');		
@@ -343,4 +348,3 @@ class DashboardController extends Controller
 		return redirect()->route('admin.inicio')->with('message', 'Permisos Agregados')->with('typealert', 'success');
 	}
 }
-

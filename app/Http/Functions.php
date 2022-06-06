@@ -25,6 +25,14 @@
 		return $a;
 	}
 
+	function geMensajeriaArray(){
+		$a = [
+			'1' => 'Pagos Masivos',
+			'2' => 'Logistica | Almacen',
+		];
+		return $a;
+	}
+
 	function getMeses(){
 		$m = [
 			'01' => 'Enero',
