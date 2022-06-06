@@ -131,7 +131,12 @@ class MasivoController extends Controller
 
     public function tablaitem(Masivo $masivo)
     {
-        return view('admin.masivos.detalle',compact('masivo'));
+        if ($masivo->cuenta->moneda == 'PEN') {
+            $total = $masivo->detmasivos->sum('montopen');
+        } else {
+            $total = $masivo->detmasivos->sum('montousd');
+        }
+        return view('admin.masivos.detalle',compact('masivo','total'));
     }
 
     public function pendientes(Masivo $masivo)

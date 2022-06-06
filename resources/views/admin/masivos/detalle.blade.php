@@ -36,7 +36,7 @@
             </td>
         </tr>
         @endforeach
-        <tr class="@if ($masivo->cuenta->maximo < $masivo->detmasivos->sum('montopen'))rojo @endif">
+        <tr class="@if ($masivo->cuenta->maximo < $total)rojo @endif">
             <td colspan="5" class="negrita text-right">TOTAL</td>
             <td class="@if ($masivo->cuenta->moneda == 'PEN')negrita @endif text-right">
                 {{ number_format($masivo->detmasivos->sum('montopen'),2) }}
