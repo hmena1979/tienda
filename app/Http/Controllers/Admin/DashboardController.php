@@ -334,10 +334,10 @@ class DashboardController extends Controller
 		// $this->agregar_permiso('32','UTILITARIOS','admin.utils.cierre','Cierre de Mes');
 		// $this->agregar_permiso('32','UTILITARIOS','admin.utils.vencimiento','Vencimiento de Productos');
 
-		$this->agregar_permiso('33','DESTINATARIOS E-MAIL','admin.mensajerias.index','Puede ver listado Destinatarios e-mail');
-		$this->agregar_permiso('33','DESTINATARIOS E-MAIL','admin.mensajerias.create','Puede agregar Destinatarios e-mail');
-		$this->agregar_permiso('33','DESTINATARIOS E-MAIL','admin.mensajerias.edit','Puede editar Destinatarios e-mail');
-		$this->agregar_permiso('33','DESTINATARIOS E-MAIL','admin.mensajerias.destroy','Puede eliminar Destinatarios e-mail');
+		// $this->agregar_permiso('33','DESTINATARIOS E-MAIL','admin.mensajerias.index','Puede ver listado Destinatarios e-mail');
+		// $this->agregar_permiso('33','DESTINATARIOS E-MAIL','admin.mensajerias.create','Puede agregar Destinatarios e-mail');
+		// $this->agregar_permiso('33','DESTINATARIOS E-MAIL','admin.mensajerias.edit','Puede editar Destinatarios e-mail');
+		// $this->agregar_permiso('33','DESTINATARIOS E-MAIL','admin.mensajerias.destroy','Puede eliminar Destinatarios e-mail');
 
 		// return redirect()->route('admin.inicio')->with('update', 'Permisos Agregados');
 		// return redirect()->route('admin.inicio')->with('update', 'Registro Actualizado');		

@@ -46,7 +46,7 @@ class RcompraController extends Controller
             $periodo = session('periodo');
         }
         $rcompras = Rcompra::with(['cliente'])
-            ->select('id','fecha','moneda','serie','numero','tipocomprobante_codigo','cliente_id','total')
+            ->select('id','fecha','moneda','serie','numero','tipocomprobante_codigo','cliente_id','total','saldo')
             ->where('periodo',$periodo)
             ->where('empresa_id',session('empresa'))
             ->where('sede_id',session('sede'))
@@ -77,7 +77,7 @@ class RcompraController extends Controller
     {
         $periodo = $request->input('mes').$request->input('año');
         $rcompras = Rcompra::with(['cliente'])
-            ->select('id','fecha','moneda','serie','numero','tipocomprobante_codigo','cliente_id','total')
+            ->select('id','fecha','moneda','serie','numero','tipocomprobante_codigo','cliente_id','total','saldo')
             ->where('periodo',$periodo)
             ->where('empresa_id',session('empresa'))
             ->where('sede_id',session('sede'))
