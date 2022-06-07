@@ -188,17 +188,17 @@
                             </div>
                             <div class="col-md-2">
                                 {!! Form::label('detcantidad', 'Cantidad:') !!}
-                                {!! Form::text('detcantidad', null, ['class'=>'form-control decimal','id'=>'detcantidad', 'disabled']) !!}
+                                {!! Form::text('detcantidad', null, ['class'=>'form-control decimal','id'=>'detcantidad','disabled']) !!}
                             </div>
                             <div class="col-md-5 form-group">
                                 {!! Form::label('detglosa', 'Glosa:') !!}
-                                {!! Form::text('detglosa', null, ['class'=>'form-control mayuscula','id'=>'detglosa', 'disabled']) !!}
+                                {!! Form::text('detglosa', null, ['class'=>'form-control mayuscula','id'=>'detglosa','disabled']) !!}
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-2">
                                 {!! Form::label('detstock', 'Stock:') !!}
-                                {!! Form::text('detstock', null, ['class'=>'form-control decimal','id'=>'detstock']) !!}
+                                {!! Form::text('detstock', null, ['class'=>'form-control decimal','id'=>'detstock','disabled']) !!}
                             </div>
                             <div class="col-md-2">
                                 {!! Form::label('catendida', 'Aprobado:') !!}

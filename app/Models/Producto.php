@@ -49,6 +49,11 @@ class Producto extends Model
         return $this->hasOne('App\Models\Catproducto', 'id', 'tipoproducto_id')->where('modulo',1);
     }
 
+    // public function catproducto(){
+    //     // return $this->belongsTo('App\Models\Umedida', 'umedida_id', 'codigo');
+    //     return $this->hasOne('App\Models\Catproducto', 'id', 'tipoproducto_id')->where('modulo',1);
+    // }
+
     public function materiaprima()
     {
         return $this->hasOne('App\Models\Materiaprima');

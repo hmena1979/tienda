@@ -79,6 +79,35 @@
                 </tbody>
             </table>
         </div>
+        {{-- {{ $rventa->detrventa->sum('devolucion') }} --}}
+        @if ($rventa->detrventa->sum('devolucion') > 0)
+        <div class="letra6">{!! htmlspecialchars_decode("&nbsp;") !!}</div>
+        <div class="letra9 negrita">DEVOLUCIONES:</div>
+        <div class="detalle">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="10%">FECHA</th>
+                        <th width="50%">PRODUCTO</th>
+                        <th width="10%">CANTIDAD</th>
+                        <th class="text-left" width="30%">MOTIVO</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($rventa->detrventa as $det)
+                    <tr>
+                        <td>{{ $det->dfecha }}</td>
+                        <td class="text-left">
+                            {{ $det->producto->nombre . ' X ' . $det->producto->umedida->nombre }}
+                        </td>
+                        <td>{{ round($det->devolucion,2) }}</td>
+                        <td class="text-left">{{ $det->motivo }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>            
+        @endif
         <div class="cuadro mtop5">
             <table>
                 <tr>

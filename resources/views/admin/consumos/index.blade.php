@@ -62,6 +62,9 @@
 									{{-- <td>{{ trim($rventa->ccosto->nombre) }}</td> --}}
 									<td class="text-center">
 										<div class="opts">
+											@can('admin.consumos.edit')
+											<a class="" href="{{ route('admin.consumos.edit',$rventa) }}"datatoggle="tooltip" data-placement="top" title="Editar"><i class="fas fa-edit"></i></a>
+											@endcan
 											<a class="" href="{{ route('admin.pdf.facturacion',$rventa) }}" target="_blank" datatoggle="tooltip" data-placement="top" title="Imprimir"><i class="fas fa-print"></i></a>
 										</div>
 									</td>

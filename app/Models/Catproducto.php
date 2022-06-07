@@ -17,6 +17,6 @@ class Catproducto extends Model
 
     public function productos()
     {
-        return $this->hasMany('App\Models\Producto', 'tipoproducto_id', 'id');
+        return $this->hasMany('App\Models\Producto', 'tipoproducto_id', 'id')->orderBy('nombre');
     }
 }

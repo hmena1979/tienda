@@ -17,6 +17,7 @@ use App\Models\Ccosto;
 use App\Models\Cliente;
 use App\Models\Cuenta;
 use App\Models\Destino;
+use App\Models\Detdestino;
 use App\Models\Detraccion;
 use App\Models\Detrventa;
 use App\Models\Kardex;
@@ -95,6 +96,7 @@ class ConsumoController extends Controller
             'tc' => $request->input('tc'),
             'cliente_id' => 2,
             'detdestino_id' => $request->input('detdestino_id'),
+            'lote' => $request->input('lote'),
             // 'ccosto_id' => $request->input('ccosto_id'),
             'detalle' => $request->input('detalle'),
         ];
@@ -183,18 +185,17 @@ class ConsumoController extends Controller
         
     }
 
-    public function edit(Rventa $rventa)
+    public function edit(Rventa $consumo)
     {
-        // $moneda = Categoria::where('modulo', 4)->pluck('nombre','codigo');
-        $tipocomprobante = TipoComprobante::wherein('codigo',['00'])->orderBy('codigo')->pluck('nombre','codigo');
-        $clientes = Cliente::where('id',$rventa->cliente_id)->get()->pluck('numdoc_razsoc','id');
-        $moneda = $rventa->moneda;
-
+        $clientes = Cliente::where('id',$consumo->cliente_id)->get()->pluck('numdoc_razsoc','id');
+        $destinos = Destino::where('id', $consumo->detdestino->destino_id)->pluck('nombre','id');
+        $detdestinos = Detdestino::where('id', $consumo->detdestino_id)->pluck('nombre','id');
+        
         return view('admin.consumos.edit',
-            compact('rventa','moneda','tipocomprobante','clientes'));
+            compact('consumo','destinos','detdestinos'));
     }
 
-    public function update(Request $request, Rventa $rventa)
+    public function update(Request $request, Rventa $consumo)
     {
         $rules = [
             // 'fpago' => 'required',
@@ -265,10 +266,79 @@ class ConsumoController extends Controller
         return view('admin.consumos.detalle',compact('detalle','moneda','subtotal','total','items'));
     }
 
+    public function tabladevol(Rventa $rventa)
+    {
+        return view('admin.consumos.detalledevol',compact('rventa'));
+    }
+
     public function tablatotales(Rventa $rventa)
     {
         // $detventas = Detrventa::with('producto')->where('producto_id',$producto)->get();
         return view('admin.consumos.totales',compact('rventa'));
+    }
+
+    public function detconsumo(Request $request, Detrventa $detconsumo)
+    {
+        $detalle = [
+            'id' => $detconsumo->id,
+            'producto' => $detconsumo->producto->nombre . ' X ' . $detconsumo->producto->umedida->nombre,
+            'adicional' =>  $detconsumo->adicional,
+            'cantidad' =>  $detconsumo->cantidad,
+            'dfecha' =>  empty($detconsumo->dfecha)?date('Y-m-d'):$detconsumo->dfecha,
+            'motivo' =>  $detconsumo->motivo,
+            'devolucion' =>  $detconsumo->devolucion,
+        ];
+        // if ($request->ajax()) {
+            return response()->json($detalle);
+        // }
+    }
+
+    public function devolucion($envio)
+    {
+        $det = json_decode($envio);
+        $detrventa = Detrventa::findOrFail($det->id);
+        // $detrventa->rventa->periodo
+        //----------------------------------------------------------------------------------------
+        $producto = Producto::find($detrventa->producto_id);
+        if ($producto->ctrlstock == 1) {
+            $stock = $producto->stock;
+            $producto->update([
+                'stock' => $stock - $detrventa->devolucion + $det->devolucion,
+            ]);
+            Kardex::where('operacion_id', $detrventa->id)->where('tipo', 5)->delete();
+            Kardex::create([
+                'periodo' => $detrventa->rventa->periodo,
+                'tipo' => 5,
+                'operacion_id' => $detrventa->id,
+                'producto_id' => $detrventa->producto_id,
+                'cliente_id' => 2,
+                'documento' => numDoc($detrventa->rventa->serie,$detrventa->rventa->numero),
+                'proveedor' => $detrventa->rventa->cliente->razsoc,
+                'fecha' => $det->dfecha,
+                'cant_ent' => $det->devolucion,
+                'cant_sald' => $producto->stock,
+                'pre_prom' => $detrventa->preprom,
+                'descrip' => 'DEVOLUCIÓN TD:' . $detrventa->rventa->tipocomprobante_codigo . ' ' . numDoc($detrventa->rventa->serie, $detrventa->rventa->numero),
+            ]);
+        }
+        if ($producto->lotevencimiento == 1) {
+            $vencimiento_id = Vencimiento::where('producto_id',$detrventa->producto_id)
+                ->where('lote',$detrventa->lote)->value('id'); // 100 + 4 - 2
+            $vencimiento = Vencimiento::find($vencimiento_id);
+            $vencimientoSalidas = $vencimiento->salidas + $detrventa->cantidad - $det->devolucion;
+            $vencimientoSaldo = $vencimiento->saldo - $detrventa->devolucion + $det->devolucion;
+            $vencimiento->update([
+                'salidas' => $vencimientoSalidas,
+                'saldo' => $vencimientoSaldo,
+            ]);
+        }
+        //----------------------------------------------------------------------------------------
+
+        $detrventa->update([
+            'dfecha' => $det->dfecha,
+            'motivo' => $det->motivo,
+            'devolucion' => $det->devolucion,
+        ]);
     }
 
 }

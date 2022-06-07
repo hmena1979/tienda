@@ -44,6 +44,10 @@
                                 {!! Form::label('detdestino_id', 'Detalle:') !!}
                                 {!! Form::select('detdestino_id',[],null,['class'=>'custom-select','placeholder'=>'']) !!}
                             </div>
+                            <div class="col-md-2">
+                                {!! Form::label('lote', 'Lote:') !!}
+                                {!! Form::text('lote', null, ['class'=>'form-control mayuscula activo','autocomplete'=>'off']) !!}
+                            </div>
                             {{-- <div class="col-md-8">
                                 <div class="row">
                                     <div class="col-md-4 form-group">

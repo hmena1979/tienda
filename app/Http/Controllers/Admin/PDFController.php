@@ -12,6 +12,7 @@ use App\Models\Guia;
 use App\Models\Masivo;
 use App\Models\Materiaprima;
 use App\Models\Ordcompra;
+use App\Models\Producto;
 use Illuminate\Http\Request;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Luecano\NumeroALetras\NumeroALetras;
@@ -282,12 +283,16 @@ class PDFController extends Controller
     {
         $empresa = Empresa::findOrFail(session('empresa'));
         if ($tipo == 1) {
-            $tipoproductos = Catproducto::with(['productos'])->whereIn('modulo',['1'])
-                ->orderBy('nombre')->get();
+            $tipoproductos = Catproducto::with([
+                'productos:id,nombre,umedida_id,stock,precompra,tipoproducto_id'])
+            ->where('modulo',1)
+            ->orderBy('nombre')->get();
+
         } else {
-            $tipoproductos = Catproducto::with(['productos'])->whereIn('modulo',['1'])
-                ->where('id',$tipoproducto_id)
-                ->get();
+            $tipoproductos = Catproducto::with(['productos:id,nombre,umedida_id,stock,precompra,tipoproducto_id'])
+            ->whereIn('modulo',['1'])
+            ->where('id',$tipoproducto_id)
+            ->get();
         }
         $data = [
             'empresa' => $empresa,

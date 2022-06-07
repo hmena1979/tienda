@@ -3,44 +3,35 @@
 	<head>
         <meta charset="utf-8">
         <title>Tienda</title>
-        <link rel="stylesheet" href="{{ url('/static/css/report.css?v='.time()) }}">
+        <link rel="stylesheet" href="{{ url('/static/css/listados.css?v='.time()) }}">
 	</head>
 	<body>
-        {{-- <div class="header">
-            <p class="empresa">
-                {{$empresa->razsoc}} <span class="page">Página: </span><br>
-                <span class="fecha">Fecha: {{\Carbon\Carbon::now()->format('Y-m-d')}}</span>
-            </p>
-            <p class="titulo">
-                REPORTE DE SALDOS<br>
-                <span class="subtitulo">
-                    PRODUCTOS
-                </span>
-            </p>
-        </div> --}}
-        <table class="cuadrosborde">
-            <thead>
-                <tr>
-                    <td width="7%" class="text-left">
-                        <img class="logo" src="{{ url('/static/images/logo.jpg') }}" alt="">
-                    </td>
-                    <td width="33%" class="text-left letra8 negrita">
-                        {{ $empresa->razsoc }}
-                    </td>
-                    <td width="40%"></td>
-                    <td width="20%" valign='top'  class="text-right letra8">
-                        <span class="negrita">Fecha:</span>  {{ Carbon\Carbon::now()->format('Y-m-d') }}
-                    </td>
-                </tr>
-            </thead>
-        </table>
-        <div class="text-center letra12 negrita">
-            PRODUCTOS <br>
-        </div>
-        <br>
+        <header>
+            <table class="cuadrosborde">
+                <thead>
+                    <tr>
+                        <td width="7%" class="text-left">
+                            <img class="logo" src="{{ url('/static/images/logo.jpg') }}" alt="">
+                        </td>
+                        <td width="33%" class="text-left letra8 negrita">
+                            {{ $empresa->razsoc }}
+                        </td>
+                        <td width="40%"></td>
+                        <td width="20%" valign='top'  class="text-right letra8">
+                            <span class="negrita">Fecha:</span>  {{ Carbon\Carbon::now()->format('Y-m-d') }}
+                            <br>
+                            <span class="negrita">Página:</span> <span class="pagenum"></span>
+                        </td>
+                    </tr>
+                </thead>
+            </table>
+            <div class="text-center letra12 negrita">
+                PRODUCTOS
+            </div>
+        </header>
         @foreach ($tipoproductos as $tp)            
         <div class="letra9 negrita">TIPO DE PRODUCTO: {{ $tp->nombre }}</div>
-        <div class="detalle">
+        <div class="detalle espaciadomedio">
             <table>
                 <tbody>
                     <tr>

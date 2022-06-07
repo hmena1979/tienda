@@ -207,8 +207,11 @@ Route::get('/guias/{periodo?}', [GuiaController::class,'index'])->name('admin.gu
 Route::post('/consumos/change', [ConsumoController::class,'change'])->name('admin.consumos.change');
 Route::post('/consumos/additem', [ConsumoController::class,'additem'])->name('admin.consumos.additem');
 Route::get('/consumos/{key}/{moneda}/tablaitem', [ConsumoController::class,'tablaitem'])->name('admin.consumos.tablaitem');
+Route::get('/consumos/{rventa}/tabladevol', [ConsumoController::class,'tabladevol'])->name('admin.consumos.tabladevol');
 Route::get('/consumos/{rventa}/tablatotales', [ConsumoController::class,'tablatotales'])->name('admin.consumos.tablatotales');
 Route::get('/consumos/{tmpdetsalida}/destroyitem', [ConsumoController::class,'destroyitem'])->name('admin.consumos.destroyitem');
+Route::get('/consumos/{detconsumo}/detconsumo', [ConsumoController::class,'detconsumo'])->name('admin.consumos.detconsumo');
+Route::get('/consumos/{envio}/devolucion', [ConsumoController::class,'devolucion'])->name('admin.consumos.devolucion');
 Route::resource('consumos', ConsumoController::class)->names('admin.consumos');
 Route::get('/consumos/{periodo?}', [ConsumoController::class,'index'])->name('admin.consumos.index');
 

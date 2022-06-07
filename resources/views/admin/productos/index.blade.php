@@ -104,8 +104,8 @@
 			"ajax": "{{route('admin.productos.registro')}}",
             "columns": [
                 {data: 'nombre'},
-                {data: 'umedida.nombre'},
-                {data: 'tipoproducto.nombre'},
+                {data: 'umedida.nombre',orderable:false},
+                {data: 'tipoproducto.nombre',orderable:false},
 				{data: 'btn'}
                 ]
             });
