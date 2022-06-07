@@ -13,6 +13,8 @@ use App\Models\Materiaprima;
 use App\Exports\MateriaPrimaExport;
 use App\Models\Embarcacion;
 use App\Models\Empresa;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use PhpOffice\PhpSpreadsheet\Style\Alignment as StyleAlignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
@@ -90,8 +92,8 @@ class ExcelController extends Controller
             ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
         // Ancho de Columnas
         $sheet->getColumnDimension('A')->setWidth(45);
-        $sheet->getColumnDimension('B')->setWidth(14);
-        $sheet->getColumnDimension('C')->setWidth(10);
+        $sheet->getColumnDimension('B')->setWidth(20);
+        $sheet->getColumnDimension('C')->setWidth(15);
         $sheet->getColumnDimension('D')->setWidth(32);
         $sheet->getColumnDimension('E')->setWidth(13);
         $sheet->getColumnDimension('F')->setWidth(24);
@@ -259,6 +261,21 @@ class ExcelController extends Controller
         ];
         
         $sheet->getStyle('A5'.':V'.$linea)->applyFromArray($estiloBorde);
+        $linea++;
+        $linea++;
+        $sheet->setCellValue('B'.$linea, 'Peso Total');
+        $sheet->setCellValue('C'.$linea, number_format($materiasPrimas->sum('pplanta'),2).' KG');
+        $sheet->getStyle('B'.$linea.':C'.$linea)->applyFromArray($estiloBorde);
+        $sheet->getStyle('B'.$linea.':C'.$linea)->getFont()->setBold(true);
+        $linea++;
+        $verprecio = User::permission('admin.materiaprimas.precio')->where('id',Auth::user()->id)->count();
+        if ($verprecio) {
+            $sheet->setCellValue('B'.$linea, 'Precio Promedio');
+            $sheet->setCellValue('C'.$linea, 'S/ '.number_format($materiasPrimas->avg('precio'),2));
+            $sheet->getStyle('B'.$linea.':C'.$linea)->applyFromArray($estiloBorde);
+            $sheet->getStyle('B'.$linea.':C'.$linea)->getFont()->setBold(true);
+        }
+
 
         //Envio de Archivo para Descarga
         $fileName="MateriaPrima".$desde."_".$hasta.".xlsx";
