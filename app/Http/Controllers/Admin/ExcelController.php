@@ -30,7 +30,7 @@ class ExcelController extends Controller
 
     public function materiaprimaii($desde, $hasta)
     {
-        $materiasPrimas = Materiaprima::whereBetween('ingplanta',[$desde, $hasta])->get();
+        $materiasPrimas = Materiaprima::whereBetween('ingplanta',[$desde, $hasta])->orderBy('ticket_balanza','desc')->get();
         $empresa = Empresa::findOrFail(session('empresa'));
         $enombre = Embarcacion::pluck('nombre','id');
         $ematricula = Embarcacion::pluck('matricula','id');
