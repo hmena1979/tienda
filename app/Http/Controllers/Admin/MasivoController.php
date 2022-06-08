@@ -526,7 +526,7 @@ class MasivoController extends Controller
                     $decimal = decimal($det->montousd,2);
                     // $decimal = ($det->montousd-intval($det->montousd))*100;
                 }
-                $item = '2'.$tipo.$cuenta.'1'.$tipdoc.$numdoc.'   '.$nombre.$refben.$numdoc.' '.$refemp.$nd_emp.'0001'.$pentera.'.'.$decimal.'S';
+                $item = '2'.$tipo.$cuenta.'1'.$tipdoc.$numdoc.'   '.$nombre.$refben.$numdoc.' '.$refemp.$nd_emp.$moneda.$pentera.'.'.$decimal.'S';
                 if ($det->rcompra->tipocomprobante_codigo == '01') {
                     $tcomp = 'F';
                 } else {
