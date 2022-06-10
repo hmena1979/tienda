@@ -26,7 +26,8 @@
                             </li>                                
                             @endcan
                             @can('admin.masivos.autorizar')
-                            @if ($masivo->cuenta->maximo >= $masivo->detmasivos->sum('montopen'))
+                            {{-- @if ($masivo->cuenta->maximo >= $masivo->detmasivos->sum('montopen')) --}}
+                            @if ($masivo->cuenta->maximo >= $total)
                             <li>
                                 <button type="button" id='autorizar' class="btn btn-convertir mt-2">Autorizar</button>
                             </li>

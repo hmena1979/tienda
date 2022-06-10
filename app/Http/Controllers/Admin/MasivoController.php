@@ -92,12 +92,17 @@ class MasivoController extends Controller
 
     public function edit(Masivo $masivo)
     {
+        if ($masivo->cuenta->moneda == 'PEN') {
+            $total = $masivo->detmasivos->sum('montopen');
+        } else {
+            $total = $masivo->detmasivos->sum('montousd');
+        }
         $cuentas = Cuenta::where('empresa_id',session('empresa'))
             ->where('sede_id',session('sede'))
             ->where('moneda', $masivo->cuenta->moneda)
             ->pluck('nombre','id');
 
-        return view('admin.masivos.edit', compact('masivo','cuentas'));
+        return view('admin.masivos.edit', compact('masivo','cuentas','total'));
     }
 
     public function update(Request $request, Masivo $masivo)
@@ -498,15 +503,27 @@ class MasivoController extends Controller
                 if($det->tipo == 'I') {
                     $tipo = 'B';
                 } else {
-                    if (substr($det->rcompra->cliente->numdoc,0,1) == '2') {
-                        if (strlen($det->cuenta) == 13) {
-                            $tipo = 'C';
-                        } else {
+                    $tipoCuenta = Detcliente::where('cuenta',$det->cuenta)->value('tipo');
+                    switch ($tipoCuenta) {
+                        case 1:
                             $tipo = 'A';
-                        }
-                    } else {
-                        $tipo = 'A';
+                            break;
+                        case 2:
+                            $tipo = 'C';
+                            break;
+                        case 3:
+                            $tipo = 'M';
+                            break;
                     }
+                    // if (substr($det->rcompra->cliente->numdoc,0,1) == '2') {
+                    //     if (strlen($det->cuenta) == 13) {
+                    //         $tipo = 'C';
+                    //     } else {
+                    //         $tipo = 'A';
+                    //     }
+                    // } else {
+                    //     $tipo = 'A';
+                    // }
                 }
                 $cuenta = str_pad($det->cuenta,20,' ',STR_PAD_RIGHT);
                 $tipdoc = $det->rcompra->cliente->tipdoc_id;

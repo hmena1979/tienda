@@ -1,8 +1,9 @@
 <table id='detmasivo' class='table table-responsive-md table-hover table-bordered table-estrecha-ventas table-sb'>
     <thead>
         <tr class="colorprin negrita">
-            <th width="40%">Banco</th>
+            <th width="30%">Banco</th>
             <th width="10%">Moneda</th>
+            <th width="10%">Tipo</th>
             <th width="20%">Cuenta</th>
             <th width="20%">CCI</th>
             <th width="10%">
@@ -15,6 +16,7 @@
         <tr>
             <td>{{ $det->banco->nombre }}</td>
             <td>{{ $det->moneda}}</td>
+            <td>{{ $tipos[$det->tipo]}}</td>
             <td>{{ $det->cuenta}}</td>
             <td>{{ $det->cci}}</td>
             <td class="text-center align-middle">

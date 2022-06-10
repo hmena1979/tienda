@@ -116,10 +116,18 @@
                                 {!! Form::label('moneda', 'Moneda:') !!}
                                 {!! Form::select('moneda',['PEN'=>'SOLES','USD'=>'DOLARES'],null,['class'=>'custom-select activo']) !!}
                             </div>
-                            <div class="col-md-3 form-group">
-								{!! Form::label('cuenta', 'Número Cuenta:') !!}
-								{!! Form::text('cuenta', null, ['class'=>'form-control numero','autocomplete'=>'off']) !!}
-							</div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <div class="col-md-5 form-group">
+                                        {!! Form::label('tipo', 'Tipo:') !!}
+                                        {!! Form::select('tipo',$tipos,null,['class'=>'custom-select activo']) !!}
+                                    </div>
+                                    <div class="col-md-7 form-group">
+                                        {!! Form::label('cuenta', 'Número Cuenta:') !!}
+                                        {!! Form::text('cuenta', null, ['class'=>'form-control numero','autocomplete'=>'off']) !!}
+                                    </div>
+                                </div>
+                            </div>
                             <div class="col-md-3 form-group">
 								{!! Form::label('cci', 'CCI:') !!}
 								{!! Form::text('cci', null, ['class'=>'form-control numero','autocomplete'=>'off']) !!}

@@ -89,6 +89,7 @@ Route::get('/clientes/seleccionado/{tipo?}', [ClienteController::class, 'selecci
 Route::get('/clientes/{cliente}/tablaitem', [ClienteController::class,'tablaitem'])->name('admin.clientes.tablaitem');
 Route::get('/clientes/{detcliente}/destroyitem', [ClienteController::class,'destroyitem'])->name('admin.clientes.destroyitem');
 Route::get('/clientes/{cliente}/cuentas', [ClienteController::class,'cuentas'])->name('admin.clientes.cuentas');
+Route::get('/clientes/actualizacuenta', [ClienteController::class,'actualizacuenta'])->name('admin.clientes.actualizacuenta');
 Route::resource('clientes', ClienteController::class)->except('show')->names('admin.clientes');
 // Route::get('/usuario', UsuarioController::class);
 

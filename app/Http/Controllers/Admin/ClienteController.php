@@ -115,8 +115,13 @@ class ClienteController extends Controller
         $estciv = Categoria::where('modulo', 3)->pluck('nombre','codigo');
 
         $bancos = Banco::pluck('nombre', 'id');
+        $tipos = [
+            1 => 'AHORRO',
+            2 => 'CORRIENTE',
+            3 => 'MAESTRA',
+        ];
 
-        return view('admin.clientes.edit', compact('cliente','tipdoc','sexo','estciv','bancos'));
+        return view('admin.clientes.edit', compact('cliente','tipdoc','sexo','estciv','bancos','tipos'));
     }
     
     public function update(Request $request, Cliente $cliente)
@@ -301,7 +306,12 @@ class ClienteController extends Controller
 
     public function tablaitem(Cliente $cliente)
     {
-        return view('admin.clientes.detalle',compact('cliente'));
+        $tipos = [
+            1 => 'AHORRO',
+            2 => 'CORRIENTE',
+            3 => 'MAESTRA',
+        ];
+        return view('admin.clientes.detalle',compact('cliente','tipos'));
     }
 
     public function storedetalle(Request $request,Cliente $cliente)
@@ -321,6 +331,7 @@ class ClienteController extends Controller
                 'cliente_id' => $cliente->id,
                 'banco_id' => $request->input('banco_id'),
                 'moneda' => $request->input('moneda'),
+                'tipo' => $request->input('tipo'),
                 'cuenta' => $request->input('cuenta'),
                 'cci' => $request->input('cci'),
             ]);
@@ -338,5 +349,22 @@ class ClienteController extends Controller
     {
         $cuentas = Detcliente::with(['banco'])->where('cliente_id', $cliente->id)->get();
         return response()->json($cuentas);
+    }
+
+    public function actualizacuenta()
+    {
+        $detalle = Detcliente::get();
+        foreach ($detalle as $det) {
+            if ($det->cliente->tipdoc_id == '1') {
+                $tipo = '1';
+            } else {
+                if (substr($det->cliente->numdoc,0,1) == '2') {
+                    $tipo = '2';
+                } else {
+                    $tipo = '1';
+                }
+            }
+            Detcliente::where('id', $det->id)->update(['tipo' => $tipo]);
+        }
     }
 }
