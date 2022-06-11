@@ -435,7 +435,7 @@ class RcompraController extends Controller
         if($rcompra->detingresos->count() > 0){
             return redirect()->route('admin.rcompras.index')->with('message', 'Se ha producido un error, No se puede eliminar, En almacen ya contiene productos')->with('typealert', 'danger');
         }
-        if($rcompra->detmasivo->count() > 0){
+        if($rcompra->detmasivo()->count() > 0){
             return redirect()->route('admin.rcompras.index')->with('message', 'Se ha producido un error, No se puede eliminar, Ya se encuentra incluido en un Pago Masivo')->with('typealert', 'danger');
         }
         // Elimina Registro en Tesoreria
