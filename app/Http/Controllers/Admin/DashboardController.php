@@ -340,65 +340,65 @@ class DashboardController extends Controller
 		// $this->agregar_permiso('33','DESTINATARIOS E-MAIL','admin.mensajerias.edit','Puede editar Destinatarios e-mail');
 		// $this->agregar_permiso('33','DESTINATARIOS E-MAIL','admin.mensajerias.destroy','Puede eliminar Destinatarios e-mail');
 //----------------------------------------------------------------------------------------------------
-		// $this->agregar_permiso('34','MATERIA PRIMA OBTENIDA','admin.mpobtenidas.index','Puede ver listado Materia Prima Obtenida');
-		// $this->agregar_permiso('34','MATERIA PRIMA OBTENIDA','admin.mpobtenidas.create','Puede agregar Materia Prima Obtenida');
-		// $this->agregar_permiso('34','MATERIA PRIMA OBTENIDA','admin.mpobtenidas.edit','Puede editar Materia Prima Obtenida');
-		// $this->agregar_permiso('34','MATERIA PRIMA OBTENIDA','admin.mpobtenidas.destroy','Puede eliminar Materia Prima Obtenida');
+		$this->agregar_permiso('34','MATERIA PRIMA OBTENIDA','admin.mpobtenidas.index','Puede ver listado Materia Prima Obtenida');
+		$this->agregar_permiso('34','MATERIA PRIMA OBTENIDA','admin.mpobtenidas.create','Puede agregar Materia Prima Obtenida');
+		$this->agregar_permiso('34','MATERIA PRIMA OBTENIDA','admin.mpobtenidas.edit','Puede editar Materia Prima Obtenida');
+		$this->agregar_permiso('34','MATERIA PRIMA OBTENIDA','admin.mpobtenidas.destroy','Puede eliminar Materia Prima Obtenida');
 
-		// $this->agregar_permiso('35','DESPIECE MATERIA PRIMA','admin.despieces.index','Puede ver listado Despiece Materia Prima');
-		// $this->agregar_permiso('35','DESPIECE MATERIA PRIMA','admin.despieces.create','Puede agregar Despiece Materia Prima');
-		// $this->agregar_permiso('35','DESPIECE MATERIA PRIMA','admin.despieces.edit','Puede editar Despiece Materia Prima');
-		// $this->agregar_permiso('35','DESPIECE MATERIA PRIMA','admin.despieces.destroy','Puede eliminar Despiece Materia Prima');
+		$this->agregar_permiso('35','DESPIECE MATERIA PRIMA','admin.despieces.index','Puede ver listado Despiece Materia Prima');
+		$this->agregar_permiso('35','DESPIECE MATERIA PRIMA','admin.despieces.create','Puede agregar Despiece Materia Prima');
+		$this->agregar_permiso('35','DESPIECE MATERIA PRIMA','admin.despieces.edit','Puede editar Despiece Materia Prima');
+		$this->agregar_permiso('35','DESPIECE MATERIA PRIMA','admin.despieces.destroy','Puede eliminar Despiece Materia Prima');
 
-		// $this->agregar_permiso('36','PRODUCTOS PROCESO','admin.pprocesos.index','Puede ver listado Producto Proceso');
-		// $this->agregar_permiso('36','PRODUCTOS PROCESO','admin.pprocesos.create','Puede agregar Producto Proceso');
-		// $this->agregar_permiso('36','PRODUCTOS PROCESO','admin.pprocesos.edit','Puede editar Producto Proceso');
-		// $this->agregar_permiso('36','PRODUCTOS PROCESO','admin.pprocesos.destroy','Puede eliminar Producto Proceso');
+		$this->agregar_permiso('36','PRODUCTOS PROCESO','admin.pprocesos.index','Puede ver listado Producto Proceso');
+		$this->agregar_permiso('36','PRODUCTOS PROCESO','admin.pprocesos.create','Puede agregar Producto Proceso');
+		$this->agregar_permiso('36','PRODUCTOS PROCESO','admin.pprocesos.edit','Puede editar Producto Proceso');
+		$this->agregar_permiso('36','PRODUCTOS PROCESO','admin.pprocesos.destroy','Puede eliminar Producto Proceso');
 
-		// $this->agregar_permiso('37','LOTES','admin.lotes.index','Puede ver listado Lotes');
-		// $this->agregar_permiso('37','LOTES','admin.lotes.create','Puede agregar Lotes');
-		// $this->agregar_permiso('37','LOTES','admin.lotes.edit','Puede editar Lotes');
-		// $this->agregar_permiso('37','LOTES','admin.lotes.destroy','Puede eliminar Lotes');
+		$this->agregar_permiso('37','LOTES','admin.lotes.index','Puede ver listado Lotes');
+		$this->agregar_permiso('37','LOTES','admin.lotes.create','Puede agregar Lotes');
+		$this->agregar_permiso('37','LOTES','admin.lotes.edit','Puede editar Lotes');
+		$this->agregar_permiso('37','LOTES','admin.lotes.destroy','Puede eliminar Lotes');
 
-		// $this->agregar_permiso('38','SUPERVISORES','admin.supervisors.index','Puede ver listado Supervisores');
-		// $this->agregar_permiso('38','SUPERVISORES','admin.supervisors.create','Puede agregar Supervisores');
-		// $this->agregar_permiso('38','SUPERVISORES','admin.supervisors.edit','Puede editar Supervisores');
-		// $this->agregar_permiso('38','SUPERVISORES','admin.supervisors.destroy','Puede eliminar Supervisores');
+		$this->agregar_permiso('38','SUPERVISORES','admin.supervisors.index','Puede ver listado Supervisores');
+		$this->agregar_permiso('38','SUPERVISORES','admin.supervisors.create','Puede agregar Supervisores');
+		$this->agregar_permiso('38','SUPERVISORES','admin.supervisors.edit','Puede editar Supervisores');
+		$this->agregar_permiso('38','SUPERVISORES','admin.supervisors.destroy','Puede eliminar Supervisores');
 
-		// $this->agregar_permiso('39','EQUIPO ENVASADO','admin.equipoenvasados.index','Puede ver listado Equipos de Envasado');
-		// $this->agregar_permiso('39','EQUIPO ENVASADO','admin.equipoenvasados.create','Puede agregar Equipos de Envasado');
-		// $this->agregar_permiso('39','EQUIPO ENVASADO','admin.equipoenvasados.edit','Puede editar Equipos de Envasado');
-		// $this->agregar_permiso('39','EQUIPO ENVASADO','admin.equipoenvasados.destroy','Puede eliminar Equipos de Envasado');
+		$this->agregar_permiso('39','EQUIPO ENVASADO','admin.equipoenvasados.index','Puede ver listado Equipos de Envasado');
+		$this->agregar_permiso('39','EQUIPO ENVASADO','admin.equipoenvasados.create','Puede agregar Equipos de Envasado');
+		$this->agregar_permiso('39','EQUIPO ENVASADO','admin.equipoenvasados.edit','Puede editar Equipos de Envasado');
+		$this->agregar_permiso('39','EQUIPO ENVASADO','admin.equipoenvasados.destroy','Puede eliminar Equipos de Envasado');
 
-		// $this->agregar_permiso('40','PLANILLA ENVASADO','admin.envasados.index','Puede ver listado Planilla de Envasado');
-		// $this->agregar_permiso('40','PLANILLA ENVASADO','admin.envasados.create','Puede agregar Planilla de Envasado');
-		// $this->agregar_permiso('40','PLANILLA ENVASADO','admin.envasados.edit','Puede editar Planilla de Envasado');
-		// $this->agregar_permiso('40','PLANILLA ENVASADO','admin.envasados.destroy','Puede eliminar Planilla de Envasado');
-		// $this->agregar_permiso('40','PLANILLA ENVASADO','admin.envasados.aprobar','Puede aprobar Planilla de Envasado');
+		$this->agregar_permiso('40','PLANILLA ENVASADO','admin.envasados.index','Puede ver listado Planilla de Envasado');
+		$this->agregar_permiso('40','PLANILLA ENVASADO','admin.envasados.create','Puede agregar Planilla de Envasado');
+		$this->agregar_permiso('40','PLANILLA ENVASADO','admin.envasados.edit','Puede editar Planilla de Envasado');
+		$this->agregar_permiso('40','PLANILLA ENVASADO','admin.envasados.destroy','Puede eliminar Planilla de Envasado');
+		$this->agregar_permiso('40','PLANILLA ENVASADO','admin.envasados.aprobar','Puede aprobar Planilla de Envasado');
 
-		// $this->agregar_permiso('41','PLANILLA ENVASADO CRUDO','admin.envasadocrudos.index','Puede ver Planilla Envasado Crudo');
-		// $this->agregar_permiso('41','PLANILLA ENVASADO CRUDO','admin.envasadocrudos.create','Puede agregar Planilla Envasado Crudo');
-		// $this->agregar_permiso('41','PLANILLA ENVASADO CRUDO','admin.envasadocrudos.edit','Puede editar Planilla Envasado Crudo');
-		// $this->agregar_permiso('41','PLANILLA ENVASADO CRUDO','admin.envasadocrudos.destroy','Puede eliminar Planilla Envasado Crudo');
-		// $this->agregar_permiso('41','PLANILLA ENVASADO CRUDO','admin.envasadocrudos.aprobar','Puede aprobar Planilla Envasado Crudo');
+		$this->agregar_permiso('41','PLANILLA ENVASADO CRUDO','admin.envasadocrudos.index','Puede ver Planilla Envasado Crudo');
+		$this->agregar_permiso('41','PLANILLA ENVASADO CRUDO','admin.envasadocrudos.create','Puede agregar Planilla Envasado Crudo');
+		$this->agregar_permiso('41','PLANILLA ENVASADO CRUDO','admin.envasadocrudos.edit','Puede editar Planilla Envasado Crudo');
+		$this->agregar_permiso('41','PLANILLA ENVASADO CRUDO','admin.envasadocrudos.destroy','Puede eliminar Planilla Envasado Crudo');
+		$this->agregar_permiso('41','PLANILLA ENVASADO CRUDO','admin.envasadocrudos.aprobar','Puede aprobar Planilla Envasado Crudo');
 
-		// $this->agregar_permiso('42','PARTE PRODUCCIÓN','admin.partes.index','Puede ver Parte de Producción');
-		// $this->agregar_permiso('42','PARTE PRODUCCIÓN','admin.partes.create','Puede agregar Parte de Producción');
-		// $this->agregar_permiso('42','PARTE PRODUCCIÓN','admin.partes.edit','Puede editar Parte de Producción');
-		// $this->agregar_permiso('42','PARTE PRODUCCIÓN','admin.partes.destroy','Puede eliminar Parte de Producción');
-		// $this->agregar_permiso('42','PARTE PRODUCCIÓN','admin.partes.generar','Puede generar Parte de Producción');
+		$this->agregar_permiso('42','PARTE PRODUCCIÓN','admin.partes.index','Puede ver Parte de Producción');
+		$this->agregar_permiso('42','PARTE PRODUCCIÓN','admin.partes.create','Puede agregar Parte de Producción');
+		$this->agregar_permiso('42','PARTE PRODUCCIÓN','admin.partes.edit','Puede editar Parte de Producción');
+		$this->agregar_permiso('42','PARTE PRODUCCIÓN','admin.partes.destroy','Puede eliminar Parte de Producción');
+		$this->agregar_permiso('42','PARTE PRODUCCIÓN','admin.partes.generar','Puede generar Parte de Producción');
 		$this->agregar_permiso('42','PARTE PRODUCCIÓN','admin.partes.valorado','Puede visualizar precios');
 		
-		// $this->agregar_permiso('43','CONTRATA','admin.contratas.index','Puede ver Contratas');
-		// $this->agregar_permiso('43','CONTRATA','admin.contratas.create','Puede agregar Contratas');
-		// $this->agregar_permiso('43','CONTRATA','admin.contratas.edit','Puede editar Contratas');
-		// $this->agregar_permiso('43','CONTRATA','admin.contratas.destroy','Puede eliminar Contratas');
+		$this->agregar_permiso('43','CONTRATA','admin.contratas.index','Puede ver Contratas');
+		$this->agregar_permiso('43','CONTRATA','admin.contratas.create','Puede agregar Contratas');
+		$this->agregar_permiso('43','CONTRATA','admin.contratas.edit','Puede editar Contratas');
+		$this->agregar_permiso('43','CONTRATA','admin.contratas.destroy','Puede eliminar Contratas');
 
-		// $this->agregar_permiso('44','GUÍA INGRESO A CÁMARAS','admin.ingcamaras.index','Puede ver listado Ingreso a Cámaras');
-		// $this->agregar_permiso('44','GUÍA INGRESO A CÁMARAS','admin.ingcamaras.create','Puede agregar Ingreso a Cámaras');
-		// $this->agregar_permiso('44','GUÍA INGRESO A CÁMARAS','admin.ingcamaras.edit','Puede editar Ingreso a Cámaras');
-		// $this->agregar_permiso('44','GUÍA INGRESO A CÁMARAS','admin.ingcamaras.destroy','Puede eliminar Ingreso a Cámaras');
-		// $this->agregar_permiso('44','GUÍA INGRESO A CÁMARAS','admin.ingcamaras.aprobar','Puede aprobar Ingreso a Cámaras');
+		$this->agregar_permiso('44','GUÍA INGRESO A CÁMARAS','admin.ingcamaras.index','Puede ver listado Ingreso a Cámaras');
+		$this->agregar_permiso('44','GUÍA INGRESO A CÁMARAS','admin.ingcamaras.create','Puede agregar Ingreso a Cámaras');
+		$this->agregar_permiso('44','GUÍA INGRESO A CÁMARAS','admin.ingcamaras.edit','Puede editar Ingreso a Cámaras');
+		$this->agregar_permiso('44','GUÍA INGRESO A CÁMARAS','admin.ingcamaras.destroy','Puede eliminar Ingreso a Cámaras');
+		$this->agregar_permiso('44','GUÍA INGRESO A CÁMARAS','admin.ingcamaras.aprobar','Puede aprobar Ingreso a Cámaras');
 
 		$this->agregar_permiso('45','RESIDUOS SÓLIDOS','admin.residuos.index','Puede ver listado Residuos Sólidos');
 		$this->agregar_permiso('45','RESIDUOS SÓLIDOS','admin.residuos.create','Puede agregar Residuos Sólidos');
