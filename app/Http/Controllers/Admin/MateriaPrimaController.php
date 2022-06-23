@@ -10,6 +10,7 @@ use App\Models\Cliente;
 use App\Models\Detmateriaprima;
 use App\Models\Embarcacion;
 use App\Models\Empacopiadora;
+use App\Models\Lote;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
@@ -64,8 +65,9 @@ class MateriaPrimaController extends Controller
         $camara = Camara::orderBy('marca')->pluck('marca','id');
         $empAcopiadora = Empacopiadora::where('empresa_id',session('empresa'))->orderBy('nombre')->pluck('nombre','id');
         $producto = Producto::where('empresa_id',session('empresa'))->where('grupo',3)->orderBy('nombre')->pluck('nombre','id');
+        $lotes = Lote::where('empresa_id',session('empresa'))->OrderBy('lote','desc')->take(15)->pluck('lote','lote');
         return view('admin.materiaprimas.create',
-        compact('transportistas','chofer','camara','empAcopiadora','producto','embarcacion','muelles'));
+        compact('transportistas','chofer','camara','empAcopiadora','producto','embarcacion','muelles','lotes'));
     }
 
     public function store(Request $request)
@@ -162,7 +164,9 @@ class MateriaPrimaController extends Controller
         $empAcopiadora = Empacopiadora::where('empresa_id',session('empresa'))->orderBy('nombre')->pluck('nombre','id');
         $acopiador = Acopiador::where('id',$materiaprima->acopiador_id)->pluck('nombre','id');
         $producto = Producto::where('empresa_id',session('empresa'))->where('grupo',3)->orderBy('nombre')->pluck('nombre','id');
-
+        $lotes = Lote::where('empresa_id',session('empresa'))->OrderBy('lote','desc')->take(15)->pluck('lote','lote');
+        // $lotes->prepend('','');
+        // return $lotes;
         return view('admin.materiaprimas.edit',
             compact(
                 'materiaprima',
@@ -176,6 +180,7 @@ class MateriaPrimaController extends Controller
                 'empAcopiadora',
                 'acopiador',
                 'producto',
+                'lotes',
             )
         );
     }

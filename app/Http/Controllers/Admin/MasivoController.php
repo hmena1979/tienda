@@ -528,7 +528,7 @@ class MasivoController extends Controller
                 $cuenta = str_pad($det->cuenta,20,' ',STR_PAD_RIGHT);
                 $tipdoc = $det->rcompra->cliente->tipdoc_id;
                 $numdoc = str_pad($det->rcompra->cliente->numdoc,15,' ',STR_PAD_RIGHT);
-                $nombre = str_pad($det->rcompra->cliente->razsoc,75,' ',STR_PAD_RIGHT);
+                $nombre = substr(str_pad($det->rcompra->cliente->razsoc,75,' ',STR_PAD_RIGHT),0,75);
                 $refben = 'Referencia Beneficiario ';
                 $refemp = '   Ref Emp ';
                 $nd_emp = $numdoc = str_pad($det->rcompra->cliente->numdoc,12,' ',STR_PAD_RIGHT);

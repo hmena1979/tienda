@@ -8,7 +8,9 @@ use App\Models\Catproducto;
 use App\Models\Detcliente;
 use App\Models\Embarcacion;
 use App\Models\Empresa;
+use App\Models\Envasado;
 use App\Models\Guia;
+use App\Models\Ingcamara;
 use App\Models\Masivo;
 use App\Models\Materiaprima;
 use App\Models\Ordcompra;
@@ -300,5 +302,42 @@ class PDFController extends Controller
         ];
         $pdf = PDF::loadView('pdf.productos', $data)->setPaper('A4', 'portrait');
         return $pdf->stream('Productos.pdf', array('Attachment'=>false));
+    }
+
+    public function envasado(Envasado $envasado)
+    {
+        $empresa = Empresa::findOrFail(session('empresa'));
+        $sede = Sede::findOrFail(session('sede'));
+        $users = User::orderBy('name')->pluck('name','id');
+        $data = [
+            'envasado' => $envasado,
+            'empresa' => $empresa,
+            'sede' => $sede,
+            'users' => $users,
+        ];
+        $pdf = PDF::loadView('pdf.envasado', $data)->setPaper('A4', 'portrait');
+        return $pdf->stream(
+            'PLANILLA ENVASADO '
+            .$envasado->tipo==1?'':'DE CRUDO '
+            .str_pad($envasado->numero, 6, '0', STR_PAD_LEFT)
+            .'.pdf', array('Attachment'=>false));
+    }
+
+    public function ingcamara(Ingcamara $ingcamara)
+    {
+        $empresa = Empresa::findOrFail(session('empresa'));
+        $sede = Sede::findOrFail(session('sede'));
+        $users = User::orderBy('name')->pluck('name','id');
+        $data = [
+            'ingcamara' => $ingcamara,
+            'empresa' => $empresa,
+            'sede' => $sede,
+            'users' => $users,
+        ];
+        $pdf = PDF::loadView('pdf.ingcamara', $data)->setPaper('A4', 'portrait');
+        return $pdf->stream(
+            'GUIA DE INGRESO A CAMARAS'
+            .str_pad($ingcamara->numero, 6, '0', STR_PAD_LEFT)
+            .'.pdf', array('Attachment'=>false));
     }
 }

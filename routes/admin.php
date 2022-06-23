@@ -11,8 +11,10 @@ use App\Http\Controllers\Admin\CcostoController;
 use App\Http\Controllers\Admin\ImportController;
 use App\Http\Controllers\Admin\ClienteController;
 use App\Http\Controllers\Admin\ConsumoController;
+use App\Http\Controllers\Admin\ContrataController;
 use App\Http\Controllers\Admin\CotizacionController;
 use App\Http\Controllers\Admin\CuentaController;
+use App\Http\Controllers\Admin\DespieceController;
 use App\Http\Controllers\Admin\DestinoController;
 // use App\Http\Controllers\Admin\TipoProductoController;
 use App\Http\Controllers\Admin\UMedidaController;
@@ -21,22 +23,32 @@ use App\Http\Controllers\Admin\TipoComprobanteController;
 use App\Http\Controllers\Admin\DetraccionController;
 use App\Http\Controllers\Admin\EmbarcacionController;
 use App\Http\Controllers\Admin\EmpAcopiadoraController;
+use App\Http\Controllers\Admin\EnvasadoController;
+use App\Http\Controllers\Admin\EnvasadocrudoController;
+use App\Http\Controllers\Admin\EquipoenvasadoController;
 use App\Http\Controllers\Admin\ExcelController;
 use App\Http\Controllers\Admin\GuiaController;
+use App\Http\Controllers\Admin\IngcamaraController;
 use App\Http\Controllers\Admin\IngresoController;
+use App\Http\Controllers\Admin\LoteController;
 use App\Http\Controllers\Admin\MailController;
 use App\Http\Controllers\Admin\MasivoController;
 use App\Http\Controllers\Admin\MateriaPrimaController;
 use App\Http\Controllers\Admin\MensajeriaController;
+use App\Http\Controllers\Admin\MpobtenidaController;
 use App\Http\Controllers\Admin\MuelleController;
 use App\Http\Controllers\Admin\OrdcomprasController;
 use App\Http\Controllers\Admin\ParametroController;
+use App\Http\Controllers\Admin\ParteController;
 use App\Http\Controllers\Admin\PDFController;
 use App\Http\Controllers\Admin\PedidoController;
+use App\Http\Controllers\Admin\PprocesoController;
 use App\Http\Controllers\Admin\RcompraController;
+use App\Http\Controllers\Admin\ResiduoController;
 use App\Http\Controllers\Admin\RventaController;
 use App\Http\Controllers\Admin\SaldoController;
 use App\Http\Controllers\Admin\SunatController;
+use App\Http\Controllers\Admin\SupervisorController;
 use App\Http\Controllers\Admin\TesoreriaController;
 use App\Http\Controllers\Admin\TransferenciaController;
 use App\Http\Controllers\Admin\TransportistaController;
@@ -48,6 +60,9 @@ use App\Http\Controllers\Admin\TransportistaController;
 Route::get('/', [DashboardController::class, 'getDashboard'])->name('admin.inicio');
 Route::post('/cargainicial', [DashboardController::class, 'cargainicial'])->name('admin.cargainicial');
 Route::get('/permisosfaltantes', [DashboardController::class, 'permisosfaltantes'])->name('admin.permisosfaltantes');
+
+//Lotes
+Route::resource('lotes', LoteController::class)->except('show')->names('admin.lotes');
 
 //Usuarios
 Route::get('/usuarios/{status?}',[UsuarioController::class,'index'])->name('admin.usuarios.index');
@@ -276,6 +291,92 @@ Route::post('/ordcompras/additem', [OrdcomprasController::class,'additem'])->nam
 Route::resource('ordcompras', OrdcomprasController::class)->names('admin.ordcompras');
 Route::get('/ordcompras/{periodo?}', [OrdcomprasController::class,'index'])->name('admin.ordcompras.index');
 
+//Materia Prima Obtenidas
+// Route::resource('mpobtenidas', MpobtenidaController::class)->names('admin.mpobtenidas');
+Route::get('/mpobtenidas', [MpobtenidaController::class,'index'])->name('admin.mpobtenidas.index');
+Route::get('/mpobtenidas/{envio}/aedet', [MpobtenidaController::class, 'aedet'])->name('admin.mpobtenidas.aedet');
+Route::get('/mpobtenidas/{producto}/tablaitem', [MpobtenidaController::class,'tablaitem'])->name('admin.mpobtenidas.tablaitem');
+Route::get('/mpobtenidas/{mpobtenida}/mpobtenida', [MpobtenidaController::class,'mpobtenida'])->name('admin.mpobtenidas.mpobtenida');
+Route::get('/mpobtenidas/{mpobtenida}/destroyitem', [MpobtenidaController::class,'destroyitem'])->name('admin.mpobtenidas.destroyitem');
+
+//Despice
+Route::get('/despieces/{envio}/aedet', [DespieceController::class, 'aedet'])->name('admin.despieces.aedet');
+Route::get('/despieces/{despiece}/tablaitem', [DespieceController::class,'tablaitem'])->name('admin.despieces.tablaitem');
+Route::get('/despieces/{detdespiece}/detdespiece', [DespieceController::class,'detdespiece'])->name('admin.despieces.detdespiece');
+Route::get('/despieces/{detdespiece}/destroyitem', [DespieceController::class,'destroyitem'])->name('admin.despieces.destroyitem');
+Route::get('/despieces/{despiece}/listdetalle', [DespieceController::class,'listdetalle'])->name('admin.despieces.listdetalle');
+Route::resource('despieces', DespieceController::class)->names('admin.despieces');
+
+//Productos Proceso
+Route::get('/pprocesos/{envio}/aedet', [PprocesoController::class, 'aedet'])->name('admin.pprocesos.aedet');
+Route::get('/pprocesos/{pproceso}/tablaitem', [PprocesoController::class,'tablaitem'])->name('admin.pprocesos.tablaitem');
+Route::get('/pprocesos/{trazabilidad}/trazabilidad', [PprocesoController::class,'trazabilidad'])->name('admin.pprocesos.trazabilidad');
+Route::post('/pprocesos/aetrazabilidad', [PprocesoController::class,'aetrazabilidad'])->name('admin.pprocesos.aetrazabilidad');
+Route::get('/pprocesos/{trazabilidad}/tablaitem', [PprocesoController::class,'tablaitem'])->name('admin.pprocesos.tablaitem');
+Route::post('/pprocesos/addeditdet', [PprocesoController::class,'addeditdet'])->name('admin.pprocesos.addeditdet');
+Route::get('/pprocesos/{dettrazabilidad}/dettrazabilidad', [PprocesoController::class,'dettrazabilidad'])->name('admin.pprocesos.dettrazabilidad');
+Route::get('/pprocesos/{trazabilidad}/trazabilidad', [PprocesoController::class,'trazabilidad'])->name('admin.pprocesos.trazabilidad');
+Route::get('/pprocesos/{trazabilidad}/destroytrazabilidad', [PprocesoController::class,'destroytrazabilidad'])->name('admin.pprocesos.destroytrazabilidad');
+Route::get('/pprocesos/{dettrazabilidad}/destroyitem', [PprocesoController::class,'destroyitem'])->name('admin.pprocesos.destroyitem');
+Route::get('/pprocesos/{trazabilidad}/listdetalle', [PprocesoController::class,'listdetalle'])->name('admin.pprocesos.listdetalle');
+Route::resource('pprocesos', PprocesoController::class)->names('admin.pprocesos');
+Route::get('/pprocesos/edit/{pproceso}/{trazabilidad?}', [PprocesoController::class,'edit'])->name('admin.pprocesos.edit');
+
+//Supervisores
+Route::resource('supervisors', SupervisorController::class)->names('admin.supervisors');
+
+//Equipo de Envasado
+Route::resource('equipoenvasados', EquipoenvasadoController::class)->names('admin.equipoenvasados');
+
+//Planilla de Envasado
+Route::post('/envasados/change', [EnvasadoController::class,'change'])->name('admin.envasados.change');
+Route::get('/envasados/{envasado}/tablaitem', [EnvasadoController::class,'tablaitem'])->name('admin.envasados.tablaitem');
+Route::post('/envasados/additem', [EnvasadoController::class,'additem'])->name('admin.envasados.additem');
+Route::get('/envasados/{detenvasado}/detenvasado', [EnvasadoController::class,'detenvasado'])->name('admin.envasados.detenvasado');
+Route::get('/envasados/{detenvasado}/destroyitem', [EnvasadoController::class,'destroyitem'])->name('admin.envasados.destroyitem');
+Route::get('/envasados/{envasado}/aprobar', [EnvasadoController::class,'aprobar'])->name('admin.envasados.aprobar');
+Route::get('/envasados/{envasado}/abrir', [EnvasadoController::class,'abrir'])->name('admin.envasados.abrir');
+Route::resource('envasados', EnvasadoController::class)->names('admin.envasados');
+Route::get('/envasados/{periodo?}', [EnvasadoController::class,'index'])->name('admin.envasados.index');
+
+//Planilla de Envasado Crudo
+Route::post('/envasadocrudos/change', [EnvasadocrudoController::class,'change'])->name('admin.envasadocrudos.change');
+Route::get('/envasadocrudos/{envasado}/tablaitem', [EnvasadocrudoController::class,'tablaitem'])->name('admin.envasadocrudos.tablaitem');
+Route::post('/envasadocrudos/additem', [EnvasadocrudoController::class,'additem'])->name('admin.envasadocrudos.additem');
+Route::get('/envasadocrudos/{detenvasado}/detenvasado', [EnvasadocrudoController::class,'detenvasado'])->name('admin.envasadocrudos.detenvasado');
+Route::get('/envasadocrudos/{detenvasado}/destroyitem', [EnvasadocrudoController::class,'destroyitem'])->name('admin.envasadocrudos.destroyitem');
+Route::get('/envasadocrudos/{envasado}/aprobar', [EnvasadocrudoController::class,'aprobar'])->name('admin.envasadocrudos.aprobar');
+Route::get('/envasadocrudos/{envasado}/abrir', [EnvasadocrudoController::class,'abrir'])->name('admin.envasadocrudos.abrir');
+Route::resource('envasadocrudos', EnvasadocrudoController::class)->parameters(['envasadocrudos' => 'envasado'])->names('admin.envasadocrudos');
+Route::get('/envasadocrudos/{periodo?}', [EnvasadocrudoController::class,'index'])->name('admin.envasadocrudos.index');
+
+//Parte de Producción
+Route::post('/partes/change', [ParteController::class,'change'])->name('admin.partes.change');
+Route::get('/partes/{parte}/tablaitem', [ParteController::class,'tablaitem'])->name('admin.partes.tablaitem');
+Route::get('/partes/{parte}/tablaitemcamara', [ParteController::class,'tablaitemcamara'])->name('admin.partes.tablaitemcamara');
+Route::get('/partes/{parte}/tablaitemconsumo', [ParteController::class,'tablaitemconsumo'])->name('admin.partes.tablaitemconsumo');
+Route::get('/partes/{parte}/generar', [ParteController::class,'generar'])->name('admin.partes.generar');
+Route::resource('partes', ParteController::class)->names('admin.partes');
+Route::get('/partes/{periodo?}', [ParteController::class,'index'])->name('admin.partes.index');
+
+//Equipo de Envasado
+Route::resource('contratas', ContrataController::class)->names('admin.contratas');
+
+//Planilla de Ingreso a Camaras
+Route::post('/ingcamaras/change', [IngcamaraController::class,'change'])->name('admin.ingcamaras.change');
+Route::get('/ingcamaras/{ingcamara}/tablaitem', [IngcamaraController::class,'tablaitem'])->name('admin.ingcamaras.tablaitem');
+Route::post('/ingcamaras/additem', [IngcamaraController::class,'additem'])->name('admin.ingcamaras.additem');
+Route::get('/ingcamaras/{detingcamara}/detingcamara', [IngcamaraController::class,'detingcamara'])->name('admin.ingcamaras.detingcamara');
+Route::get('/ingcamaras/{detingcamara}/destroyitem', [IngcamaraController::class,'destroyitem'])->name('admin.ingcamaras.destroyitem');
+Route::get('/ingcamaras/{ingcamara}/aprobar', [IngcamaraController::class,'aprobar'])->name('admin.ingcamaras.aprobar');
+Route::get('/ingcamaras/{ingcamara}/abrir', [IngcamaraController::class,'abrir'])->name('admin.ingcamaras.abrir');
+Route::resource('ingcamaras', IngcamaraController::class)->names('admin.ingcamaras');
+Route::get('/ingcamaras/{periodo?}', [IngcamaraController::class,'index'])->name('admin.ingcamaras.index');
+
+//Residuos Sólidos
+Route::resource('residuos', ResiduoController::class)->names('admin.residuos');
+
+//Regenera Saldos de Productos
 Route::get('/saldos/gregenera', [SaldoController::class,'gregenera'])->name('admin.saldos.gregenera');
 Route::post('/saldos/pregenera', [SaldoController::class,'pregenera'])->name('admin.saldos.pregenera');
 Route::resource('saldos', SaldoController::class)->names('admin.saldos');
@@ -314,6 +415,8 @@ Route::get('/pdf/{masivo}/masivos', [PDFController::class,'masivos'])->name('adm
 Route::get('/pdf/{materiaprima}/materiaprima', [PDFController::class,'materiaprima'])->name('admin.pdf.materiaprima');
 Route::get('/pdf/{ordcompra}/ordcompra', [PDFController::class,'ordcompra'])->name('admin.pdf.ordcompra');
 Route::get('/pdf/{tipo}/{tipoproducto_id}/productos', [PDFController::class,'productos'])->name('admin.pdf.productos');
+Route::get('/pdf/{envasado}/envasado', [PDFController::class,'envasado'])->name('admin.pdf.envasado');
+Route::get('/pdf/{ingcamara}/ingcamara', [PDFController::class,'ingcamara'])->name('admin.pdf.ingcamara');
 
 //EXCEL
 Route::get('/excel/{desde}/{hasta}/materiaprima', [ExcelController::class,'materiaprima'])->name('admin.excel.materiaprima');
@@ -339,6 +442,8 @@ Route::post('/import/acopiador', [ImportController::class,'acopiador'])->name('a
 Route::post('/import/chofer', [ImportController::class,'chofer'])->name('admin.imports.chofer');
 Route::post('/import/embarcacion', [ImportController::class,'embarcacion'])->name('admin.imports.embarcacion');
 Route::post('/import/producto', [ImportController::class,'producto'])->name('admin.imports.producto');
+Route::post('/import/producto', [ImportController::class,'producto'])->name('admin.imports.producto');
+Route::post('/import/mpd', [ImportController::class,'mpd'])->name('admin.imports.mpd');
 
 //Modulo Busquedas
 Route::get('/busquedas/departamento', [BusquedaController::class,'departamento'])->name('admin.busquedas.departamento');

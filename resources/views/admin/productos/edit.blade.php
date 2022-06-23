@@ -26,7 +26,7 @@
 						<div class="row">
 							<div class="col-md-2 form-group">
                                 {!! Form::label('grupo', 'Grupo:') !!}
-								{!! Form::select('grupo',[1=>'PRODUCTOS',2=>'SERVICIOS'],null,['class'=>'custom-select','disabled']) !!}
+								{!! Form::select('grupo',[1=>'PRODUCTOS',2=>'SERVICIOS','3'=>'MATERIA PRIMA'],null,['class'=>'custom-select','disabled']) !!}
 							</div>
 							<div class="col-md-3 form-group">
                                 {!! Form::label('tipoproducto_id', 'Tipo:') !!}

@@ -16,7 +16,6 @@
 						{!! Form::open(['route'=>'admin.usuarios.store']) !!}
 						<div class="row">
 							<div class="col-md-2 form-group">
-								<label for="activo">Activo:</label>
 								{!! Form::label('activo', 'Activo') !!}
 								{!! Form::select('activo',['1'=>'Si','2'=>'No'],1,['class'=>'custom-select']) !!}	
 							</div>

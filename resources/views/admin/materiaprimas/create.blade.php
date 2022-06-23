@@ -27,7 +27,8 @@
 								{!! Form::hidden('empresa_id', session('empresa')) !!}
 								{!! Form::hidden('periodo', session('periodo')) !!}
 								{!! Form::label('lote', 'Lote:') !!}
-								{!! Form::text('lote', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
+								{!! Form::select('lote',$lotes,null,['class'=>'custom-select']) !!}
+								{{-- {!! Form::text('lote', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!} --}}
 							</div>
 							<div class="col-md-2 form-group">
 								{!! Form::label('remitente_guia', 'Guía Remitente:') !!}
@@ -222,6 +223,10 @@
 		$('#rcompra_id').select2({
 			placeholder:"Seleccione Comprobante"
 		});
+
+		// $('#lote').select2({
+		// 	placeholder:"Seleccione Lote"
+		// });
 
 		$('#transportista_id').on('select2:close',function(){
             var transportista = this.value;

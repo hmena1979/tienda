@@ -127,12 +127,6 @@
         </div>
 	</div>
 @endsection
-{{-- @section('css')
-    <link rel="stylesheet" href="{{ url('/static/css/admin.css?v='.time()) }}">
-@stop --}}
-{{-- @section('js')
-    <script src="{{ url('/static/js/admin.js?v='.time()) }}"></script>
-@stop --}}
 @section('script')
 <script>
     var url_global='{{url("/")}}';

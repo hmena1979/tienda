@@ -359,13 +359,7 @@ return [
                     'can'  => 'admin.guias.index',
                     'active' => ['admin/guias','admin/guias/*','admin/guias/create'
                                 ,'admin/guias/*/edit'],
-                ],
-                [
-                    'text' => 'Nota Débito/Crédito',
-                    'icon'    => 'fas fa-window-restore',
-                    'icon_color' => 'cyan',
-                    'url'  => '#',
-                ],              
+                ],          
                 [
                     'text' => 'Pedidos',
                     'icon'    => 'fas fa-file-archive',
@@ -397,10 +391,6 @@ return [
                     'can'  => 'admin.tesorerias.index',
                     'active' => ['admin/tesorerias','admin/tesorerias/*','admin/tesorerias/create'
                                 ,'admin/tesorerias/*/edit'],
-                    // 'route'  => 'admin.rcompras.index',
-                    // 'can'  => 'admin.rcompras.index',
-                    // 'active' => ['admin/rcompras','admin/rcompras/*','admin/rcompras/create'
-                    //             ,'admin/rcompras/*/edit'],
                 ],
                 [
                     'text' => 'Pagos Masivos',
@@ -419,10 +409,6 @@ return [
                     'can'  => 'admin.transferencias.index',
                     'active' => ['admin/transferencias','admin/transferencias/*','admin/transferencias/create'
                                 ,'admin/transferencias/*/edit'],
-                    // 'route'  => 'admin.rcompras.index',
-                    // 'can'  => 'admin.rcompras.index',
-                    // 'active' => ['admin/rcompras','admin/rcompras/*','admin/rcompras/create'
-                    //             ,'admin/rcompras/*/edit'],
                 ],
                 [
                     'text' => 'Reportes',
@@ -430,6 +416,59 @@ return [
                     'icon_color' => 'cyan',
                     'url'  => '#',
                 ]
+            ],
+        ],
+        [
+            'text'    => 'PROCESO',
+            'icon'    => 'fas fa-industry',
+            'icon_color' => 'yellow',
+            'can'  => 'admin.proceso',
+            'submenu' => [
+                [
+                    'text' => 'Planilla de Envasado',
+                    'icon'    => 'far fa-clipboard',
+                    'icon_color' => 'cyan',
+                    'route'  => 'admin.envasados.index',
+                    'can'  => 'admin.envasados.index',
+                    'active' => ['admin/envasados','admin/envasados/*','admin/envasados/create'
+                                ,'admin/envasados/*/edit'],
+                ],
+                [
+                    'text' => 'Planilla de Envasado Crudo',
+                    'icon'    => 'far fa-clipboard',
+                    'icon_color' => 'cyan',
+                    'route'  => 'admin.envasadocrudos.index',
+                    'can'  => 'admin.envasadocrudos.index',
+                    'active' => ['admin/envasadocrudos','admin/envasadocrudos/*','admin/envasadocrudos/create'
+                                ,'admin/envasadocrudos/*/edit'],
+                ],
+                [
+                    'text' => 'Guía de Ingreso a Cámaras',
+                    'icon'    => 'fas fa-clipboard-check',
+                    'icon_color' => 'cyan',
+                    'route'  => 'admin.ingcamaras.index',
+                    'can'  => 'admin.ingcamaras.index',
+                    'active' => ['admin/ingcamaras','admin/ingcamaras/*','admin/ingcamaras/create'
+                                ,'admin/ingcamaras/*/edit'],
+                ],
+                [
+                    'text' => 'Residuos Sólidos',
+                    'icon'    => 'far fa-trash-alt',
+                    'icon_color' => 'cyan',
+                    'route'  => 'admin.residuos.index',
+                    'can'  => 'admin.residuos.index',
+                    'active' => ['admin/residuos','admin/residuos/*','admin/residuos/create'
+                                ,'admin/residuos/*/edit'],
+                ],
+                [
+                    'text' => 'Parte de Producción',
+                    'icon'    => 'fas fa-industry',
+                    'icon_color' => 'cyan',
+                    'route'  => 'admin.partes.index',
+                    'can'  => 'admin.partes.index',
+                    'active' => ['admin/partes','admin/partes/*','admin/partes/create'
+                                ,'admin/partes/*/edit'],
+                ],
             ],
         ],
 
@@ -449,6 +488,15 @@ return [
             'icon_color' => 'yellow',
             'can'  => 'admin.tablas',
             'submenu' => [
+                [
+                    'text' => 'Lotes',
+                    'icon'    => 'fas fa-barcode',
+                    'icon_color' => 'cyan',
+                    'route'  => 'admin.lotes.index',
+                    'active' => ['admin/lotes','admin/lotes/*','admin/lotes/create'
+                                ,'admin/lotes/*/edit'],
+                    'can'  => 'admin.lotes.index',
+                ],
                 [
                     'text' => 'Categorías',
                     'icon'    => 'fas fa-folder-open',
@@ -530,15 +578,15 @@ return [
                                 ,'admin/destinos/*/edit'],
                     'can'  => 'admin.destinos.index',
                 ],
-                [
-                    'text' => 'Centros de Costo',
-                    'icon'    => 'fas fa-grip-horizontal',
-                    'icon_color' => 'cyan',
-                    'route'  => 'admin.ccostos.index',
-                    'active' => ['admin/ccostos','admin/ccostos/*','admin/ccostos/create'
-                                ,'admin/ccostos/*/edit'],
-                    'can'  => 'admin.ccostos.index',
-                ],
+                // [
+                //     'text' => 'Centros de Costo',
+                //     'icon'    => 'fas fa-grip-horizontal',
+                //     'icon_color' => 'cyan',
+                //     'route'  => 'admin.ccostos.index',
+                //     'active' => ['admin/ccostos','admin/ccostos/*','admin/ccostos/create'
+                //                 ,'admin/ccostos/*/edit'],
+                //     'can'  => 'admin.ccostos.index',
+                // ],
                 [
                     'text' => 'Empresas Acopiadoras',
                     'icon'    => 'fas fa-newspaper',
@@ -556,7 +604,7 @@ return [
                     'active' => ['admin/transportistas','admin/transportistas/*','admin/transportistas/create'
                                 ,'admin/transportistas/*/edit'],
                     'can'  => 'admin.transportistas.index',
-                ],                
+                ],
                 [
                     'text' => 'Embarcaciones',
                     'icon'    => 'fas fa-anchor',
@@ -565,7 +613,7 @@ return [
                     'active' => ['admin/embarcaciones','admin/embarcaciones/*','admin/embarcaciones/create'
                                 ,'admin/embarcaciones/*/edit'],
                     'can'  => 'admin.embarcaciones.index',
-                ],                
+                ],
                 [
                     'text' => 'Muelles',
                     'icon'    => 'fab fa-docker',
@@ -574,7 +622,61 @@ return [
                     'active' => ['admin/muelles','admin/muelles/*','admin/muelles/create'
                                 ,'admin/muelles/*/edit'],
                     'can'  => 'admin.muelles.index',
-                ],                
+                ],
+                [
+                    'text' => 'Materia Prima Obtenida',
+                    'icon'    => 'fab fa-docker',
+                    'icon_color' => 'cyan',
+                    'route'  => 'admin.mpobtenidas.index',
+                    'active' => ['admin/mpobtenidas','admin/mpobtenidas/*','admin/mpobtenidas/create'
+                                ,'admin/mpobtenidas/*/edit'],
+                    'can'  => 'admin.mpobtenidas.index',
+                ],
+                [
+                    'text' => 'Despiece',
+                    'icon'    => 'fas fa-dice-d20',
+                    'icon_color' => 'cyan',
+                    'route'  => 'admin.despieces.index',
+                    'active' => ['admin/despieces','admin/despieces/*','admin/despieces/create'
+                                ,'admin/despieces/*/edit'],
+                    'can'  => 'admin.despieces.index',
+                ],
+                [
+                    'text' => 'Productos Proceso',
+                    'icon'    => 'fas fa-dolly-flatbed',
+                    'icon_color' => 'cyan',
+                    'route'  => 'admin.pprocesos.index',
+                    'active' => ['admin/pprocesos','admin/pprocesos/*','admin/pprocesos/create'
+                                ,'admin/pprocesos/*/edit'],
+                    'can'  => 'admin.pprocesos.index',
+                ],
+                [
+                    'text' => 'Supervisores',
+                    'icon'    => 'fas fa-chalkboard-teacher',
+                    'icon_color' => 'cyan',
+                    'route'  => 'admin.supervisors.index',
+                    'active' => ['admin/supervisors','admin/supervisors/*','admin/supervisors/create'
+                                ,'admin/supervisors/*/edit'],
+                    'can'  => 'admin.supervisors.index',
+                ],
+                [
+                    'text' => 'Equipo de Envasado',
+                    'icon'    => 'fas fa-inbox',
+                    'icon_color' => 'cyan',
+                    'route'  => 'admin.equipoenvasados.index',
+                    'active' => ['admin/equipoenvasados','admin/equipoenvasados/*','admin/equipoenvasados/create'
+                                ,'admin/equipoenvasados/*/edit'],
+                    'can'  => 'admin.equipoenvasados.index',
+                ],
+                [
+                    'text' => 'Contratas',
+                    'icon'    => 'fas fa-people-carry',
+                    'icon_color' => 'cyan',
+                    'route'  => 'admin.contratas.index',
+                    'active' => ['admin/contratas','admin/contratas/*','admin/contratas/create'
+                                ,'admin/contratas/*/edit'],
+                    'can'  => 'admin.contratas.index',
+                ],
                 [
                     'text' => 'Detracciones',
                     'icon'    => 'fas fa-receipt',
@@ -583,7 +685,7 @@ return [
                     'active' => ['admin/detraccions','admin/detraccions/*','admin/detraccions/create'
                                 ,'admin/detraccions/*/edit'],
                     'can'  => 'admin.detraccions.index',
-                ],                
+                ],
                 [
                     'text' => 'Usuarios',
                     'icon'    => 'fas fa-user-friends',

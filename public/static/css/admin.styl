@@ -68,6 +68,12 @@ colorsec = #343A40
 			color colorprin
 			font-size 1.1em
 			padding 12px 16px
+			.btn
+				padding 0px
+				margin-left 3px
+				color colorprin
+				&:hover
+					color colorsec
 		ul
 			display inline-block
 			float right
@@ -294,6 +300,15 @@ label
 	color #fff !important
 	&:hover
 		background-color colorsec !important
+
+.btn-seleccionado
+	// margin-top -1px
+	height 37px
+	// line-height: 15px
+	background-color colorsec !important
+	color #fff !important
+	&:hover
+		background-color colorprin !important
 
 .btn-rechazar
 	// margin-top -1px

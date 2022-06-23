@@ -21,6 +21,7 @@ use App\Models\Detdestino;
 use App\Models\Detraccion;
 use App\Models\Detrventa;
 use App\Models\Kardex;
+use App\Models\Lote;
 use App\Models\Producto;
 use App\Models\Sede;
 use App\Models\Tesoreria;
@@ -46,8 +47,7 @@ class ConsumoController extends Controller
             $periodo = session('periodo');
         }
         $rventas = Rventa::with(['cliente','detrventa','ccosto'])
-            ->select('id','fecha','moneda','serie','numero','tipocomprobante_codigo','cliente_id',
-                'total','status','cdr','detdestino_id','ccosto_id')
+            ->select('id','fecha','moneda','serie','numero','tipocomprobante_codigo','cliente_id','detdestino_id','lote')
             ->where('tipo',2)
             ->where('periodo',$periodo)
             ->where('empresa_id',session('empresa'))
@@ -61,7 +61,7 @@ class ConsumoController extends Controller
     {
         $periodo = $request->input('mes').$request->input('año');
         $rventas = Rventa::with(['cliente'])
-            ->select('id','fecha','moneda','serie','numero','tipocomprobante_codigo','cliente_id','total','status','cdr')
+            ->select('id','fecha','moneda','serie','numero','tipocomprobante_codigo','cliente_id','detdestino_id','lote')
             ->where('tipo',2)
             ->where('periodo',$periodo)
             ->where('empresa_id',session('empresa'))
@@ -78,8 +78,9 @@ class ConsumoController extends Controller
         $key = generateRandomString();
         $destinos = Destino::where('empresa_id',session('empresa'))->orderBy('nombre')->pluck('nombre','id');
         $ccosto = Ccosto::where('empresa_id',session('empresa'))->orderBy('nombre')->pluck('nombre','id');
+        $lotes = Lote::where('empresa_id',session('empresa'))->OrderBy('lote','desc')->take(15)->pluck('lote','lote');
 
-        return view('admin.consumos.create', compact('moneda','tipocomprobante','key','destinos','ccosto'));
+        return view('admin.consumos.create', compact('moneda','tipocomprobante','key','destinos','ccosto','lotes'));
     }
 
     public function store(StoreConsumoRequest $request)
@@ -96,7 +97,7 @@ class ConsumoController extends Controller
             'tc' => $request->input('tc'),
             'cliente_id' => 2,
             'detdestino_id' => $request->input('detdestino_id'),
-            'lote' => $request->input('lote'),
+            'lote' => $request->input('lotep'),
             // 'ccosto_id' => $request->input('ccosto_id'),
             'detalle' => $request->input('detalle'),
         ];
@@ -133,6 +134,7 @@ class ConsumoController extends Controller
                 'adicional' => $det->adicional,
                 'grupo' => 1,
                 'cantidad' => $det->cantidad,
+                'devolucion' => 0,
                 'preprom' => $det->preprom,
                 'precio' => $det->precio,
                 'subtotal' => $det->subtotal,
@@ -190,9 +192,10 @@ class ConsumoController extends Controller
         $clientes = Cliente::where('id',$consumo->cliente_id)->get()->pluck('numdoc_razsoc','id');
         $destinos = Destino::where('id', $consumo->detdestino->destino_id)->pluck('nombre','id');
         $detdestinos = Detdestino::where('id', $consumo->detdestino_id)->pluck('nombre','id');
+        $lotes = Lote::where('empresa_id',session('empresa'))->OrderBy('lote','desc')->take(15)->pluck('lote','lote');
         
         return view('admin.consumos.edit',
-            compact('consumo','destinos','detdestinos'));
+            compact('consumo','destinos','detdestinos','lotes'));
     }
 
     public function update(Request $request, Rventa $consumo)

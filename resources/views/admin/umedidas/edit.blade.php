@@ -13,14 +13,17 @@
 		<div class="row">
 			<div class="col-md-12">
 				<div class="panelprin shadow">
+					{!! Form::model($umedida, ['route'=>['admin.umedidas.update', $umedida], 'method'=>'put']) !!}
 					<div class="headercontent">
 						<h2 class="title"><i class="fas fa-ruler-combined"></i> Unidad de Medida</h2>
-                            <ul>
-                            </ul>
-                        </div>
+						<ul>
+							<li>
+								{!! Form::submit('Guardar', ['class'=>'btn btn-convertir mt-1']) !!}
+							</li>
+						</ul>
+					</div>
 					<div class="inside">
 						{{-- {!! Form::open(['url'=>'/admin/categoria/add/'.$module]) !!} --}}
-						{!! Form::model($umedida, ['route'=>['admin.umedidas.update', $umedida], 'method'=>'put']) !!}
 						<div class="row">
 							<div class="col-md-2 form-group">
 								{!! Form::label('codigo', 'Código:') !!}
@@ -31,10 +34,8 @@
 								{!! Form::text('nombre', null, ['class'=>'form-control','autocomplete'=>'off']) !!}
 							</div>
 						</div>
-						{!! Form::submit('Guardar', ['class'=>'btn btn-convertir']) !!}
-						{!! Form::close() !!}
-
 					</div>				
+					{!! Form::close() !!}
 				</div>
 			</div>
 

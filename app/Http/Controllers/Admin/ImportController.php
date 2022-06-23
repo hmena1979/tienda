@@ -19,6 +19,7 @@ use App\Imports\DetraccionImport;
 use App\Imports\DepartamentoImport;
 use App\Imports\EmbarcacionImport;
 use App\Imports\EmpacopiadoraImport;
+use App\Imports\MpdImport;
 use App\Imports\ProductoImport;
 use App\Imports\ProvinciaImport;
 use App\Imports\TransportistaImport;
@@ -353,6 +354,26 @@ class ImportController extends Controller
 		else:
     		$file = $request->file('archivo');
     		Excel::import(new ProductoImport, $file);
+
+    		return redirect('/admin/import')->with('message', 'Archivo importado')->with('typealert', 'success');
+    	endif;
+    }
+
+    public function mpd(Request $request)
+    {
+    	$rules = [
+			'archivo' => 'required'
+    	];
+    	$messages = [
+			'archivo.required' => 'No ha selecionado archivo MPD.xlsx'
+    	];
+
+    	$validator = validator::make($request->all(), $rules, $messages);
+    	if($validator->fails()):
+    		return back()->withErrors($validator)->with('message', 'Se ha producido un error')->with('typealert', 'danger')->withinput();
+		else:
+    		$file = $request->file('archivo');
+    		Excel::import(new MpdImport, $file);
 
     		return redirect('/admin/import')->with('message', 'Archivo importado')->with('typealert', 'success');
     	endif;

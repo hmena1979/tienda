@@ -20,6 +20,7 @@ use App\Models\Detrcompra;
 use App\Models\Tesoreria;
 use App\Models\Dettesor;
 use App\Models\Empresa;
+use App\Models\Lote;
 use DOMDocument;
 use DOMXPath;
 use phpDocumentor\Reflection\Types\This;
@@ -122,10 +123,11 @@ class RcompraController extends Controller
 
         $rcompra = new Rcompra;
         $rcompra->moneda = 'PEN';
+        $lotes = Lote::where('empresa_id',session('empresa'))->OrderBy('lote','desc')->take(15)->pluck('lote','lote');
 
         return view('admin.rcompras.create',
             compact('moneda','tipocomprobante','tipooperacion','mediopago','cuenta',
-                'detraccions','tipdoc','sexo','estciv','rcompra','proveedores'));
+                'detraccions','tipdoc','sexo','estciv','rcompra','proveedores','lotes'));
     }
 
     public function store(Request $request)
@@ -277,10 +279,12 @@ class RcompraController extends Controller
                 ->where('moneda',$rcompra->moneda)
                 ->pluck('nombre','id');
         $detraccions = Detraccion::orderBy('codigo')->get()->pluck('codigo_nombre','codigo');
+        $lotes = Lote::where('empresa_id',session('empresa'))->OrderBy('lote','desc')->take(15)->pluck('lote','lote');
+        $destinos = Destino::where('empresa_id',session('empresa'))->orderBy('nombre')->pluck('nombre','id');
 
         return view('admin.rcompras.edit',
             compact('rcompra','moneda','tipocomprobante','clientes','tipooperacion',
-            'mediopago','cuenta','detraccions'));
+            'mediopago','cuenta','detraccions','lotes','destinos'));
     }
 
     public function update(Request $request, Rcompra $rcompra)
@@ -551,7 +555,7 @@ class RcompraController extends Controller
             $data = [
                 'rcompra_id' => $request->input('id'),
                 'detdestino_id' => $request->input('detdestino_id'),
-                // 'ccosto_id' => $request->input('ccosto_id'),
+                // 'ccosto_id' => '1',
                 'monto' => $request->input('monto'),
             ];
             $detrcompra = Detrcompra::create($data);

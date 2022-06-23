@@ -38,7 +38,8 @@
                             </div>
                             <div class="col-md-2">
                                 {!! Form::label('lote', 'Lote:') !!}
-                                {!! Form::text('lote', null, ['class'=>'form-control mayuscula activo','autocomplete'=>'off']) !!}
+                                {!! Form::select('lote',$lotes,null,['class'=>'custom-select activo','placeholder' => '']) !!}
+                                {{-- {!! Form::text('lote', null, ['class'=>'form-control mayuscula activo','autocomplete'=>'off']) !!} --}}
                             </div>
                             <div class="col-md-4">
                                 <div class="row">

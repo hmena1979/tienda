@@ -24,10 +24,10 @@ class StoreDetrcompraRequest extends FormRequest
     public function rules()
     {
         return [
-                'detdestino_id' => 'required',
-                // 'ccosto_id' => 'required',
-                'monto' => 'required',
-            ];
+            'detdestino_id' => 'required',
+            // 'ccosto_id' => 'required',
+            'monto' => 'required',
+        ];
     }
 
     public function messages()

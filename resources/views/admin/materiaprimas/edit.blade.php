@@ -28,7 +28,8 @@
 									{!! Form::hidden('periodo', session('periodo')) !!}
 									{!! Form::hidden('id', null, ['id'=>'id']) !!}
 									{!! Form::label('lote', 'Lote:') !!}
-									{!! Form::text('lote', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
+									{!! Form::select('lote',$lotes,null,['class'=>'custom-select']) !!}
+									{{-- {!! Form::text('lote', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!} --}}
 								</div>
 								<div class="col-md-2 form-group">
 									{!! Form::label('remitente_guia', 'Guía Remitente:') !!}
@@ -66,7 +67,7 @@
 								</div>
 							</div>
 							<div class="row">
-								<div class="col-md-12 form-group">
+								<div class="col-md-10 form-group">
 									{!! Form::label('embarcacion_id[]', 'Embarcación:') !!}
 									{!! Form::select('embarcacion_id[]',$embarcacion,json_decode($materiaprima->embarcacion_id),['class' => 'form-control embarcacion_id', 'multiple'=>'multiple']) !!}
 								</div>
@@ -272,6 +273,10 @@
 		$('#transportista_id').select2({
 			placeholder:"Seleccione Transportista"
 		});
+
+		// $('#lote').select2({
+		// 	placeholder:"Seleccione Lote"
+		// });
 
 		$('#transportista_id').on('select2:close',function(){
             var transportista = this.value;

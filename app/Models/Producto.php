@@ -20,6 +20,11 @@ class Producto extends Model
     //     return $this->hasMany('App\Models\Detproducto');
     // }
 
+    public function mpobtenidas()
+    {
+        return $this->hasMany('App\Models\Mpobtenida');
+    }
+
     public function detingreso(){
         return $this->hasOne('App\Models\Detingreso');
     }
@@ -76,5 +81,9 @@ class Producto extends Model
 
     public function saldo(){
         return $this->hasOne('App\Models\Saldo');
+    }
+
+    public function detparteproducto(){
+        return $this->hasOne('App\Models\Detparteproducto');
     }
 }

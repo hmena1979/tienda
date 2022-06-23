@@ -46,7 +46,10 @@
             </thead>
             <tbody>
                 <td class="text-center">{{ number_format($rcompra->total,2) }}</td>
-                <td class="text-center">{{ number_format($rcompra->detrcompras->sum('monto'), 2)}}</td>
+                <td class="text-center">
+                    {{ number_format($rcompra->detrcompras->sum('monto'), 2)}}
+                    <span class="oculto" id="totalDestino">{{ $rcompra->detrcompras->sum('monto') }}</span>
+                </td>
             </tbody>
         </table>
     </div>
@@ -60,9 +63,10 @@
         $('#detdestino_id').val(null);
         $('#detdestino_id').select2({
             placeholder:"DETALLE"
-        });        
-        $('#ccosto_id').select2({
-            placeholder:"CENTRO DE COSTO"
         });
+        $('#monto').val(Redondea($('#total').val() - Number($('#totalDestino').text()),2));
+        // $('#ccosto_id').select2({
+        //     placeholder:"CENTRO DE COSTO"
+        // });
     });
 </script>

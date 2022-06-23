@@ -15,6 +15,7 @@ use App\Models\Destino;
 use App\Models\Detdestino;
 use App\Models\Detpedido;
 use App\Models\Kardex;
+use App\Models\Lote;
 use App\Models\Pedido;
 use App\Models\Producto;
 use App\Models\Rventa;
@@ -123,7 +124,8 @@ class PedidoController extends Controller
     {
         $users = User::where('id',Auth::user()->id)->pluck('name','id');
         $destinos = Destino::where('empresa_id',session('empresa'))->orderBy('nombre')->pluck('nombre','id');
-        return view('admin.pedidos.create', compact('users','destinos'));
+        $lotes = Lote::OrderBy('lote','desc')->take(15)->pluck('lote','lote');
+        return view('admin.pedidos.create', compact('users','destinos','lotes'));
     }
 
     public function store(Request $request)
@@ -162,9 +164,10 @@ class PedidoController extends Controller
         $destino = $pedido->detdestino->destino->id;
         $destinos = Destino::where('empresa_id',session('empresa'))->orderBy('nombre')->pluck('nombre','id');
         $detdestinos = Detdestino::where('destino_id',$destino)->orderBy('nombre')->pluck('nombre','id');
+        $lotes = Lote::where('empresa_id',session('empresa'))->OrderBy('lote','desc')->take(15)->pluck('lote','lote');
         
         return view('admin.pedidos.edit',
-            compact('pedido','users','destino','destinos','detdestinos','procesa'));
+            compact('pedido','users','destino','destinos','detdestinos','procesa','lotes'));
     }
 
     public function update(Request $request, Pedido $pedido)
@@ -320,6 +323,7 @@ class PedidoController extends Controller
                         'adicional' => $det->motivo,
                         'grupo' => 1,
                         'cantidad' => $det->catendida,
+                        'devolucion' => 0,
                         'preprom' => $det->producto->precompra,
                         'precio' => $det->producto->precompra,
                         'subtotal' => $det->catendida*$det->producto->precompra,

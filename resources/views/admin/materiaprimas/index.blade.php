@@ -47,10 +47,10 @@
 							<thead>
 								<tr>
 									<th width='10%' class="align-middle">Ingreso <br> Planta</th>
-									<th width='10%' class="align-middle">Lote</th>
+									<th width='12%' class="align-middle">Lote</th>
 									<th width='30%' class="align-middle">Proveedor</th>
 									<th width='10%' class="align-middle">Peso <br> Planta KG</th>
-									<th width='30%' class="align-middle">Empresa Transportista</th>
+									<th width='28%' class="align-middle">Empresa Transportista</th>
 									<th width='10%' class="align-middle"></th>
 								</tr>
 							</thead>
@@ -70,7 +70,7 @@
 									<td class="@if (empty($materiaprima->cliente_id)) rojo @endif">
 										{{ empty($materiaprima->cliente_id)?'PENDIENTE':$materiaprima->cliente->razsoc }}
 									</td>
-									<td>{{ $materiaprima->pplanta }}</td>
+									<td>{{ number_format($materiaprima->pplanta,2) }}</td>
 									<td class="@if (empty($materiaprima->transportista_id)) rojo @endif">
 										{{ empty($materiaprima->transportista_id)?'PENDIENTE':$materiaprima->transportista->nombre }}
 									</td>
@@ -155,32 +155,32 @@
 		});
 
 		$('#gridv').DataTable({
-				"order": [[0, 'desc'],[1, 'desc']],
-                "paging":   true,
-                "ordering": true,
-                "info":     true,
-                "language":{
-                    "info": "_TOTAL_ Registros",
-                    "search": "Buscar",
-                    "paginate":{
-                        "next": "Siguiente",
-                        "previous": "Anterior"
-                    },
-                    "lengthMenu": "Mostrar <select>"+
-                                    "<option value='10'>10</option>"+
-                                    "<option value='25'>25</option>"+
-                                    "<option value='50'>50</option>"+
-                                    "<option value='100'>100</option>"+
-                                    "<option value='-1'>Todos</option>"+
-                                    "</select> Registros",
-                    "loadingRecords": "Cargando...",
-                    "processing": "Procesando...",
-                    "emptyTable": "No se encontraton coincidencias",
-                    "zeroRecords": "No se encontraton coincidencias",
-                    "infoEmpty": "",
-                    "infoFiltered": ""
-                }
-            });
+			"order": [[0, 'desc'],[1, 'desc']],
+			"paging":   true,
+			"ordering": true,
+			"info":     true,
+			"language":{
+				"info": "_TOTAL_ Registros",
+				"search": "Buscar",
+				"paginate":{
+					"next": "Siguiente",
+					"previous": "Anterior"
+				},
+				"lengthMenu": "Mostrar <select>"+
+								"<option value='10'>10</option>"+
+								"<option value='25'>25</option>"+
+								"<option value='50'>50</option>"+
+								"<option value='100'>100</option>"+
+								"<option value='-1'>Todos</option>"+
+								"</select> Registros",
+				"loadingRecords": "Cargando...",
+				"processing": "Procesando...",
+				"emptyTable": "No se encontraton coincidencias",
+				"zeroRecords": "No se encontraton coincidencias",
+				"infoEmpty": "",
+				"infoFiltered": ""
+			}
+		});
 	});
 </script>
 @endsection

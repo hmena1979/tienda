@@ -45,8 +45,9 @@
                                 {!! Form::select('detdestino_id',[],null,['class'=>'custom-select','placeholder'=>'']) !!}
                             </div>
                             <div class="col-md-2">
-                                {!! Form::label('lote', 'Lote:') !!}
-                                {!! Form::text('lote', null, ['class'=>'form-control mayuscula activo','autocomplete'=>'off']) !!}
+                                {!! Form::label('lotep', 'Lote:') !!}
+                                {!! Form::select('lotep',$lotes,null,['class'=>'custom-select','placeholder' => '']) !!}
+                                {{-- {!! Form::text('lote', null, ['class'=>'form-control mayuscula activo','autocomplete'=>'off']) !!} --}}
                             </div>
                             {{-- <div class="col-md-8">
                                 <div class="row">

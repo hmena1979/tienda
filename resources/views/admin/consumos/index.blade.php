@@ -44,10 +44,11 @@
 								<tr>
 									<th width="10%">Fecha</th>
 									<th width="10%">Número</th>
-									<th width="25%">Destino</th>
-									<th width="25%">Detalle</th>
+									<th width="15%">Destino</th>
+									<th width="15%">Detalle</th>
+									<th width="15%">Lote</th>
 									{{-- <th width="25%">C.Costo</th> --}}
-									<th width="5%"></th>
+									<th width="10%"></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -59,6 +60,7 @@
 									<td>{{ numDoc($rventa->serie,$rventa->numero) }}</td>
 									<td>{{ trim($rventa->detdestino->destino->nombre) }}</td>
 									<td>{{ trim($rventa->detdestino->nombre) }}</td>
+									<td>{{ trim($rventa->lote) }}</td>
 									{{-- <td>{{ trim($rventa->ccosto->nombre) }}</td> --}}
 									<td class="text-center">
 										<div class="opts">
