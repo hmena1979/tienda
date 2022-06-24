@@ -9,11 +9,6 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Reader\Xml\Style\Alignment;
 
-use App\Models\Materiaprima;
-use App\Exports\MateriaPrimaExport;
-use App\Models\Embarcacion;
-use App\Models\Empresa;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use PhpOffice\PhpSpreadsheet\Style\Alignment as StyleAlignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
@@ -21,6 +16,16 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+
+use App\Models\Materiaprima;
+use App\Exports\MateriaPrimaExport;
+use App\Models\Despiece;
+use App\Models\Detdespiece;
+use App\Models\Embarcacion;
+use App\Models\Empresa;
+use App\Models\Mpobtenida;
+use App\Models\Parte;
+use App\Models\User;
 
 class ExcelController extends Controller
 {
@@ -541,5 +546,350 @@ class ExcelController extends Controller
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment; filename="'. urlencode($fileName).'"');
         $writer->save('php://output');
+    }
+
+    public function parte(Parte $parte)
+    {
+        $materiaPrimas = Materiaprima::where('lote',$parte->lote)->orderBy('ticket_balanza')->get();
+        $mpObtenidas = Mpobtenida::get();
+        $empresa = Empresa::findOrFail($parte->empresa_id);
+        $enombre = Embarcacion::pluck('nombre','id');
+        $ematricula = Embarcacion::pluck('matricula','id');
+        $eprotocolo = Embarcacion::pluck('protocolo','id');
+        $ecapacidad = Embarcacion::pluck('capacidad','id');
+        $totalMateriaPrima = $materiaPrimas->sum('pplanta');
+        $salto = "\r\n";
+        //Creación de Excel
+        $excel = new Spreadsheet();
+
+        //Información del Archivo
+        $excel
+            ->getProperties()
+            ->setCreator("Pesquera HL")
+            ->setLastModifiedBy('Proceso')
+            ->setTitle('Parte de Producción')
+            ->setSubject('Parte de Producción')
+            ->setDescription('Reporte de Parte de Producción')
+            ->setKeywords('Parte')
+            ->setCategory('Categoría Excel');
+
+        //Fuente y Tamaño por defecto
+        $excel
+            ->getDefaultStyle()
+            ->getFont()
+            ->setName('Arial')
+            ->setSize(8);
+        
+        $estiloBorde = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                ],
+            ],
+        ];
+
+        //Creación de Hoja y Llenado de Información
+        $sheet = $excel->getActiveSheet();
+        $sheet->setTitle("Parte de Producción");
+        $linea = 1;
+        // Logo
+        $logo = new Drawing();
+        $logo->setName('Logo');
+        $logo->setDescription('Logo');
+        $logo->setPath('./static/images/logopesquera.jpeg');
+        $logo->setCoordinates('A'.$linea);
+        $logo->setHeight(60);
+        // $logo->setOffsetX(110);
+        // $logo->setRotation(25);
+        // $logo->getShadow()->setVisible(true);
+        // $logo->getShadow()->setDirection(45);
+        $logo->setWorksheet($excel->getActiveSheet());
+        $sheet->setCellValue('P'.$linea, 'N°');
+        $sheet->setCellValue('Q'.$linea, $parte->lote);
+        $sheet->mergeCells('Q'.$linea .':R'.$linea);
+        $sheet->getStyle('P'.$linea.':R'.$linea)->applyFromArray($estiloBorde);
+        $sheet->getStyle('P'.$linea.':R'.$linea)->getFont()->setSize(10)->setBold(true);
+        $linea++;
+        $sheet->setCellValue('P'.$linea, 'TURNO');
+        $sheet->setCellValue('Q'.$linea, $parte->turno==1?'DIA':'NOCHE');
+        $sheet->mergeCells('Q'.$linea .':R'.$linea);
+        $sheet->getStyle('P'.$linea.':R'.$linea)->applyFromArray($estiloBorde);
+        $sheet->getStyle('P'.$linea.':R'.$linea)->getFont()->setSize(10)->setBold(true);
+        $linea++;
+        $linea++;
+        $linea++;
+        $sheet->setCellValue('A'.$linea,'PARTE DE PRODUCCIÓN DE CONGELADOS DE POTA');
+        $sheet->mergeCells('A'.$linea .':R'.$linea);
+        $sheet->getStyle('A'.$linea)->getFont()->setSize(16)->setBold(true);
+        $sheet->getStyle('A'.$linea)
+            ->getAlignment()
+            ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+        // $linea++;
+        // $sheet->setCellValue('A'.$linea,'DESDE: '.'uno'.' HASTA '.'dos');
+        // $sheet->mergeCells('A'.$linea.':V'.$linea);
+        // $sheet->getStyle('A'.$linea)->getFont()->setSize(10)->setBold(true);
+        // $sheet->getStyle('A'.$linea)
+        // ->getAlignment()
+        // ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+        $linea++;
+        $sheet->setCellValue('A'.$linea,'FECHA DE RECEPCIÓN:');
+        $sheet->mergeCells('A'.$linea .':C'.$linea);
+        $sheet->setCellValue('D'.$linea,$parte->recepcion);
+        $sheet->mergeCells('D'.$linea .':F'.$linea);
+        $sheet->setCellValue('G'.$linea,'FECHA DE CONGELACIÓN:');
+        $sheet->mergeCells('G'.$linea .':I'.$linea);
+        $sheet->setCellValue('J'.$linea,$parte->congelacion);
+        $sheet->mergeCells('J'.$linea .':L'.$linea);
+        $sheet->setCellValue('M'.$linea,'FECHA DE EMPAQUE:');
+        $sheet->mergeCells('M'.$linea .':O'.$linea);
+        $sheet->setCellValue('P'.$linea,$parte->empaque);
+        $sheet->mergeCells('P'.$linea .':R'.$linea);
+        $sheet->getStyle('A'.$linea.':R'.$linea)->applyFromArray($estiloBorde);
+        $sheet->getStyle('A'.$linea.':R'.$linea)->getFont()->setSize(8)->setBold(true);
+        $linea++;
+        $sheet->setCellValue('A'.$linea,'USUARIO/CLIENTE:');
+        $sheet->mergeCells('A'.$linea .':C'.$linea);
+        $sheet->setCellValue('D'.$linea, $empresa->razsoc);
+        $sheet->mergeCells('D'.$linea .':F'.$linea);
+        $sheet->setCellValue('G'.$linea,'ORDEN DE PRODUCCIÓN:');
+        $sheet->mergeCells('G'.$linea .':I'.$linea);
+        $sheet->setCellValue('J'.$linea, substr($parte->lote,5));
+        $sheet->mergeCells('J'.$linea .':L'.$linea);
+        $sheet->setCellValue('M'.$linea,'LOTE DE PRODUCCIÓN:');
+        $sheet->mergeCells('M'.$linea .':O'.$linea);
+        $sheet->setCellValue('P'.$linea,$parte->lote);
+        $sheet->mergeCells('P'.$linea .':R'.$linea);
+        $sheet->getStyle('A'.$linea.':R'.$linea)->applyFromArray($estiloBorde);
+        $sheet->getStyle('A'.$linea.':R'.$linea)->getFont()->setSize(8)->setBold(true);
+        $linea++;
+        $sheet->setCellValue('A'.$linea,'TIPO DE PRODUCCCION:');
+        $sheet->mergeCells('A'.$linea .':C'.$linea);
+        $sheet->setCellValue('D'.$linea, $parte->produccion==1?'PROPIA':'POR ENCARGO');
+        $sheet->mergeCells('D'.$linea .':F'.$linea);
+        $sheet->setCellValue('G'.$linea,'MANO DE OBRA:');
+        $sheet->mergeCells('G'.$linea .':I'.$linea);
+        $sheet->setCellValue('J'.$linea, $parte->contrata->nombre);
+        $sheet->mergeCells('J'.$linea .':L'.$linea);
+        $sheet->setCellValue('M'.$linea,'CODIGO DE TRAZABILIDAD:');
+        $sheet->mergeCells('M'.$linea .':O'.$linea);
+        $sheet->setCellValue('P'.$linea,$parte->trazabilidad);
+        $sheet->mergeCells('P'.$linea .':R'.$linea);
+        $sheet->getStyle('A'.$linea.':R'.$linea)->applyFromArray($estiloBorde);
+        $sheet->getStyle('A'.$linea.':R'.$linea)->getFont()->setSize(8)->setBold(true);
+        $linea++;$linea++;
+        $sheet->setCellValue('A'.$linea,'RECEPCION DE MATERIA PRIMA-KGS.');
+        $sheet->mergeCells('A'.$linea .':F'.$linea);
+        $sheet->getStyle('A'.$linea.':F'.$linea)->getFont()->setSize(9)->setBold(true);
+        $sheet->getStyle('A'.$linea.':F'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF0070C0');
+        $sheet->getStyle('A'.$linea.':F'.$linea)->getFont()->getColor()->setARGB('FFFFFFFF');
+        $linea++;$linea++;
+        $registro = 0;
+        foreach($materiaPrimas as $det) {
+            $registro++;
+            $sheet->setCellValue('A'.$linea, 'PROVEEDOR '.$registro.':');
+            $sheet->mergeCells('A'.$linea .':B'.$linea);
+            $sheet->setCellValue('C'.$linea, $det->cliente->razsoc);
+            $sheet->mergeCells('C'.$linea .':F'.$linea);
+            $sheet->setCellValue('G'.$linea, 'ZONA ACOPIO:');
+            $sheet->mergeCells('G'.$linea .':H'.$linea);
+            $sheet->setCellValue('I'.$linea, $det->lugar);
+            $sheet->mergeCells('I'.$linea .':J'.$linea);
+            $sheet->setCellValue('K'.$linea, 'CÁMARA:');
+            $sheet->mergeCells('K'.$linea .':L'.$linea);
+            $sheet->setCellValue('M'.$linea, $det->camara->placa);
+            $sheet->mergeCells('M'.$linea .':N'.$linea);
+            $sheet->setCellValue('O'.$linea, 'GUÍA:');
+            $sheet->mergeCells('O'.$linea .':P'.$linea);
+            $sheet->setCellValue('Q'.$linea, $det->transportista_guia);
+            $sheet->mergeCells('Q'.$linea .':R'.$linea);
+            $sheet->getStyle('A'.$linea.':F'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB(colorExcel($registro));
+            $sheet->getStyle('I'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FFD9D9D9');
+            $sheet->getStyle('M'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FFD9D9D9');
+            $sheet->getStyle('Q'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FFD9D9D9');
+            $sheet->getStyle('A'.$linea.':R'.$linea)->applyFromArray($estiloBorde);
+            $linea++;
+        }
+        $linea++;
+        $sheet->setCellValue('A'.$linea, 'EMBARCACION');
+        $sheet->mergeCells('A'.$linea .':C'.$linea);
+        $sheet->setCellValue('D'.$linea, 'MATRICULA');
+        $sheet->mergeCells('D'.$linea .':E'.$linea);
+        $sheet->setCellValue('F'.$linea, 'PROTOC. SANIPES');
+        $sheet->mergeCells('F'.$linea .':G'.$linea);
+        $sheet->setCellValue('H'.$linea, 'CAP.'.$salto.'BODEGA'.$salto.'(T.M.)');
+        $sheet->getStyle('H'.$linea)->getAlignment()->setWrapText(true);
+        // $sheet->mergeCells('G'.$linea .':'.$linea);
+        $sheet->setCellValue('I'.$linea, 'POTA ENTERA');
+        $sheet->mergeCells('I'.$linea .':J'.$linea);
+        $sheet->setCellValue('K'.$linea, 'TOTAL');
+        $sheet->mergeCells('K'.$linea .':L'.$linea);
+        $sheet->getStyle('A'.$linea.':L'.$linea)->applyFromArray($estiloBorde);
+        $sheet->getStyle('A'.$linea.':L'.$linea)->getFont()->setSize(8)->setBold(true);
+        $sheet->getStyle('A'.$linea.':L'.$linea)
+                ->getAlignment()
+                ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A'.$linea.':L'.$linea)
+                ->getAlignment()
+                ->setVertical(StyleAlignment::VERTICAL_CENTER);
+        $registro = 1;
+        $cuadroInicio = $linea;
+        foreach($materiaPrimas as $materiaPrima) {
+            $linea++;
+            $cantidad = 0;
+            $sheet->setCellValue('I'.$linea, number_format($materiaPrima->pplanta,2));
+            $sheet->setCellValue('K'.$linea, number_format($materiaPrima->pplanta,2));
+            if (!empty($materiaPrima->embarcacion_id)) {
+                $cantidad = count(json_decode($materiaPrima->embarcacion_id));
+            }
+            if ($cantidad > 0) {
+                $lineaInicio = $linea;
+                foreach (json_decode($materiaPrima->embarcacion_id) as $embarcacion){
+                    $sheet->getStyle('A'.$linea.':L'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB(colorExcel($registro));
+                    $sheet->setCellValue('A'.$linea, $enombre[$embarcacion]);
+                    $sheet->mergeCells('A'.$linea .':C'.$linea);
+                    $sheet->setCellValue('D'.$linea, $ematricula[$embarcacion]);
+                    $sheet->mergeCells('D'.$linea .':E'.$linea);
+                    $sheet->setCellValue('F'.$linea, $eprotocolo[$embarcacion]);
+                    $sheet->mergeCells('F'.$linea .':G'.$linea);
+                    $sheet->setCellValue('H'.$linea, $ecapacidad[$embarcacion]);
+                    $linea++;
+                }
+                $linea--;
+                $sheet->mergeCells('I'.$lineaInicio.':J'.$linea);
+                $sheet->getStyle('I'.$lineaInicio.':J'.$linea)
+                    ->getAlignment()
+                    ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('I'.$lineaInicio.':J'.$linea)
+                    ->getAlignment()
+                    ->setVertical(StyleAlignment::VERTICAL_CENTER);
+                $sheet->mergeCells('K'.$lineaInicio.':L'.$linea);
+                $sheet->getStyle('K'.$lineaInicio.':L'.$linea)
+                    ->getAlignment()
+                    ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('K'.$lineaInicio.':L'.$linea)
+                    ->getAlignment()
+                    ->setVertical(StyleAlignment::VERTICAL_CENTER);
+            }
+
+            $registro++;
+            if ($registro > 22) {
+                $registro = 1;
+            }
+        }
+        $linea++;
+        $sheet->setCellValue('A'.$linea, 'TOTAL RECIBIDO POR GUIA');
+        $sheet->mergeCells('A'.$linea .':H'.$linea);
+        $sheet->setCellValue('I'.$linea, number_format($totalMateriaPrima,2));
+        $sheet->mergeCells('I'.$linea .':J'.$linea);
+        $sheet->setCellValue('K'.$linea, number_format($totalMateriaPrima,2));
+        $sheet->mergeCells('K'.$linea .':L'.$linea);
+        $sheet->getStyle('A'.$linea.':L'.$linea)
+            ->getAlignment()
+            ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);            
+        $sheet->getStyle('A'.$linea.':L'.$linea)->getFont()->setBold(true);
+        $linea++;
+        $sheet->setCellValue('A'.$linea, 'PORCENTAJES');
+        $sheet->mergeCells('A'.$linea .':H'.$linea);
+        $sheet->setCellValue('I'.$linea, '100.00%');
+        $sheet->mergeCells('I'.$linea .':J'.$linea);
+        $sheet->setCellValue('K'.$linea, '100.00%');
+        $sheet->mergeCells('K'.$linea .':L'.$linea);
+        $sheet->getStyle('A'.$linea.':L'.$linea)
+            ->getAlignment()
+            ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);            
+        $sheet->getStyle('A'.$linea.':L'.$linea)->getFont()->setBold(true);
+        $sheet->getStyle('A'.$linea.':L'.$linea)->getFont()->getColor()->setARGB(colorExcel('azul'));
+        $sheet->getStyle('A'.$cuadroInicio.':L'.$linea)->applyFromArray($estiloBorde);
+        $linea++;$linea++;
+        $cuadroInicio = $linea;
+        $sheet->setCellValue('A'.$linea, 'MATERIAS PRIMAS OBTENIDAS');
+        foreach($mpObtenidas as $det) {
+            $sheet->setCellValue('F'.$linea, $det->despiece->nombre);
+            $sheet->mergeCells('F'.$linea .':H'.$linea);
+            $sheet->getStyle('F'.$linea.':H'.$linea)->getFont()->setSize(9)->setBold(true);
+            $sheet->setCellValue('I'.$linea, number_format($totalMateriaPrima * ($det->porcentaje/100),2));
+            $sheet->mergeCells('I'.$linea .':J'.$linea);
+            $sheet->setCellValue('K'.$linea, number_format($totalMateriaPrima * ($det->porcentaje/100),2));
+            $sheet->mergeCells('K'.$linea .':L'.$linea);
+            $sheet->setCellValue('M'.$linea, $det->porcentaje.'%');
+            $linea++;
+        }
+        $linea--;
+        $sheet->mergeCells('A'.$cuadroInicio .':E'.$linea);
+        $sheet->getStyle('A'.$cuadroInicio.':E'.$linea)->getFont()->setSize(9)->setBold(true);
+        $sheet->getStyle('A'.$cuadroInicio.':E'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF0070C0');
+        $sheet->getStyle('A'.$cuadroInicio.':E'.$linea)->getFont()->getColor()->setARGB('FFFFFFFF');
+        $sheet->getStyle('A'.$cuadroInicio.':E'.$linea)
+            ->getAlignment()
+            ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A'.$cuadroInicio.':E'.$linea)
+            ->getAlignment()
+            ->setVertical(StyleAlignment::VERTICAL_CENTER);
+        $sheet->getStyle('I'.$cuadroInicio.':M'.$linea)
+            ->getAlignment()
+            ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+        $linea++;
+        $sheet->setCellValue('A'.$linea, 'TOTALES EN KILOS');
+        $sheet->mergeCells('A'.$linea .':H'.$linea);
+        $sheet->setCellValue('I'.$linea, number_format($totalMateriaPrima,2));
+        $sheet->mergeCells('I'.$linea .':J'.$linea);
+        $sheet->setCellValue('K'.$linea, number_format($totalMateriaPrima,2));
+        $sheet->mergeCells('K'.$linea .':L'.$linea);
+        $sheet->setCellValue('M'.$linea, '100.00%');
+        $sheet->getStyle('A'.$linea.':M'.$linea)->getFont()->setSize(9)->setBold(true);
+        $sheet->getStyle('A'.$linea.':M'.$linea)
+            ->getAlignment()
+            ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A'.$cuadroInicio.':M'.$linea)->applyFromArray($estiloBorde);
+
+        $linea++;$linea++;
+        $sheet->setCellValue('A'.$linea, 'DISTRIBUCION DE MATERIA PRIMA');
+        $sheet->mergeCells('A'.$linea .':D'.$linea);
+        $sheet->mergeCells('A'.($linea+1) .':D'.($linea+1));
+        $sheet->getStyle('A'.$linea.':D'.$linea)->getFont()->setSize(9)->setBold(true);
+        $sheet->getStyle('A'.$linea.':D'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF0070C0');
+        $sheet->getStyle('A'.$linea.':D'.$linea)->getFont()->getColor()->setARGB('FFFFFFFF');
+        $sheet->getStyle('A'.$linea.':D'.$linea)
+            ->getAlignment()
+            ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A'.$linea.':D'.$linea)
+            ->getAlignment()
+            ->setVertical(StyleAlignment::VERTICAL_CENTER);
+        $columna = 4;
+        foreach($mpObtenidas as $det) {
+            $pieza = $totalMateriaPrima * ($det->porcentaje/100);
+            $despiece = Detdespiece::Where('despiece_id',$det->despiece_id)->get();
+            foreach($despiece as $det2){
+                $columna++;
+                $sheet->getStyleByColumnAndRow($columna,$linea)->getAlignment()->setWrapText(true);
+                $sheet->setCellValueByColumnAndRow($columna,$linea,$det2->nombre);
+                $sheet->setCellValueByColumnAndRow($columna,$linea + 1, round($pieza*($det2->porcentaje/100),2));
+            }
+        }
+        $columna++;
+        $sheet->getStyleByColumnAndRow($columna,$linea)->getAlignment()->setWrapText(true);
+        $sheet->setCellValueByColumnAndRow($columna,$linea,'KILOS');
+        $sheet->setCellValueByColumnAndRow($columna,$linea+1,$totalMateriaPrima);
+        $sheet->getStyleByColumnAndRow(4,$linea,$columna,$linea)->getFont()->setSize(8)->setBold(true);
+        $sheet->getStyleByColumnAndRow(1,$linea,$columna,$linea+1)->applyFromArray($estiloBorde);
+
+        
+        $sheet->getColumnDimension('E')->setWidth(12);
+        $sheet->getColumnDimension('F')->setWidth(12);
+        $sheet->getColumnDimension('G')->setWidth(12);
+        $sheet->getColumnDimension('H')->setWidth(14);
+        $sheet->getColumnDimension('I')->setWidth(12);
+        $sheet->getColumnDimension('J')->setWidth(12);
+        $sheet->getColumnDimension('K')->setWidth(12);
+        $sheet->getColumnDimension('L')->setWidth(12);
+        //Envio de Archivo para Descarga
+        $fileName="Parte".$parte->lote.".xlsx";
+        # Crear un "escritor"
+        $writer = new Xlsx($excel);
+        # Le pasamos la ruta de guardado
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="'. urlencode($fileName).'"');
+        $writer->save('php://output');
+        
     }
 }

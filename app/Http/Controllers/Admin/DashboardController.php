@@ -179,7 +179,7 @@ class DashboardController extends Controller
 	{
 		// $this->agregar_permiso('1','INICIO','admin.compras','Módulo Compras');
 		// $this->agregar_permiso('1','INICIO','admin.ventas','Módulo Ventas | Consumos | Pedidos');
-		$this->agregar_permiso('1','INICIO','admin.proceso','Módulo Proceso');
+		// $this->agregar_permiso('1','INICIO','admin.proceso','Módulo Proceso');
 
 		// $this->agregar_permiso('2','PROVEEDOR|CLIENTE','admin.clientes.index','Puede ver listado Proveedor|Cliente');
 		// $this->agregar_permiso('2','PROVEEDOR|CLIENTE','admin.clientes.create','Puede agregar Proveedor|Cliente');

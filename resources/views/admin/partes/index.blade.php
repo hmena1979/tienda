@@ -72,6 +72,7 @@
 												</button>
 											</form>
                                             @endcan
+											<a class="" href="{{ route('admin.excel.parte',$parte) }}" datatoggle="tooltip" data-placement="top" title="Imprimir"><i class="fas fa-print"></i></a>
 											{{-- @endif --}}
 										</div>
 									</td>

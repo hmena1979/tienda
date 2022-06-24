@@ -194,19 +194,19 @@
 	function colorExcel($color) {
 		switch ($color) {
 			case 1:
-				return 'FF'.'9999FF';
+				return 'FF'.'FFA7F0';
 				break;
 			case 2:
 				return 'FF'.'C0C0C0';
 				break;
 			case 3:
-				return 'FF'.'FFFFCC';
+				return 'FF'.'FFFF2B';
 				break;
 			case 4:
-				return 'FF'.'FFA7F0';
+				return 'FF'.'9999FF';
 				break;
 			case 5:
-				return 'FF'.'FFFF2B';
+				return 'FF'.'FFFFCC';
 				break;
 			case 6:
 				return 'FF'.'CCFFFF';

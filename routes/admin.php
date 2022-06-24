@@ -417,12 +417,14 @@ Route::get('/pdf/{ordcompra}/ordcompra', [PDFController::class,'ordcompra'])->na
 Route::get('/pdf/{tipo}/{tipoproducto_id}/productos', [PDFController::class,'productos'])->name('admin.pdf.productos');
 Route::get('/pdf/{envasado}/envasado', [PDFController::class,'envasado'])->name('admin.pdf.envasado');
 Route::get('/pdf/{ingcamara}/ingcamara', [PDFController::class,'ingcamara'])->name('admin.pdf.ingcamara');
+Route::get('/pdf/{residuo}/residuo', [PDFController::class,'residuo'])->name('admin.pdf.residuo');
 
 //EXCEL
 Route::get('/excel/{desde}/{hasta}/materiaprima', [ExcelController::class,'materiaprima'])->name('admin.excel.materiaprima');
 Route::get('/excel/{desde}/{hasta}/materiaprimaii', [ExcelController::class,'materiaprimaii'])->name('admin.excel.materiaprimaii');
 Route::get('/excel/tolvasindex', [ExcelController::class,'tolvasindex'])->name('admin.excel.tolvasindex');
 Route::post('/excel/tolvasview', [ExcelController::class,'tolvasview'])->name('admin.excel.tolvasview');
+Route::get('/excel/{parte}/parte', [ExcelController::class,'parte'])->name('admin.excel.parte');
 
 //Modulo importaciones
 Route::get('/import', [ImportController::class,'index'])->name('admin.imports.index');

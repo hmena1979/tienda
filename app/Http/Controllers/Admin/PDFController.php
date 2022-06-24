@@ -11,6 +11,7 @@ use App\Models\Empresa;
 use App\Models\Envasado;
 use App\Models\Guia;
 use App\Models\Ingcamara;
+use App\Models\Lote;
 use App\Models\Masivo;
 use App\Models\Materiaprima;
 use App\Models\Ordcompra;
@@ -22,6 +23,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 use App\Models\Rventa;
 use App\Models\Rcompra;
+use App\Models\Residuo;
 use App\Models\Sede;
 use App\Models\Tesoreria;
 use App\Models\TipoComprobante;
@@ -339,5 +341,25 @@ class PDFController extends Controller
             'GUIA DE INGRESO A CAMARAS'
             .str_pad($ingcamara->numero, 6, '0', STR_PAD_LEFT)
             .'.pdf', array('Attachment'=>false));
+    }
+
+    public function residuo(Residuo $residuo)
+    {
+        $empresa = Empresa::findOrFail(session('empresa'));
+        $sede = Sede::findOrFail(session('sede'));
+        $lote = Lote::where('lote',$residuo->lote)->first();
+        $materiaprima = Materiaprima::where('lote',$residuo->lote)->sum('pplanta');
+
+        $data = [
+            'residuo' => $residuo,
+            'empresa' => $empresa,
+            'sede' => $sede,
+            'lote' => $lote,
+            'materiaprima' => $materiaprima,
+        ];
+        $pdf = PDF::loadView('pdf.residuo', $data)->setPaper('A4', 'portrait');
+        return $pdf->stream('Residuo Solido Pesaje '.$residuo->ticket_balanza.'.pdf', array('Attachment'=>false));
+        
+          // return view('pdf.materiaprima', $data);
     }
 }
