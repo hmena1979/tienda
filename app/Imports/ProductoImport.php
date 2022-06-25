@@ -23,6 +23,7 @@ class ProductoImport implements ToModel
             'nombre' => $row[2],
             'umedida_id' => $row[4],
             'codigo' => $row[0],
+            'stockmin' => $row[5],
         ]);
     }
 }

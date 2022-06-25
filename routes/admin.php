@@ -446,6 +446,7 @@ Route::post('/import/embarcacion', [ImportController::class,'embarcacion'])->nam
 Route::post('/import/producto', [ImportController::class,'producto'])->name('admin.imports.producto');
 Route::post('/import/producto', [ImportController::class,'producto'])->name('admin.imports.producto');
 Route::post('/import/mpd', [ImportController::class,'mpd'])->name('admin.imports.mpd');
+Route::post('/import/saldo', [ImportController::class,'saldo'])->name('admin.imports.saldo');
 
 //Modulo Busquedas
 Route::get('/busquedas/departamento', [BusquedaController::class,'departamento'])->name('admin.busquedas.departamento');

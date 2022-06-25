@@ -28,7 +28,7 @@
                                     {!! Form::close() !!}
                                 </div>
                             </li>
-							@can('admin.destinos.create')
+							@can('admin.partes.create')
 							<li>
 								<a href="{{ route('admin.partes.create') }}">
 									Agregar registro

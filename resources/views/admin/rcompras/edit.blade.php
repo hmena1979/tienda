@@ -455,7 +455,8 @@
             $.get(url_global+"/admin/detraccions/"+this.value+"/tasa/",function(response){
                 var tasa = response;
                 $('#detraccion_tasa').val(tasa);
-                $('#detraccion_monto').val($('#total').val()*(tasa/100));
+                $('#detraccion_monto').val(Redondea($('#total').val()*(tasa/100),0));
+                // $('#detraccion_monto').val($('#total').val()*(tasa/100));
 
             });
         });

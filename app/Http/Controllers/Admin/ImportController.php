@@ -22,6 +22,7 @@ use App\Imports\EmpacopiadoraImport;
 use App\Imports\MpdImport;
 use App\Imports\ProductoImport;
 use App\Imports\ProvinciaImport;
+use App\Imports\SaldoImport;
 use App\Imports\TransportistaImport;
 use App\Imports\UbigeoImport;
 
@@ -354,6 +355,26 @@ class ImportController extends Controller
 		else:
     		$file = $request->file('archivo');
     		Excel::import(new ProductoImport, $file);
+
+    		return redirect('/admin/import')->with('message', 'Archivo importado')->with('typealert', 'success');
+    	endif;
+    }
+
+    public function saldo(Request $request)
+    {
+    	$rules = [
+			'archivo' => 'required'
+    	];
+    	$messages = [
+			'archivo.required' => 'No ha selecionado archivo Saldo.xlsx'
+    	];
+
+    	$validator = validator::make($request->all(), $rules, $messages);
+    	if($validator->fails()):
+    		return back()->withErrors($validator)->with('message', 'Se ha producido un error')->with('typealert', 'danger')->withinput();
+		else:
+    		$file = $request->file('archivo');
+    		Excel::import(new SaldoImport, $file);
 
     		return redirect('/admin/import')->with('message', 'Archivo importado')->with('typealert', 'success');
     	endif;
