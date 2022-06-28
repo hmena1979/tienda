@@ -994,6 +994,7 @@ class ExcelController extends Controller
         $productos = Detparte::where('parte_id', $parte->id)
             ->groupBy('trazabilidad_id')
             ->selectRaw('trazabilidad_id, count(trazabilidad_id) as cantidad,sum(parcial) as total')
+            ->orderBy('trazabilidad_id')
             ->get();
         foreach($productos as $det) {
             $linea++;
@@ -1125,6 +1126,7 @@ class ExcelController extends Controller
         $productos = Detpartecamara::where('parte_id', $parte->id)
             ->groupBy('trazabilidad_id')
             ->selectRaw('trazabilidad_id, count(trazabilidad_id) as cantidad,sum(parcial) as total')
+            ->orderBy('trazabilidad_id')
             ->get();
         foreach($productos as $det) {
             $linea++;
