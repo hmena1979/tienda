@@ -996,11 +996,24 @@ class ExcelController extends Controller
             ->selectRaw('trazabilidad_id, count(trazabilidad_id) as cantidad,sum(parcial) as total')
             ->orderBy('trazabilidad_id')
             ->get();
+        
+        $pProceso = 0;
+        $conteoPP = 0;
         foreach($productos as $det) {
             $linea++;
             $trazabilidad = Trazabilidad::find($det->trazabilidad_id);
+            if ($pProceso == $trazabilidad->pproceso_id) {
+                $conteoPP++;
+            } else {
+                $pProcesoLinea = $linea;
+                $pProceso == $trazabilidad->pproceso_id;
+                $sheet->setCellValue('C'.$linea, $trazabilidad->pproceso->nombre); //.' ' . $pProcesoLinea
+                $conteoPP = 0;
+            }
+            $pProceso = $trazabilidad->pproceso_id;
+
             $sheet->setCellValue('A'.$linea, $trazabilidad->nombre);
-            $sheet->setCellValue('C'.$linea, $trazabilidad->pproceso->nombre);
+            
             $sheet->setCellValue('Q'.$linea, $det->total);
             $lineaInicio = $linea;
             $codigos = Detparte::with(['dettrazabilidad'])
