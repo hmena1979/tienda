@@ -21,10 +21,13 @@ use App\Models\Materiaprima;
 use App\Exports\MateriaPrimaExport;
 use App\Models\Despiece;
 use App\Models\Detdespiece;
+use App\Models\Detparte;
+use App\Models\Detpartecamara;
 use App\Models\Embarcacion;
 use App\Models\Empresa;
 use App\Models\Mpobtenida;
 use App\Models\Parte;
+use App\Models\Trazabilidad;
 use App\Models\User;
 
 class ExcelController extends Controller
@@ -587,7 +590,6 @@ class ExcelController extends Controller
                 ],
             ],
         ];
-
         //Creación de Hoja y Llenado de Información
         $sheet = $excel->getActiveSheet();
         $sheet->setTitle("Parte de Producción");
@@ -873,7 +875,338 @@ class ExcelController extends Controller
         $sheet->getStyleByColumnAndRow(4,$linea,$columna,$linea)->getFont()->setSize(8)->setBold(true);
         $sheet->getStyleByColumnAndRow(1,$linea,$columna,$linea+1)->applyFromArray($estiloBorde);
 
+        $linea++;$linea++;$linea++;
+        $cuadroInicio = $linea;
+        $sheet->setCellValue('A'.$linea, 'BALANCE DE MATERIAS - KGS.');
+        $sheet->mergeCells('A'.$linea .':D'.$linea);
+        // $sheet->mergeCells('A'.($linea+1) .':D'.($linea+1));
         
+        $sheet->getStyle('A'.$linea.':D'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF0070C0');
+        $sheet->getStyle('A'.$linea.':D'.$linea)->getFont()->getColor()->setARGB('FFFFFFFF');
+        
+        $sheet->setCellValue('E'.$linea, 'TRABAJADO Kgs.');
+        $sheet->setCellValue('F'.$linea, 'ENVASADO KGS.');
+        $sheet->setCellValue('G'.$linea, 'SOBRE PESO  kgs.');
+        $sheet->setCellValue('H'.$linea, 'RESIDUOS SOLIDOS');
+        $sheet->setCellValue('I'.$linea, 'DESCARTE FRESCO');
+        $sheet->setCellValue('J'.$linea, 'MERMAS Kgs.');
+        $sheet->setCellValue('K'.$linea, 'OBSERVACIONES');
+        $sheet->mergeCells('K'.$linea .':O'.$linea);
+        $sheet->getStyle('A'.$linea.':O'.$linea)->getFont()->setSize(9)->setBold(true);
+        $sheet->getStyle('E'.$linea.':O'.$linea)->getAlignment()->setWrapText(true);
+        $sheet->getStyle('A'.$linea.':O'.$linea)
+            ->getAlignment()
+            ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A'.$linea.':O'.$linea)
+            ->getAlignment()
+            ->setVertical(StyleAlignment::VERTICAL_CENTER);
+        $linea++;
+        $sheet->setCellValue('A'.$linea, 'TOTALES - (KGS)');
+        $sheet->mergeCells('A'.$linea .':D'.$linea);
+        $sheet->getStyle('A'.$linea.':D'.$linea)->getFont()->setSize(9)->setBold(true);
+        $sheet->setCellValue('E'.$linea, $parte->materiaprima);
+        $sheet->setCellValue('F'.$linea, $parte->envasado);
+        $sheet->setCellValue('G'.$linea, $parte->sobrepeso);
+        $sheet->setCellValue('H'.$linea, $parte->residuos);
+        $sheet->setCellValue('I'.$linea, $parte->descarte);
+        $sheet->setCellValue('J'.$linea, $parte->merma);
+        $sheet->setCellValue('K'.$linea, 'OBSERVACIONES');
+        $sheet->mergeCells('K'.$linea .':O'.($linea+1));
+        $sheet->getStyle('K'.$linea.':O'.$linea.($linea+1))->getAlignment()->setWrapText(true);
+        // $sheet->getStyle('A'.$linea.':O'.$linea)->getFont()->setSize(9)->setBold(true);
+        // $sheet->getStyle('E'.$linea.':O'.$linea)->getAlignment()->setWrapText(true);
+        $sheet->getStyle('A'.$linea.':O'.$linea)
+            ->getAlignment()
+            ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A'.$linea.':O'.$linea)
+            ->getAlignment()
+            ->setVertical(StyleAlignment::VERTICAL_CENTER);
+        $linea++;
+        $sheet->setCellValue('A'.$linea, 'PORCENTAJES');
+        $sheet->mergeCells('A'.$linea .':D'.$linea);
+        $sheet->getStyle('A'.$linea.':D'.$linea)->getFont()->setSize(9)->setBold(true);
+        $sheet->setCellValue('E'.$linea, '100%');
+        $sheet->setCellValue('F'.$linea, number_format(($parte->envasado/$parte->materiaprima)*100,2).'%');
+        $sheet->setCellValue('G'.$linea, number_format(($parte->sobrepeso/$parte->materiaprima)*100,2).'%');
+        $sheet->setCellValue('H'.$linea, number_format(($parte->residuos/$parte->materiaprima)*100,2).'%');
+        $sheet->setCellValue('I'.$linea, number_format(($parte->descarte/$parte->materiaprima)*100,2).'%');
+        $sheet->setCellValue('J'.$linea, number_format(($parte->merma/$parte->materiaprima)*100,2).'%');
+        // $sheet->mergeCells('K'.$linea .':J'.$linea);
+        // $sheet->getStyle('A'.$linea.':O'.$linea)->getFont()->setSize(9)->setBold(true);
+        // $sheet->getStyle('E'.$linea.':O'.$linea)->getAlignment()->setWrapText(true);
+        $sheet->getStyle('A'.$linea.':J'.$linea)
+            ->getAlignment()
+            ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A'.$linea.':J'.$linea)
+            ->getAlignment()
+            ->setVertical(StyleAlignment::VERTICAL_CENTER);
+        $sheet->getStyle('A'.$cuadroInicio.':O'.$linea)->applyFromArray($estiloBorde);
+
+        $linea++;$linea++;
+        $cuadroInicio = $linea;
+        $sheet->setCellValue('A'.$linea, 'PRODUCTOS ENVASADOS');
+        $sheet->mergeCells('A'.$linea .':E'.$linea);
+        $sheet->getStyle('A'.$linea.':E'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF0070C0');
+        $sheet->getStyle('A'.$linea.':E'.$linea)->getFont()->getColor()->setARGB('FFFFFFFF');
+        $sheet->setCellValue('F'.$linea, 'DETALLES');
+        $sheet->mergeCells('F'.$linea .':H'.$linea);
+        $sheet->setCellValue('I'.$linea, 'PRESENTACIÓN');
+        $sheet->mergeCells('I'.$linea .':K'.$linea);
+        $sheet->setCellValue('L'.$linea, 'PRODUCCIÓN');
+        $sheet->mergeCells('L'.$linea .':O'.$linea);
+        $sheet->setCellValue('P'.$linea, 'RENDIMIENTOS');
+        $sheet->mergeCells('P'.$linea .':R'.$linea);
+        $sheet->getStyle('A'.$linea.':R'.$linea)->getFont()->setSize(9)->setBold(true);
+        $sheet->getStyle('A'.$linea.':R'.$linea)
+            ->getAlignment()
+            ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A'.$linea.':R'.$linea)
+            ->getAlignment()
+            ->setVertical(StyleAlignment::VERTICAL_CENTER);
+
+        $linea++;
+        $sheet->setCellValue('A'.$linea, 'Código Trazabilidad');
+        $sheet->mergeCells('A'.$linea .':B'.$linea);
+        $sheet->setCellValue('C'.$linea, 'Descripción del Producto');
+        $sheet->mergeCells('C'.$linea .':E'.$linea);
+        $sheet->setCellValue('F'.$linea, 'Mat. Prima y/o Destinos');
+        $sheet->setCellValue('G'.$linea, 'Calidad');
+        $sheet->setCellValue('H'.$linea, 'Sobre peso');
+        $sheet->setCellValue('I'.$linea, 'Envase');
+        $sheet->setCellValue('J'.$linea, 'Códigos');
+        $sheet->setCellValue('K'.$linea, 'Peso unit.');
+        $sheet->setCellValue('L'.$linea, 'Sacos');
+        $sheet->setCellValue('M'.$linea, 'Blocks');
+        $sheet->setCellValue('N'.$linea, 'O/Weight');
+        $sheet->setCellValue('O'.$linea, 'Kilos');
+        $sheet->setCellValue('P'.$linea, 'Parcial');
+        $sheet->setCellValue('Q'.$linea, 'Total');
+        $sheet->mergeCells('Q'.$linea .':R'.$linea);
+        $sheet->getStyle('A'.$linea.':R'.$linea)->getFont()->setSize(9)->setBold(true);
+        $sheet->getStyle('A'.$linea.':R'.$linea)
+        ->getAlignment()
+        ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A'.$linea.':R'.$linea)
+        ->getAlignment()
+        ->setVertical(StyleAlignment::VERTICAL_CENTER);
+        $sheet->getStyle('A'.$linea.':R'.$linea)->getAlignment()->setWrapText(true);
+
+        $productos = Detparte::where('parte_id', $parte->id)
+            ->groupBy('trazabilidad_id')
+            ->selectRaw('trazabilidad_id, count(trazabilidad_id) as cantidad,sum(parcial) as total')
+            ->get();
+        foreach($productos as $det) {
+            $linea++;
+            $trazabilidad = Trazabilidad::find($det->trazabilidad_id);
+            $sheet->setCellValue('A'.$linea, $trazabilidad->nombre);
+            $sheet->setCellValue('C'.$linea, $trazabilidad->pproceso->nombre);
+            $sheet->setCellValue('Q'.$linea, $det->total);
+            $lineaInicio = $linea;
+            $codigos = Detparte::with(['dettrazabilidad'])
+                ->where('parte_id', $parte->id)
+                ->where('trazabilidad_id',$trazabilidad->id)
+                ->get();
+            foreach($codigos as $codigo){
+                $sheet->setCellValue('F'.$linea, $codigo->dettrazabilidad->mpd->nombre);
+                $sheet->setCellValue('G'.$linea, $codigo->dettrazabilidad->calidad == 1?'Export':'M.N.');
+                $sheet->setCellValue('H'.$linea, $codigo->dettrazabilidad->sobrepeso.'%');
+                $sheet->setCellValue('I'.$linea, $codigo->dettrazabilidad->envase == 1?'Sacos':'Blocks');
+                $sheet->setCellValue('J'.$linea, $codigo->dettrazabilidad->codigo);
+                $sheet->setCellValue('K'.$linea, $codigo->dettrazabilidad->peso);
+                $sheet->setCellValue('L'.$linea, $codigo->sacos);
+                $sheet->setCellValue('M'.$linea, $codigo->blocks);
+                $sheet->setCellValue('N'.$linea, $codigo->sobrepeso);
+                $sheet->setCellValue('O'.$linea, $codigo->total);
+                $sheet->setCellValue('P'.$linea, $codigo->parcial);
+                $sheet->getStyle('F'.$lineaInicio.':P'.$linea)
+                    ->getAlignment()
+                    ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('F'.$lineaInicio.':P'.$linea)
+                    ->getAlignment()
+                    ->setVertical(StyleAlignment::VERTICAL_CENTER);
+                $linea++;
+            }
+            $linea--;
+            $sheet->mergeCells('A'.$lineaInicio.':B'.$linea);
+            $sheet->getStyle('A'.$lineaInicio.':B'.$linea)
+                ->getAlignment()
+                ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+            $sheet->getStyle('A'.$lineaInicio.':B'.$linea)
+                ->getAlignment()
+                ->setVertical(StyleAlignment::VERTICAL_CENTER);
+
+            $sheet->mergeCells('C'.$lineaInicio.':E'.$linea);
+            $sheet->getStyle('C'.$lineaInicio.':E'.$linea)
+                ->getAlignment()
+                ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+            $sheet->getStyle('C'.$lineaInicio.':E'.$linea)
+                ->getAlignment()
+                ->setVertical(StyleAlignment::VERTICAL_CENTER);
+
+            $sheet->mergeCells('Q'.$lineaInicio.':R'.$linea);
+            $sheet->getStyle('Q'.$lineaInicio.':R'.$linea)
+                ->getAlignment()
+                ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+            $sheet->getStyle('Q'.$lineaInicio.':R'.$linea)
+                ->getAlignment()
+                ->setVertical(StyleAlignment::VERTICAL_CENTER);
+        }
+        $linea++;
+        $sheet->setCellValue('A'.$linea, 'TOTAL PRODUCCION (KGS.)');
+        $sheet->mergeCells('A'.$linea .':K'.$linea);
+        $sheet->setCellValue('L'.$linea, $parte->sacos);
+        $sheet->setCellValue('M'.$linea, $parte->blocks);
+        $sheet->setCellValue('N'.$linea, $parte->sobrepeso);
+        $sheet->setCellValue('O'.$linea, $parte->envasado);
+        $sheet->setCellValue('P'.$linea, $parte->detpartes->sum('parcial').'%');
+        $sheet->mergeCells('P'.$linea .':R'.$linea);
+        $sheet->getStyle('A'.$lineaInicio.':R'.$linea)
+            ->getAlignment()
+            ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A'.$lineaInicio.':R'.$linea)
+            ->getAlignment()
+            ->setVertical(StyleAlignment::VERTICAL_CENTER);
+        $sheet->getStyle('A'.$linea.':R'.$linea)->getFont()->setSize(9)->setBold(true);
+        
+
+        
+        $sheet->getStyle('A'.$cuadroInicio.':R'.$linea)->applyFromArray($estiloBorde);
+
+        // Productos Terminados ------------------------------------------------------------------------
+        $linea++;$linea++;
+        $cuadroInicio = $linea;
+        $sheet->setCellValue('A'.$linea, 'PRODUCTOS TERMINADOS');
+        $sheet->mergeCells('A'.$linea .':E'.$linea);
+        $sheet->getStyle('A'.$linea.':E'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF0070C0');
+        $sheet->getStyle('A'.$linea.':E'.$linea)->getFont()->getColor()->setARGB('FFFFFFFF');
+        $sheet->setCellValue('F'.$linea, 'DETALLES');
+        $sheet->mergeCells('F'.$linea .':H'.$linea);
+        $sheet->setCellValue('I'.$linea, 'PRESENTACIÓN');
+        $sheet->mergeCells('I'.$linea .':K'.$linea);
+        $sheet->setCellValue('L'.$linea, 'PRODUCCIÓN');
+        $sheet->mergeCells('L'.$linea .':O'.$linea);
+        $sheet->setCellValue('P'.$linea, 'RENDIMIENTOS');
+        $sheet->mergeCells('P'.$linea .':R'.$linea);
+        $sheet->getStyle('A'.$linea.':R'.$linea)->getFont()->setSize(9)->setBold(true);
+        $sheet->getStyle('A'.$linea.':R'.$linea)
+            ->getAlignment()
+            ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A'.$linea.':R'.$linea)
+            ->getAlignment()
+            ->setVertical(StyleAlignment::VERTICAL_CENTER);
+
+        $linea++;
+        $sheet->setCellValue('A'.$linea, 'Código Trazabilidad');
+        $sheet->mergeCells('A'.$linea .':B'.$linea);
+        $sheet->setCellValue('C'.$linea, 'Descripción del Producto');
+        $sheet->mergeCells('C'.$linea .':E'.$linea);
+        $sheet->setCellValue('F'.$linea, 'Mat. Prima y/o Destinos');
+        $sheet->setCellValue('G'.$linea, 'Calidad');
+        $sheet->setCellValue('H'.$linea, 'Sobre peso');
+        $sheet->setCellValue('I'.$linea, 'Envase');
+        $sheet->setCellValue('J'.$linea, 'Códigos');
+        $sheet->setCellValue('K'.$linea, 'Peso unit.');
+        $sheet->setCellValue('L'.$linea, 'Sacos');
+        $sheet->setCellValue('M'.$linea, 'Blocks');
+        $sheet->setCellValue('N'.$linea, 'O/Weight');
+        $sheet->setCellValue('O'.$linea, 'Kilos');
+        $sheet->setCellValue('P'.$linea, 'Parcial');
+        $sheet->setCellValue('Q'.$linea, 'Total');
+        $sheet->mergeCells('Q'.$linea .':R'.$linea);
+        $sheet->getStyle('A'.$linea.':R'.$linea)->getFont()->setSize(9)->setBold(true);
+        $sheet->getStyle('A'.$linea.':R'.$linea)
+        ->getAlignment()
+        ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A'.$linea.':R'.$linea)
+        ->getAlignment()
+        ->setVertical(StyleAlignment::VERTICAL_CENTER);
+        $sheet->getStyle('A'.$linea.':R'.$linea)->getAlignment()->setWrapText(true);
+
+        $productos = Detpartecamara::where('parte_id', $parte->id)
+            ->groupBy('trazabilidad_id')
+            ->selectRaw('trazabilidad_id, count(trazabilidad_id) as cantidad,sum(parcial) as total')
+            ->get();
+        foreach($productos as $det) {
+            $linea++;
+            $trazabilidad = Trazabilidad::find($det->trazabilidad_id);
+            $sheet->setCellValue('A'.$linea, $trazabilidad->nombre);
+            $sheet->setCellValue('C'.$linea, $trazabilidad->pproceso->nombre);
+            $sheet->setCellValue('Q'.$linea, $det->total);
+            $lineaInicio = $linea;
+            $codigos = Detpartecamara::with(['dettrazabilidad'])
+                ->where('parte_id', $parte->id)
+                ->where('trazabilidad_id',$trazabilidad->id)
+                ->get();
+            foreach($codigos as $codigo){
+                $sheet->setCellValue('F'.$linea, $codigo->dettrazabilidad->mpd->nombre);
+                $sheet->setCellValue('G'.$linea, $codigo->dettrazabilidad->calidad == 1?'Export':'M.N.');
+                $sheet->setCellValue('H'.$linea, $codigo->dettrazabilidad->sobrepeso.'%');
+                $sheet->setCellValue('I'.$linea, $codigo->dettrazabilidad->envase == 1?'Sacos':'Blocks');
+                $sheet->setCellValue('J'.$linea, $codigo->dettrazabilidad->codigo);
+                $sheet->setCellValue('K'.$linea, $codigo->dettrazabilidad->peso);
+                $sheet->setCellValue('L'.$linea, $codigo->sacos);
+                $sheet->setCellValue('M'.$linea, $codigo->blocks);
+                $sheet->setCellValue('N'.$linea, $codigo->sobrepeso);
+                $sheet->setCellValue('O'.$linea, $codigo->total);
+                $sheet->setCellValue('P'.$linea, $codigo->parcial);
+                $sheet->getStyle('F'.$lineaInicio.':P'.$linea)
+                    ->getAlignment()
+                    ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('F'.$lineaInicio.':P'.$linea)
+                    ->getAlignment()
+                    ->setVertical(StyleAlignment::VERTICAL_CENTER);
+                $linea++;
+            }
+            $linea--;
+            $sheet->mergeCells('A'.$lineaInicio.':B'.$linea);
+            $sheet->getStyle('A'.$lineaInicio.':B'.$linea)
+                ->getAlignment()
+                ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+            $sheet->getStyle('A'.$lineaInicio.':B'.$linea)
+                ->getAlignment()
+                ->setVertical(StyleAlignment::VERTICAL_CENTER);
+
+            $sheet->mergeCells('C'.$lineaInicio.':E'.$linea);
+            $sheet->getStyle('C'.$lineaInicio.':E'.$linea)
+                ->getAlignment()
+                ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+            $sheet->getStyle('C'.$lineaInicio.':E'.$linea)
+                ->getAlignment()
+                ->setVertical(StyleAlignment::VERTICAL_CENTER);
+
+            $sheet->mergeCells('Q'.$lineaInicio.':R'.$linea);
+            $sheet->getStyle('Q'.$lineaInicio.':R'.$linea)
+                ->getAlignment()
+                ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+            $sheet->getStyle('Q'.$lineaInicio.':R'.$linea)
+                ->getAlignment()
+                ->setVertical(StyleAlignment::VERTICAL_CENTER);
+        }
+        $linea++;
+        $sheet->setCellValue('A'.$linea, 'TOTAL PRODUCCION (KGS.)');
+        $sheet->mergeCells('A'.$linea .':K'.$linea);
+        $sheet->setCellValue('L'.$linea, $parte->detpartecamaras->sum('sacos'));
+        $sheet->setCellValue('M'.$linea, $parte->detpartecamaras->sum('blocks'));
+        $sheet->setCellValue('N'.$linea, $parte->detpartecamaras->sum('sobrepeso'));
+        $sheet->setCellValue('O'.$linea, $parte->detpartecamaras->sum('total'));
+        $sheet->setCellValue('P'.$linea, $parte->detpartecamaras->sum('parcial').'%');
+        $sheet->mergeCells('P'.$linea .':R'.$linea);
+        $sheet->getStyle('A'.$lineaInicio.':R'.$linea)
+            ->getAlignment()
+            ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A'.$lineaInicio.':R'.$linea)
+            ->getAlignment()
+            ->setVertical(StyleAlignment::VERTICAL_CENTER);
+        $sheet->getStyle('A'.$linea.':R'.$linea)->getFont()->setSize(9)->setBold(true);
+        
+
+        
+        $sheet->getStyle('A'.$cuadroInicio.':R'.$linea)->applyFromArray($estiloBorde);
+
+        $sheet->getColumnDimension('A')->setWidth(12);
+        $sheet->getColumnDimension('B')->setWidth(12);
+        $sheet->getColumnDimension('C')->setWidth(12);
+        $sheet->getColumnDimension('D')->setWidth(12);
         $sheet->getColumnDimension('E')->setWidth(12);
         $sheet->getColumnDimension('F')->setWidth(12);
         $sheet->getColumnDimension('G')->setWidth(12);
@@ -882,6 +1215,11 @@ class ExcelController extends Controller
         $sheet->getColumnDimension('J')->setWidth(12);
         $sheet->getColumnDimension('K')->setWidth(12);
         $sheet->getColumnDimension('L')->setWidth(12);
+        $sheet->getColumnDimension('M')->setWidth(12);
+        $sheet->getColumnDimension('N')->setWidth(12);
+        $sheet->getColumnDimension('O')->setWidth(12);
+        $sheet->getColumnDimension('P')->setWidth(12);
+        $sheet->getColumnDimension('Q')->setWidth(12);
         //Envio de Archivo para Descarga
         $fileName="Parte".$parte->lote.".xlsx";
         # Crear un "escritor"
