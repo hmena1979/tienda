@@ -72,8 +72,18 @@
 							<div class="col-md-2 form-group">
 								{!! Form::label('turno', 'Turno:') !!}
 								{!! Form::select('turno',[1 => 'Dia', 2 => 'Noche'],null,['class'=>'custom-select']) !!}
-							</div>							
+							</div>
+							<div class="col-md-2 form-group">
+								{!! Form::label('descarte', 'Descarte Kg:') !!}
+								{!! Form::text('descarte', null, ['class'=>'form-control decimal', 'autocomplete'=>'off']) !!}
+							</div>
 						</div>
+						<div class="row">
+                            <div class="col-md-12 form-group">
+                                {!! Form::label('observaciones', 'Observaciones:') !!}
+                                {!! Form::textarea('observaciones',null,['class'=>'form-control mayuscula', 'rows'=>'2']) !!}
+                            </div>
+                        </div>
                         
 					</div>				
                     {!! Form::close() !!}

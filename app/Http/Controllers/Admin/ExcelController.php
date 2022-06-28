@@ -910,7 +910,7 @@ class ExcelController extends Controller
         $sheet->setCellValue('H'.$linea, $parte->residuos);
         $sheet->setCellValue('I'.$linea, $parte->descarte);
         $sheet->setCellValue('J'.$linea, $parte->merma);
-        $sheet->setCellValue('K'.$linea, 'OBSERVACIONES');
+        $sheet->setCellValue('K'.$linea, $parte->observaciones);
         $sheet->mergeCells('K'.$linea .':O'.($linea+1));
         $sheet->getStyle('K'.$linea.':O'.$linea.($linea+1))->getAlignment()->setWrapText(true);
         // $sheet->getStyle('A'.$linea.':O'.$linea)->getFont()->setSize(9)->setBold(true);
