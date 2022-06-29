@@ -17,6 +17,11 @@ class Detpartecamara extends Model
     {
     	return $this->belongsTo('App\Models\Parte');
     }
+    
+    public function trazabilidad()
+    {
+    	return $this->belongsTo('App\Models\Trazabilidad');
+    }
 
     public function dettrazabilidad()
     {

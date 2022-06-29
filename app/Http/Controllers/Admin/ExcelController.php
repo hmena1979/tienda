@@ -27,6 +27,7 @@ use App\Models\Embarcacion;
 use App\Models\Empresa;
 use App\Models\Mpobtenida;
 use App\Models\Parte;
+use App\Models\Pproceso;
 use App\Models\Trazabilidad;
 use App\Models\User;
 
@@ -931,9 +932,6 @@ class ExcelController extends Controller
         $sheet->setCellValue('H'.$linea, number_format(($parte->residuos/$parte->materiaprima)*100,2).'%');
         $sheet->setCellValue('I'.$linea, number_format(($parte->descarte/$parte->materiaprima)*100,2).'%');
         $sheet->setCellValue('J'.$linea, number_format(($parte->merma/$parte->materiaprima)*100,2).'%');
-        // $sheet->mergeCells('K'.$linea .':J'.$linea);
-        // $sheet->getStyle('A'.$linea.':O'.$linea)->getFont()->setSize(9)->setBold(true);
-        // $sheet->getStyle('E'.$linea.':O'.$linea)->getAlignment()->setWrapText(true);
         $sheet->getStyle('A'.$linea.':J'.$linea)
             ->getAlignment()
             ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
@@ -941,6 +939,8 @@ class ExcelController extends Controller
             ->getAlignment()
             ->setVertical(StyleAlignment::VERTICAL_CENTER);
         $sheet->getStyle('A'.$cuadroInicio.':O'.$linea)->applyFromArray($estiloBorde);
+
+        // Productos Envasados ------------------------------------------------------------------------
 
         $linea++;$linea++;
         $cuadroInicio = $linea;
@@ -991,77 +991,78 @@ class ExcelController extends Controller
         ->setVertical(StyleAlignment::VERTICAL_CENTER);
         $sheet->getStyle('A'.$linea.':R'.$linea)->getAlignment()->setWrapText(true);
 
-        $productos = Detparte::where('parte_id', $parte->id)
-            ->groupBy('trazabilidad_id')
-            ->selectRaw('trazabilidad_id, count(trazabilidad_id) as cantidad,sum(parcial) as total')
-            ->orderBy('trazabilidad_id')
+        $pProceso = Detparte::with('trazabilidad')
+            ->join('trazabilidads','detpartes.trazabilidad_id','trazabilidads.id')
+            ->where('detpartes.parte_id',$parte->id)
+            ->groupBy('trazabilidads.pproceso_id')
+            ->selectRaw('trazabilidads.pproceso_id, count(trazabilidads.pproceso_id) as cantidad, sum(detpartes.parcial) as total')
+            ->orderBy('trazabilidads.pproceso_id')
             ->get();
-        
-        $pProceso = 0;
-        $conteoPP = 0;
-        foreach($productos as $det) {
-            $linea++;
-            $trazabilidad = Trazabilidad::find($det->trazabilidad_id);
-            if ($pProceso == $trazabilidad->pproceso_id) {
-                $conteoPP++;
-            } else {
-                $pProcesoLinea = $linea;
-                $pProceso == $trazabilidad->pproceso_id;
-                $sheet->setCellValue('C'.$linea, $trazabilidad->pproceso->nombre); //.' ' . $pProcesoLinea
-                $conteoPP = 0;
-            }
-            $pProceso = $trazabilidad->pproceso_id;
 
-            $sheet->setCellValue('A'.$linea, $trazabilidad->nombre);
-            
-            $sheet->setCellValue('Q'.$linea, $det->total);
-            $lineaInicio = $linea;
-            $codigos = Detparte::with(['dettrazabilidad'])
+        foreach ($pProceso as $pp) {
+            $linea++;
+            $inicioPP = $linea;
+            $pProcesoNombre = Pproceso::where('id',$pp->pproceso_id)->value('nombre');
+            $sheet->setCellValue('C'.$linea, $pProcesoNombre);
+            $sheet->setCellValue('Q'.$linea, $pp->total);
+            $productos = Detparte::whereRelation('trazabilidad','pproceso_id','=',$pp->pproceso_id)
                 ->where('parte_id', $parte->id)
-                ->where('trazabilidad_id',$trazabilidad->id)
+                ->groupBy('trazabilidad_id')
+                ->selectRaw('trazabilidad_id, count(trazabilidad_id) as cantidad,sum(parcial) as total')
+                ->orderBy('trazabilidad_id')
                 ->get();
-            foreach($codigos as $codigo){
-                $sheet->setCellValue('F'.$linea, $codigo->dettrazabilidad->mpd->nombre);
-                $sheet->setCellValue('G'.$linea, $codigo->dettrazabilidad->calidad == 1?'Export':'M.N.');
-                $sheet->setCellValue('H'.$linea, $codigo->dettrazabilidad->sobrepeso.'%');
-                $sheet->setCellValue('I'.$linea, $codigo->dettrazabilidad->envase == 1?'Sacos':'Blocks');
-                $sheet->setCellValue('J'.$linea, $codigo->dettrazabilidad->codigo);
-                $sheet->setCellValue('K'.$linea, $codigo->dettrazabilidad->peso);
-                $sheet->setCellValue('L'.$linea, $codigo->sacos);
-                $sheet->setCellValue('M'.$linea, $codigo->blocks);
-                $sheet->setCellValue('N'.$linea, $codigo->sobrepeso);
-                $sheet->setCellValue('O'.$linea, $codigo->total);
-                $sheet->setCellValue('P'.$linea, $codigo->parcial);
-                $sheet->getStyle('F'.$lineaInicio.':P'.$linea)
+            $linea--;
+            foreach($productos as $det) {
+                $trazabilidad = Trazabilidad::find($det->trazabilidad_id);
+                $linea++;
+                $sheet->setCellValue('A'.$linea, $trazabilidad->nombre);
+                $lineaInicio = $linea;
+                $codigos = Detparte::with(['dettrazabilidad'])
+                    ->where('parte_id', $parte->id)
+                    ->where('trazabilidad_id',$trazabilidad->id)
+                    ->get();
+                foreach($codigos as $codigo){
+                    $sheet->setCellValue('F'.$linea, $codigo->dettrazabilidad->mpd->nombre);
+                    $sheet->setCellValue('G'.$linea, $codigo->dettrazabilidad->calidad == 1?'Export':'M.N.');
+                    $sheet->setCellValue('H'.$linea, $codigo->dettrazabilidad->sobrepeso.'%');
+                    $sheet->setCellValue('I'.$linea, $codigo->dettrazabilidad->envase == 1?'Sacos':'Blocks');
+                    $sheet->setCellValue('J'.$linea, $codigo->dettrazabilidad->codigo);
+                    $sheet->setCellValue('K'.$linea, $codigo->dettrazabilidad->peso);
+                    $sheet->setCellValue('L'.$linea, $codigo->sacos);
+                    $sheet->setCellValue('M'.$linea, $codigo->blocks);
+                    $sheet->setCellValue('N'.$linea, $codigo->sobrepeso);
+                    $sheet->setCellValue('O'.$linea, $codigo->total);
+                    $sheet->setCellValue('P'.$linea, $codigo->parcial);
+                    $sheet->getStyle('F'.$lineaInicio.':P'.$linea)
+                        ->getAlignment()
+                        ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+                    $sheet->getStyle('F'.$lineaInicio.':P'.$linea)
+                        ->getAlignment()
+                        ->setVertical(StyleAlignment::VERTICAL_CENTER);
+                    $linea++;
+                }
+                $linea--;
+                $sheet->mergeCells('A'.$lineaInicio.':B'.$linea);
+                $sheet->getStyle('A'.$lineaInicio.':B'.$linea)
                     ->getAlignment()
                     ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
-                $sheet->getStyle('F'.$lineaInicio.':P'.$linea)
+                $sheet->getStyle('A'.$lineaInicio.':B'.$linea)
                     ->getAlignment()
                     ->setVertical(StyleAlignment::VERTICAL_CENTER);
-                $linea++;
             }
-            $linea--;
-            $sheet->mergeCells('A'.$lineaInicio.':B'.$linea);
-            $sheet->getStyle('A'.$lineaInicio.':B'.$linea)
+            $sheet->mergeCells('C'.$inicioPP.':E'.$linea);
+            $sheet->getStyle('C'.$inicioPP.':E'.$linea)
                 ->getAlignment()
                 ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
-            $sheet->getStyle('A'.$lineaInicio.':B'.$linea)
+            $sheet->getStyle('C'.$inicioPP.':E'.$linea)
                 ->getAlignment()
                 ->setVertical(StyleAlignment::VERTICAL_CENTER);
-
-            $sheet->mergeCells('C'.$lineaInicio.':E'.$linea);
-            $sheet->getStyle('C'.$lineaInicio.':E'.$linea)
+            
+            $sheet->mergeCells('Q'.$inicioPP.':R'.$linea);
+            $sheet->getStyle('Q'.$inicioPP.':R'.$linea)
                 ->getAlignment()
                 ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
-            $sheet->getStyle('C'.$lineaInicio.':E'.$linea)
-                ->getAlignment()
-                ->setVertical(StyleAlignment::VERTICAL_CENTER);
-
-            $sheet->mergeCells('Q'.$lineaInicio.':R'.$linea);
-            $sheet->getStyle('Q'.$lineaInicio.':R'.$linea)
-                ->getAlignment()
-                ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
-            $sheet->getStyle('Q'.$lineaInicio.':R'.$linea)
+            $sheet->getStyle('Q'.$inicioPP.':R'.$linea)
                 ->getAlignment()
                 ->setVertical(StyleAlignment::VERTICAL_CENTER);
         }
@@ -1081,9 +1082,7 @@ class ExcelController extends Controller
             ->getAlignment()
             ->setVertical(StyleAlignment::VERTICAL_CENTER);
         $sheet->getStyle('A'.$linea.':R'.$linea)->getFont()->setSize(9)->setBold(true);
-        
-
-        
+        $sheet->getStyle('A'.($cuadroInicio+2).':R'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FFD9E1F2');
         $sheet->getStyle('A'.$cuadroInicio.':R'.$linea)->applyFromArray($estiloBorde);
 
         // Productos Terminados ------------------------------------------------------------------------
@@ -1099,8 +1098,7 @@ class ExcelController extends Controller
         $sheet->mergeCells('I'.$linea .':K'.$linea);
         $sheet->setCellValue('L'.$linea, 'PRODUCCIÓN');
         $sheet->mergeCells('L'.$linea .':O'.$linea);
-        $sheet->setCellValue('P'.$linea, 'RENDIMIENTOS');
-        $sheet->mergeCells('P'.$linea .':R'.$linea);
+        $sheet->setCellValue('P'.$linea, 'OBSERVACIONES');
         $sheet->getStyle('A'.$linea.':R'.$linea)->getFont()->setSize(9)->setBold(true);
         $sheet->getStyle('A'.$linea.':R'.$linea)
             ->getAlignment()
@@ -1124,9 +1122,7 @@ class ExcelController extends Controller
         $sheet->setCellValue('M'.$linea, 'Blocks');
         $sheet->setCellValue('N'.$linea, 'O/Weight');
         $sheet->setCellValue('O'.$linea, 'Kilos');
-        $sheet->setCellValue('P'.$linea, 'Parcial');
-        $sheet->setCellValue('Q'.$linea, 'Total');
-        $sheet->mergeCells('Q'.$linea .':R'.$linea);
+        $sheet->mergeCells('P'.($linea-1) .':R'.$linea);
         $sheet->getStyle('A'.$linea.':R'.$linea)->getFont()->setSize(9)->setBold(true);
         $sheet->getStyle('A'.$linea.':R'.$linea)
         ->getAlignment()
@@ -1136,64 +1132,71 @@ class ExcelController extends Controller
         ->setVertical(StyleAlignment::VERTICAL_CENTER);
         $sheet->getStyle('A'.$linea.':R'.$linea)->getAlignment()->setWrapText(true);
 
-        $productos = Detpartecamara::where('parte_id', $parte->id)
-            ->groupBy('trazabilidad_id')
-            ->selectRaw('trazabilidad_id, count(trazabilidad_id) as cantidad,sum(parcial) as total')
-            ->orderBy('trazabilidad_id')
+        $pProceso = Detpartecamara::with('trazabilidad')
+            ->join('trazabilidads','detpartecamaras.trazabilidad_id','trazabilidads.id')
+            ->where('detpartecamaras.parte_id',$parte->id)
+            ->groupBy('trazabilidads.pproceso_id')
+            ->selectRaw('trazabilidads.pproceso_id, count(trazabilidads.pproceso_id) as cantidad, sum(detpartecamaras.parcial) as total')
+            ->orderBy('trazabilidads.pproceso_id')
             ->get();
-        foreach($productos as $det) {
+
+        foreach ($pProceso as $pp) {
             $linea++;
-            $trazabilidad = Trazabilidad::find($det->trazabilidad_id);
-            $sheet->setCellValue('A'.$linea, $trazabilidad->nombre);
-            $sheet->setCellValue('C'.$linea, $trazabilidad->pproceso->nombre);
-            $sheet->setCellValue('Q'.$linea, $det->total);
-            $lineaInicio = $linea;
-            $codigos = Detpartecamara::with(['dettrazabilidad'])
+            $inicioPP = $linea;
+            $pProcesoNombre = Pproceso::where('id',$pp->pproceso_id)->value('nombre');
+            $sheet->setCellValue('C'.$linea, $pProcesoNombre);
+            $sheet->setCellValue('Q'.$linea, $pp->total);
+            $productos = Detpartecamara::whereRelation('trazabilidad','pproceso_id','=',$pp->pproceso_id)
                 ->where('parte_id', $parte->id)
-                ->where('trazabilidad_id',$trazabilidad->id)
+                ->groupBy('trazabilidad_id')
+                ->selectRaw('trazabilidad_id, count(trazabilidad_id) as cantidad,sum(parcial) as total')
+                ->orderBy('trazabilidad_id')
                 ->get();
-            foreach($codigos as $codigo){
-                $sheet->setCellValue('F'.$linea, $codigo->dettrazabilidad->mpd->nombre);
-                $sheet->setCellValue('G'.$linea, $codigo->dettrazabilidad->calidad == 1?'Export':'M.N.');
-                $sheet->setCellValue('H'.$linea, $codigo->dettrazabilidad->sobrepeso.'%');
-                $sheet->setCellValue('I'.$linea, $codigo->dettrazabilidad->envase == 1?'Sacos':'Blocks');
-                $sheet->setCellValue('J'.$linea, $codigo->dettrazabilidad->codigo);
-                $sheet->setCellValue('K'.$linea, $codigo->dettrazabilidad->peso);
-                $sheet->setCellValue('L'.$linea, $codigo->sacos);
-                $sheet->setCellValue('M'.$linea, $codigo->blocks);
-                $sheet->setCellValue('N'.$linea, $codigo->sobrepeso);
-                $sheet->setCellValue('O'.$linea, $codigo->total);
-                $sheet->setCellValue('P'.$linea, $codigo->parcial);
-                $sheet->getStyle('F'.$lineaInicio.':P'.$linea)
+            $linea--;
+            foreach($productos as $det) {
+                $trazabilidad = Trazabilidad::find($det->trazabilidad_id);
+                $linea++;
+                $sheet->setCellValue('A'.$linea, $trazabilidad->nombre);
+                $lineaInicio = $linea;
+                $codigos = Detpartecamara::with(['dettrazabilidad'])
+                    ->where('parte_id', $parte->id)
+                    ->where('trazabilidad_id',$trazabilidad->id)
+                    ->get();
+                foreach($codigos as $codigo){
+                    $sheet->setCellValue('F'.$linea, $codigo->dettrazabilidad->mpd->nombre);
+                    $sheet->setCellValue('G'.$linea, $codigo->dettrazabilidad->calidad == 1?'Export':'M.N.');
+                    $sheet->setCellValue('H'.$linea, $codigo->dettrazabilidad->sobrepeso.'%');
+                    $sheet->setCellValue('I'.$linea, $codigo->dettrazabilidad->envase == 1?'Sacos':'Blocks');
+                    $sheet->setCellValue('J'.$linea, $codigo->dettrazabilidad->codigo);
+                    $sheet->setCellValue('K'.$linea, $codigo->dettrazabilidad->peso);
+                    $sheet->setCellValue('L'.$linea, $codigo->sacos);
+                    $sheet->setCellValue('M'.$linea, $codigo->blocks);
+                    $sheet->setCellValue('N'.$linea, $codigo->sobrepeso);
+                    $sheet->setCellValue('O'.$linea, $codigo->total);
+                    $sheet->setCellValue('P'.$linea, '');
+                    $sheet->mergeCells('P'.$linea .':R'.$linea);
+                    $sheet->getStyle('F'.$lineaInicio.':R'.$linea)
+                        ->getAlignment()
+                        ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+                    $sheet->getStyle('F'.$lineaInicio.':R'.$linea)
+                        ->getAlignment()
+                        ->setVertical(StyleAlignment::VERTICAL_CENTER);
+                    $linea++;
+                }
+                $linea--;
+                $sheet->mergeCells('A'.$lineaInicio.':B'.$linea);
+                $sheet->getStyle('A'.$lineaInicio.':B'.$linea)
                     ->getAlignment()
                     ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
-                $sheet->getStyle('F'.$lineaInicio.':P'.$linea)
+                $sheet->getStyle('A'.$lineaInicio.':B'.$linea)
                     ->getAlignment()
                     ->setVertical(StyleAlignment::VERTICAL_CENTER);
-                $linea++;
             }
-            $linea--;
-            $sheet->mergeCells('A'.$lineaInicio.':B'.$linea);
-            $sheet->getStyle('A'.$lineaInicio.':B'.$linea)
+            $sheet->mergeCells('C'.$inicioPP.':E'.$linea);
+            $sheet->getStyle('C'.$inicioPP.':E'.$linea)
                 ->getAlignment()
                 ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
-            $sheet->getStyle('A'.$lineaInicio.':B'.$linea)
-                ->getAlignment()
-                ->setVertical(StyleAlignment::VERTICAL_CENTER);
-
-            $sheet->mergeCells('C'.$lineaInicio.':E'.$linea);
-            $sheet->getStyle('C'.$lineaInicio.':E'.$linea)
-                ->getAlignment()
-                ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
-            $sheet->getStyle('C'.$lineaInicio.':E'.$linea)
-                ->getAlignment()
-                ->setVertical(StyleAlignment::VERTICAL_CENTER);
-
-            $sheet->mergeCells('Q'.$lineaInicio.':R'.$linea);
-            $sheet->getStyle('Q'.$lineaInicio.':R'.$linea)
-                ->getAlignment()
-                ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
-            $sheet->getStyle('Q'.$lineaInicio.':R'.$linea)
+            $sheet->getStyle('C'.$inicioPP.':E'.$linea)
                 ->getAlignment()
                 ->setVertical(StyleAlignment::VERTICAL_CENTER);
         }
@@ -1204,7 +1207,7 @@ class ExcelController extends Controller
         $sheet->setCellValue('M'.$linea, $parte->detpartecamaras->sum('blocks'));
         $sheet->setCellValue('N'.$linea, $parte->detpartecamaras->sum('sobrepeso'));
         $sheet->setCellValue('O'.$linea, $parte->detpartecamaras->sum('total'));
-        $sheet->setCellValue('P'.$linea, $parte->detpartecamaras->sum('parcial').'%');
+        // $sheet->setCellValue('P'.$linea, $parte->detpartecamaras->sum('parcial').'%');
         $sheet->mergeCells('P'.$linea .':R'.$linea);
         $sheet->getStyle('A'.$lineaInicio.':R'.$linea)
             ->getAlignment()
@@ -1213,10 +1216,10 @@ class ExcelController extends Controller
             ->getAlignment()
             ->setVertical(StyleAlignment::VERTICAL_CENTER);
         $sheet->getStyle('A'.$linea.':R'.$linea)->getFont()->setSize(9)->setBold(true);
+        $sheet->getStyle('A'.$cuadroInicio.':R'.$linea)->applyFromArray($estiloBorde);
         
 
-        
-        $sheet->getStyle('A'.$cuadroInicio.':R'.$linea)->applyFromArray($estiloBorde);
+
 
         $sheet->getColumnDimension('A')->setWidth(12);
         $sheet->getColumnDimension('B')->setWidth(12);

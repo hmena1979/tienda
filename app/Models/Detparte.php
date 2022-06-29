@@ -18,6 +18,11 @@ class Detparte extends Model
     	return $this->belongsTo('App\Models\Parte');
     }
 
+    public function trazabilidad()
+    {
+    	return $this->belongsTo('App\Models\Trazabilidad');
+    }
+
     public function dettrazabilidad()
     {
     	return $this->belongsTo('App\Models\Dettrazabilidad');

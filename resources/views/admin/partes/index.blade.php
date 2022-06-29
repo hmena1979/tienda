@@ -38,7 +38,7 @@
 						</ul>
 					</div>
 					<div class="inside">
-						<table id= "grid" class="table table-hover table-sm">
+						<table id= "gridv" class="table table-hover table-sm">
 							<thead>
 								<tr>
 									<th width="15%">Lote</th>
@@ -63,7 +63,7 @@
 											<a class="" href="{{ route('admin.partes.edit',$parte) }}"datatoggle="tooltip" data-placement="top" title="Editar"><i class="fas fa-edit"></i></a>
 											@endcan
 											@can('admin.partes.destroy')
-											{{-- @if ($despiece->detdespieces->count() == 0) --}}
+											@if ($parte->detpartes->count() == 0)
 											<form action="{{ route('admin.partes.destroy',$parte) }}" method="POST" class="formulario_eliminars">
 												@csrf
 												@method('delete')
@@ -72,8 +72,8 @@
 												</button>
 											</form>
                                             @endcan
+											@endif
 											<a class="" href="{{ route('admin.excel.parte',$parte) }}" datatoggle="tooltip" data-placement="top" title="Imprimir"><i class="fas fa-print"></i></a>
-											{{-- @endif --}}
 										</div>
 									</td>
 								</tr>
@@ -91,3 +91,37 @@
 {{-- @section('css')
     <link rel="stylesheet" href="{{ url('/static/css/admin.css?v='.time()) }}">
 @stop --}}
+@section('script')
+<script>
+	var url_global='{{url("/")}}';
+	$(document).ready(function(){
+		$('#gridv').DataTable({
+			"order": [[0, 'desc'],[1, 'desc']],
+			"paging":   true,
+			"ordering": true,
+			"info":     true,
+			"language":{
+				"info": "_TOTAL_ Registros",
+				"search": "Buscar",
+				"paginate":{
+					"next": "Siguiente",
+					"previous": "Anterior"
+				},
+				"lengthMenu": "Mostrar <select>"+
+								"<option value='10'>10</option>"+
+								"<option value='25'>25</option>"+
+								"<option value='50'>50</option>"+
+								"<option value='100'>100</option>"+
+								"<option value='-1'>Todos</option>"+
+								"</select> Registros",
+				"loadingRecords": "Cargando...",
+				"processing": "Procesando...",
+				"emptyTable": "No se encontraton coincidencias",
+				"zeroRecords": "No se encontraton coincidencias",
+				"infoEmpty": "",
+				"infoFiltered": ""
+			}
+		});
+	});
+</script>
+@endsection

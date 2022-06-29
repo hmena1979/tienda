@@ -24,4 +24,14 @@ class Trazabilidad extends Model
     {
         return $this->hasMany('App\Models\Dettrazabilidad');
     }
+
+    public function detparte()
+    {
+        return $this->hasOne('App\Models\Detparte');
+    }
+
+    public function detpartecamara()
+    {
+        return $this->hasOne('App\Models\Detpartecamara');
+    }
 }
