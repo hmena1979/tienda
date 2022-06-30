@@ -131,6 +131,10 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-md-3">
+                                {!! Form::label('observaciones', 'Observaciones:') !!}
+                                {!! Form::text('observaciones', null, ['class'=>'form-control mayuscula','id'=>'observaciones']) !!}
+                            </div>
                         </div>
                         {!! Form::close() !!}
                     </div>
@@ -204,6 +208,7 @@
                     $('#dettrazabilidad_id').val(null);
                     $('#cantidad').val(null);
                     $('#total').val(null);
+                    $('#observaciones').val(null);
                     $('#aeitem').hide();
                     veritems();
                     $('#detalles').show();
@@ -234,6 +239,7 @@
             $('#dettrazabilidad_id').val(null);
             $('#cantidad').val(null);
             $('#total').val(null);
+            $('#observaciones').val(null);
         });
 
     });
@@ -261,7 +267,8 @@
             $('#peso').val(response.peso);
             $('#cantidad').val(response.cantidad);
             $('#total').val(response.total);
-            $.get(url_global+"/admin/ingcamaras/"+response.trazabilidad_id+"/listdetalle/",function(respuesta){
+            $('#observaciones').val(response.observaciones);
+            $.get(url_global+"/admin/pprocesos/"+response.trazabilidad_id+"/listdetalle/",function(respuesta){
                 $('#dettrazabilidad_id').empty();
                 for(i=0;i<respuesta.length;i++){
                     $('#dettrazabilidad_id').append("<option value='"+respuesta[i].id+"'>"

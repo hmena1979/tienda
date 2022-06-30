@@ -234,6 +234,7 @@ Route::get('/consumos/{periodo?}', [ConsumoController::class,'index'])->name('ad
 Route::post('/ingresos/change', [IngresoController::class,'change'])->name('admin.ingresos.change');
 Route::post('/ingresos/{ingreso}/adddet', [IngresoController::class,'adddet'])->name('admin.ingresos.adddet');
 Route::delete('/ingresos/{detingreso}/destroydet', [IngresoController::class,'destroydet'])->name('admin.ingresos.destroydet');
+Route::get('/ingresos/{ingreso}/{ordcompra}/cargaoc', [IngresoController::class,'cargaoc'])->name('admin.ingresos.cargaoc');
 Route::resource('ingresos', IngresoController::class)->names('admin.ingresos');
 Route::get('/ingresos/{periodo?}', [IngresoController::class,'index'])->name('admin.ingresos.index');
 // Route::get('/registrocompra/create', [RegistroCompraController::class,'create'])->name('admin.registrocompras.create');

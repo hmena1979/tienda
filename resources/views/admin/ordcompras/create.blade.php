@@ -21,7 +21,7 @@
 						<h2 class="title"><i class="fas fa-file-import"></i> Orden de Compra</h2>
 						<ul>
                             <li>
-                                {!! Form::submit('Guardar', ['class'=>'btn btn-convertir mt-2', 'id'=>'guardar']) !!}
+                                {!! Form::submit('Guardar', ['class'=>'btn btn-convertir mt-1', 'id'=>'guardar']) !!}
                             </li>
 						</ul>
 					</div>

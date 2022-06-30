@@ -14,9 +14,13 @@ use App\Models\Contrata;
 use App\Models\Detenvasado;
 use App\Models\Detingcamara;
 use App\Models\Detparte;
+use App\Models\Detpartecamara;
 use App\Models\Detrventa;
 use App\Models\Dettrazabilidad;
+use App\Models\Envasado;
+use App\Models\Ingcamara;
 use App\Models\Residuo;
+use App\Models\Rventa;
 
 class ParteController extends Controller
 {
@@ -183,6 +187,7 @@ class ParteController extends Controller
     {
         $parte->detpartes()->delete();
         $parte->detpartecamaras()->delete();
+        $parte->detparteproductos()->delete();
         // $materiaPrima = Materiaprima::where('lote',$parte->lote)->sum('pplanta');
         $materiaPrima = Materiaprima::selectRaw('sum(pplanta) as peso, sum(pplanta*precio) as total')
             ->where('lote',$parte->lote)
@@ -226,11 +231,27 @@ class ParteController extends Controller
         }
         
         // Guías de Ingreso a Camaras
+        // $observaciones = Detingcamara::whereRelation('ingcamara',['lote' => $parte->lote, 'estado' => 2])
+        //     ->groupBy('dettrazabilidad_id')
+        //     ->groupBy('observaciones')
+        //     ->whereNotNull('observaciones')
+        //     ->selectRaw('dettrazabilidad_id,observaciones')
+        //     ->get();
+        // return $observaciones;
         $detalles = Detingcamara::whereRelation('ingcamara',['lote' => $parte->lote, 'estado' => 2])
             ->groupBy('dettrazabilidad_id')
             ->selectRaw('dettrazabilidad_id,sum(total) as total')
             ->get();
         foreach ($detalles as $det) {
+            $observaciones = Detingcamara::whereRelation('ingcamara',['lote' => $parte->lote, 'estado' => 2])
+                ->where('dettrazabilidad_id',$det->dettrazabilidad_id)
+                ->whereNotNull('observaciones')
+                ->select('observaciones')
+                ->get();
+            $observacion = '';
+            foreach($observaciones as $obs) {
+                $observacion .=  $obs->observaciones. ' ';
+            }
             $detTrazabilidad = Dettrazabilidad::findOrFail($det->dettrazabilidad_id);
             $sobrePeso = round($det->total * ($detTrazabilidad->sobrepeso / 100),2);
             if ($detTrazabilidad->envase == 1) {
@@ -255,6 +276,7 @@ class ParteController extends Controller
                 'parcial' => $parcial,
                 'total' => $det->total,
                 'costo' => $costo,
+                'observaciones' => $observacion,
             ]);            
         }
         //Consumos de Almacen
@@ -291,8 +313,109 @@ class ParteController extends Controller
                 sum(parcial) as parcial,
                 sum(costo) as manoobra
             ')->first();
+        $totalesCamara = Detpartecamara::where('parte_id',$parte->id)
+            ->groupBy('parte_id')
+            ->selectRaw('parte_id,
+                sum(costo) as manoobra
+            ')->first();
+        if ($totalesCamara) {
+            $manoobra = $totalesCamara->manoobra;
+        } else {
+            $manoobra = 0;
+        }
         // return $totales;
-        $merma = $materiaPrima->peso - ($totales->envasado + $totales->sobrepeso);
+        $merma = $materiaPrima->peso - ($totales->envasado + $totales->sobrepeso + $parte->descarte + $residuo->peso);
+        
+        //Guía de Envasado
+        $guiaEnvasado = '';
+        $guias = Envasado::where('empresa_id', session('empresa'))
+            ->where('tipo',1)
+            ->where('lote', $parte->lote)
+            ->select('numero')
+            ->orderBy('numero')
+            ->get();
+        $ini = 1;
+        $coma = '';
+        foreach ($guias as $det) {
+            $guiaEnvasado .= $coma.'N°' . str_pad($det->numero, 6, '0', STR_PAD_LEFT) ;
+            if ($ini == 1) {
+                $ini = 2;
+                $coma = ', ';
+            }
+        }
+        $guiaEnvasado .= '.';
+
+        //Guía de Envasado Crudo
+        $guiaEnvasadoCrudo = '';
+        $guias = Envasado::where('empresa_id', session('empresa'))
+            ->where('tipo',2)
+            ->where('lote', $parte->lote)
+            ->select('numero')
+            ->orderBy('numero')
+            ->get();
+        $ini = 1;
+        $coma = '';
+        foreach ($guias as $det) {
+            $guiaEnvasadoCrudo .= $coma.'N°' . str_pad($det->numero, 6, '0', STR_PAD_LEFT);
+            if ($ini == 1) {
+                $ini = 2;
+                $coma = ', ';
+            }
+        }
+        $guiaEnvasadoCrudo .= '.';
+
+        //Guía de Ingreso a Cámaras
+        $guiaIngCamara = '';
+        $guias = Ingcamara::where('empresa_id', session('empresa'))
+            ->where('lote', $parte->lote)
+            ->select('numero')
+            ->orderBy('numero')
+            ->get();
+        $ini = 1;
+        $coma = '';
+        foreach ($guias as $det) {
+            $guiaIngCamara .= $coma.'N°' . str_pad($det->numero, 6, '0', STR_PAD_LEFT);
+            if ($ini == 1) {
+                $ini = 2;
+                $coma = ', ';
+            }
+        }
+        $guiaIngCamara .= '.';
+
+        //Guía de Consumos
+        $guiaAlmacen = '';
+        $guias = Rventa::where('empresa_id', session('empresa'))
+            ->where('lote', $parte->lote)
+            ->where('tipo',2)
+            ->select('serie','numero')
+            ->orderBy('numero')
+            ->get();
+        $ini = 1;
+        $coma = '';
+        foreach ($guias as $det) {
+            $guiaAlmacen .= $coma.'N°' . $det->serie.'-'.$det->numero;
+            if ($ini == 1) {
+                $ini = 2;
+                $coma = ', ';
+            }
+        }
+        $guiaAlmacen .= '.';
+
+        //Guía de Residuos
+        $guiaResiduo = '';
+        $guias = Residuo::where('empresa_id', session('empresa'))
+            ->where('lote', $parte->lote)
+            ->select('guiahl')
+            ->orderBy('guiahl')
+            ->get();
+        $ini = 1;
+        $coma = '';
+        foreach ($guias as $det) {
+            $guiaResiduo .= $coma.'N°' . $det->guiahl;
+        }
+        $guiaResiduo .= '.';
+        
+
         $parte->update([
             'materiaprima' => $materiaPrima->peso,
             'costomateriaprima' => $materiaPrima->total,
@@ -302,9 +425,14 @@ class ParteController extends Controller
             'sobrepeso' => $totales->sobrepeso,
             'residuos' => $residuo->peso,
             'costoresiduos' => $residuo->total,
-            'manoobra' => $totales->manoobra,
+            'manoobra' => round($manoobra * BusTc($parte->empaque),2),//Round($totalesCamara->manoobra * BusTc($parte->empaque),2),
             'costoproductos' => $costoProductos,
             'merma' => $merma,
+            'guias_envasado' => $guiaEnvasado,
+            'guias_envasado_crudo' => $guiaEnvasadoCrudo,
+            'guias_camara' => $guiaIngCamara,
+            'guias_almacen' => $guiaAlmacen,
+            'guias_residuos' => $guiaResiduo,
         ]);
         return redirect()->route('admin.partes.edit',$parte)->with('update', 'Parte de Producción Generado');
     }

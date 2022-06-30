@@ -1173,7 +1173,7 @@ class ExcelController extends Controller
                     $sheet->setCellValue('M'.$linea, $codigo->blocks);
                     $sheet->setCellValue('N'.$linea, $codigo->sobrepeso);
                     $sheet->setCellValue('O'.$linea, $codigo->total);
-                    $sheet->setCellValue('P'.$linea, '');
+                    $sheet->setCellValue('P'.$linea, $codigo->observaciones);
                     $sheet->mergeCells('P'.$linea .':R'.$linea);
                     $sheet->getStyle('F'.$lineaInicio.':R'.$linea)
                         ->getAlignment()
@@ -1217,6 +1217,70 @@ class ExcelController extends Controller
             ->setVertical(StyleAlignment::VERTICAL_CENTER);
         $sheet->getStyle('A'.$linea.':R'.$linea)->getFont()->setSize(9)->setBold(true);
         $sheet->getStyle('A'.$cuadroInicio.':R'.$linea)->applyFromArray($estiloBorde);
+
+        // CONSUMOS ALMACEM ------------------------------------------------------------------------
+        $linea++;$linea++;
+        $cuadroInicio = $linea;
+        $sheet->setCellValue('A'.$linea, 'MATERIALES E INSUMOS');
+        $sheet->mergeCells('A'.$linea .':E'.$linea);
+        $sheet->getStyle('A'.$linea.':E'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF0070C0');
+        $sheet->getStyle('A'.$linea.':E'.$linea)->getFont()->getColor()->setARGB('FFFFFFFF');
+        $sheet->setCellValue('F'.$linea, 'UNIDAD MEDIDA');
+        $sheet->mergeCells('F'.$linea .':G'.$linea);
+        $sheet->setCellValue('H'.$linea, 'SOLICITADO');
+        $sheet->setCellValue('I'.$linea, 'DEVUELTO');
+        $sheet->setCellValue('J'.$linea, 'ENTREGADO');
+        $sheet->getStyle('A'.$linea.':J'.$linea)->getFont()->setSize(9)->setBold(true);
+        $sheet->getStyle('A'.$linea.':J'.$linea)
+            ->getAlignment()
+            ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A'.$linea.':J'.$linea)
+            ->getAlignment()
+            ->setVertical(StyleAlignment::VERTICAL_CENTER);
+        foreach ($parte->detparteproductos as $det) {
+            $linea++;
+            $sheet->setCellValue('A'.$linea, $det->producto->nombre);
+            $sheet->mergeCells('A'.$linea .':E'.$linea);
+            $sheet->setCellValue('F'.$linea, $det->producto->umedida->nombre);
+            $sheet->mergeCells('F'.$linea .':G'.$linea);
+            $sheet->setCellValue('H'.$linea, $det->solicitado);
+            $sheet->setCellValue('I'.$linea, $det->devuelto );
+            $sheet->setCellValue('J'.$linea, $det->entregado );
+        }
+        $sheet->getStyle('A'.$cuadroInicio.':J'.$linea)
+            ->getAlignment()
+            ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A'.$cuadroInicio.':J'.$linea)->applyFromArray($estiloBorde);
+
+        // GUÍAS------------------------------------------------------------------------
+        $linea++;$linea++;
+        $cuadroInicio = $linea;
+        $sheet->setCellValue('A'.$linea, 'PLANILLAS DE ENVASADO');
+        $sheet->mergeCells('A'.$linea .':D'.$linea);
+        $sheet->setCellValue('E'.$linea, $parte->guias_envasado);
+        $sheet->mergeCells('E'.$linea .':J'.$linea);
+        $linea++;
+        $sheet->setCellValue('A'.$linea, 'PLANILLAS DE ENVASADO CRUDO');
+        $sheet->mergeCells('A'.$linea .':D'.$linea);
+        $sheet->setCellValue('E'.$linea, $parte->guias_envasado_crudo);
+        $sheet->mergeCells('E'.$linea .':J'.$linea);
+        $linea++;
+        $sheet->setCellValue('A'.$linea, 'GUÍAS DE INGRESO A CÁMARAS');
+        $sheet->mergeCells('A'.$linea .':D'.$linea);
+        $sheet->setCellValue('E'.$linea, $parte->guias_camara);
+        $sheet->mergeCells('E'.$linea .':J'.$linea);
+        $linea++;
+        $sheet->setCellValue('A'.$linea, 'CONSUMOS ALMACÉN');
+        $sheet->mergeCells('A'.$linea .':D'.$linea);
+        $sheet->setCellValue('E'.$linea, $parte->guias_almacen);
+        $sheet->mergeCells('E'.$linea .':J'.$linea);
+        $linea++;
+        $sheet->setCellValue('A'.$linea, 'GUÍAS DE RESIDUOS SÓLIDOS');
+        $sheet->mergeCells('A'.$linea .':D'.$linea);
+        $sheet->setCellValue('E'.$linea, $parte->guias_residuos);
+        $sheet->mergeCells('E'.$linea .':J'.$linea);
+        $sheet->getStyle('A'.$cuadroInicio.':J'.$linea)->applyFromArray($estiloBorde);
+        $sheet->getStyle('A'.$cuadroInicio.':A'.$linea)->getFont()->setSize(9)->setBold(true);
         
 
 

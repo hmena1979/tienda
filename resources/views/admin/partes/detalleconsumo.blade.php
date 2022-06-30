@@ -3,8 +3,9 @@
         <table id= "grid" class="table table-hover table-sm">
             <thead>
                 <tr>
-                    <th width="22%">Producto</th>
-                    <th class="text-center" width="18%">Solicitado</th>
+                    <th width="30%">Producto</th>
+                    <th width="10%">U.Medida</th>
+                    <th class="text-center" width="10%">Solicitado</th>
                     <th class="text-center" width="10%">Devuelto</th>
                     <th class="text-center" width="10%">Entregado</th>
                     @can('admin.partes.valorado')
@@ -22,6 +23,7 @@
                 @foreach($parte->detparteproductos as $det)
                 <tr>
                     <td>{{ $det->producto->nombre }}</td>
+                    <td>{{ $det->producto->umedida->nombre }}</td>
                     <td class="text-center">{{ $det->solicitado }}</td>
                     <td class="text-center">{{ $det->devuelto }}</td>
                     <td class="text-center">{{ $det->entregado }}</td>

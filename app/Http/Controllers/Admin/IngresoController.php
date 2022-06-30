@@ -9,14 +9,13 @@ use Illuminate\Support\Facades\Validator;
 
 use App\Models\Rcompra;
 use App\Models\Detingreso;
-use App\Models\Detproducto;
 use App\Models\Kardex;
 use App\Models\TipoComprobante;
 use App\Models\Vencimiento;
 use App\Models\Categoria;
 use App\Models\Cliente;
+use App\Models\Ordcompra;
 use App\Models\Producto;
-use PhpParser\Node\Stmt\Return_;
 
 class IngresoController extends Controller
 {
@@ -78,9 +77,14 @@ class IngresoController extends Controller
         $moneda = Categoria::where('modulo', 4)->pluck('nombre','codigo');
         $tipocomprobante = TipoComprobante::orderBy('codigo')->pluck('nombre','codigo');
         $clientes = Cliente::where('id',$ingreso->cliente_id)->get()->pluck('numdoc_razsoc','id');
+        $ordcompras = Ordcompra::where('empresa_id',session('empresa'))
+            ->where('cliente_id', $ingreso->cliente_id)
+            ->take(15)
+            ->get()
+            ->pluck('fecha_id','id');
 
         return view('admin.ingresos.edit',
-            compact('ingreso','moneda','tipocomprobante','clientes'));
+            compact('ingreso','moneda','tipocomprobante','clientes','ordcompras'));
     }
 
     public function update(Request $request, Rcompra $ingreso)
@@ -286,10 +290,61 @@ class IngresoController extends Controller
                 }
             }
         }
-
         //Elimina Detalle de Ingresos
         $detingreso->delete();
-        
         return redirect()->route('admin.ingresos.edit',$detingreso->rcompra_id)->with('destroy', 'Registro Eliminado');
+    }
+
+    public function cargaoc(Rcompra $ingreso, Ordcompra $ordcompra)
+    {
+        foreach ($ordcompra->detordcompras as $det) {
+            //Agregar registro en Detalle de Ingresos
+            if ($det->producto->lotevencimiento == 2) {
+                $di = $ingreso->detingresos()->create([
+                    'producto_id' => $det->producto_id,
+                    'cantidad' => $det->cantidad,
+                    'igv' => 2,
+                    'pre_ini' => $det->precio,
+                    'precio' => $det->precio,
+                    'subtotal' => $det->precio * $det->cantidad,
+                    'glosa' => 'ORDEN DE COMPRA N° '.str_pad($det->ordcompra_id, 5, '0', STR_PAD_LEFT),
+                ]);
+                //Actualiza Tabla Productos
+                if($ingreso->moneda == 'PEN'){
+                    $precio = $di->precio;
+                }else{
+                    $precio = round($di->precio * $ingreso->tc,4);
+                }
+                $Producto = Producto::find($di->producto_id);
+                $precioPromedio = 0.00;
+                $stockProducto = 0.00;
+                $precioPromedio = preProm($Producto->stock, $Producto->precompra, $di->cantidad, $precio);
+                $stockProducto = $Producto->stock + $di->cantidad;
+                $Producto->update([
+                    'precompra' => $precioPromedio,
+                    'stock' => $stockProducto,
+                ]);
+                // Agrega Registro en Kardex
+                $tipoKardex = 1; //(1)Ingreso (2)Consumo directo (3)Ventas (4)Nota de Credito
+                $cantEntradaKardex = $di->cantidad;
+                Kardex::create([
+                    'periodo' => $ingreso->periodo,
+                    'tipo' => $tipoKardex,
+                    'operacion_id' => $di->id,
+                    'producto_id' => $di->producto_id,
+                    'cliente_id' => $ingreso->cliente_id,
+                    'documento' => numDoc($ingreso->serie,$ingreso->numero),
+                    'proveedor' => $ingreso->cliente->razsoc,
+                    'fecha' => $ingreso->fechaingreso,
+                    'cant_ent' => $cantEntradaKardex,
+                    'cant_sald' => $stockProducto,
+                    'pre_compra' => $precio,
+                    'pre_prom' => $precioPromedio,
+                    'descrip' => $di->glosa,
+                ]);
+
+            }
+        }
+        return true;
     }
 }

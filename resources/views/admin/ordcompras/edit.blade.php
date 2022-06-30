@@ -22,19 +22,21 @@
 						<ul>
                             @if ($ordcompra->estado == 1)
                             <li>
-                                {!! Form::submit('Guardar', ['class'=>'btn btn-convertir mt-2', 'id'=>'guardar']) !!}
+                                {!! Form::submit('Guardar', ['class'=>'btn btn-convertir mt-1', 'id'=>'guardar']) !!}
                             </li>
                             <li>
-                                <button type="button" id='finalizar' class="btn btn-convertir mt-2">Finalizar</button>
+                                <button type="button" id='finalizar' class="btn btn-convertir mt-1">Finalizar</button>
                             </li>
                             @endif
                             @if ($ordcompra->estado == 2)
                             <li>
-                                <button type="button" id='autorizar' class="btn btn-convertir mt-2">Autorizar</button>
+                                <button type="button" id='autorizar' class="btn btn-convertir mt-1">Autorizar</button>
                             </li>
                             @endif
                             <li>
-                                <a class="" href="{{ route('admin.pdf.ordcompra',$ordcompra) }}" target="_blank" datatoggle="tooltip" data-placement="top" title="Imprimir"><i class="fas fa-print"></i></a>
+                                <a class="btn btn-convertir mt-1" href="{{ route('admin.pdf.ordcompra',$ordcompra) }}" target="_blank" datatoggle="tooltip" data-placement="top" title="Imprimir">
+                                    <i class="fas fa-print"></i>
+                                </a>
                             </li>
 						</ul>
 					</div>

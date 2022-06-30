@@ -3,12 +3,13 @@
         <table id= "grid" class="table table-hover table-sm">
             <thead>
                 <tr>
-                    <th width="22%">Producto</th>
+                    <th width="18%">Producto</th>
                     <th width="18%">Código</th>
                     <th class="text-center" width="10%">Presentación</th>
                     <th class="text-center" width="10%">Peso</th>
                     <th class="text-center" width="10%">Cantidad</th>
                     <th class="text-center" width="10%">Total</th>
+                    <th class="text-center" width="14%">Observaciones</th>
                     <th width="10%">
                         @if ($ingcamara->estado == 1)
                         <button type="button" id='additem' class="btn btn-block btn-addventa" datatoggle="tooltip" data-placement="top" title="Agregar Item">
@@ -27,6 +28,7 @@
                     <td class="text-center">{{ $det->peso }}</td>
                     <td class="text-center">{{ $det->cantidad }}</td>
                     <td class="text-center">{{ $det->total }}</td>
+                    <td class="text-center">{{ $det->observaciones }}</td>
                     <td>
                         @if ($ingcamara->estado == 1)
                         <div class="opts">

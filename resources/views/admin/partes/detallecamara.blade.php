@@ -9,7 +9,7 @@
                     <th class="text-center" width="10%">Sacos</th>
                     <th class="text-center" width="10%">Blocks</th>
                     <th class="text-center" width="10%">Total Kg</th>
-                    <th class="text-center" width="10%">Parcial %</th>
+                    <th class="text-center" width="20%">Observaciones</th>
                     {{-- <th width="10%">
                         <button type="button" id='additem' class="btn btn-block btn-addventa" datatoggle="tooltip" data-placement="top" title="Agregar Item">
                             +
@@ -26,7 +26,7 @@
                     <td class="text-center">{{ $det->sacos }}</td>
                     <td class="text-center">{{ $det->blocks }}</td>
                     <td class="text-center">{{ $det->total }}</td>
-                    <td class="text-center">{{ $det->parcial }}</td>
+                    <td class="text-center">{{ $det->observaciones }}</td>
                     {{-- <td>
                         @if ($envasado->estado == 1)
                         <div class="opts">
@@ -47,7 +47,7 @@
                     <th class="text-center">{{ number_format($parte->detpartecamaras->sum('sacos')) }}</th>
                     <th class="text-center">{{ number_format($parte->detpartecamaras->sum('blocks')) }}</th>
                     <th class="text-center">{{ number_format($parte->detpartecamaras->sum('total')) }}</th>
-                    <th class="text-center">{{ number_format($parte->detpartecamaras->sum('parcial'),2) }}</th>
+                    <th class="text-center"></th>
                 </tr>
             </tbody>
         </table>

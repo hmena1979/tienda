@@ -159,6 +159,7 @@ class IngcamaraController extends Controller
                     'peso' => $request->input('peso'),
                     'cantidad' => $request->input('cantidad'),
                     'total' => $request->input('total'),
+                    'observaciones' => $request->input('observaciones'),
                 ]);
             } else {
                 Detingcamara::where('id',$request->input('iddet'))->update([
@@ -167,6 +168,7 @@ class IngcamaraController extends Controller
                     'peso' => $request->input('peso'),
                     'cantidad' => $request->input('cantidad'),
                     'total' => $request->input('total'),
+                    'observaciones' => $request->input('observaciones'),
                 ]);
             }
             return true;
@@ -184,6 +186,7 @@ class IngcamaraController extends Controller
                 'peso' => $detingcamara->peso,
                 'cantidad' => $detingcamara->cantidad,
                 'total' => $detingcamara->total,
+                'observaciones' => $detingcamara->observaciones,
             ];
             return response()->json($det);
         }

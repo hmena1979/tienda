@@ -111,9 +111,9 @@
                                             <th class="text-center" width="10%">RESIDUOS</th>
                                             <th class="text-center" width="10%">DESCARTE</th>
                                             <th class="text-center" width="10%">MERMA</th>
-                                            @can('admin.partes.valorado')
+                                            {{-- @can('admin.partes.valorado')
                                             <th class="text-center" width="10%">MANO DE OBRA</th>                                                
-                                            @endcan
+                                            @endcan --}}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -124,9 +124,9 @@
                                             <td class="text-center">{{ number_format($parte->residuos,2) }}</td>
                                             <td class="text-center">{{ number_format($parte->descarte,2) }}</td>
                                             <td class="text-center">{{ number_format($parte->merma,2) }}</td>
-                                            @can('admin.partes.valorado')
+                                            {{-- @can('admin.partes.valorado')
                                             <td class="text-center">{{ number_format($parte->manoobra,2) }}</td>                                                
-                                            @endcan
+                                            @endcan --}}
                                         </tr>
                                     </tbody>
                                 </table>
@@ -205,6 +205,45 @@
                             <div class="col-md-12">
                                 <div id="tdetitemconsumo">
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mtop16">
+            <div class="col-md-12">
+                <div class="panelprin shadow">
+                    <div class="headercontent">
+                        <h2 class="title"><i class="fas fa-industry"></i> Guías</h2>
+                    </div>
+                    <div class="inside">
+                        <div class="row" id="detallesconsumo">
+                            <div class="col-md-12">
+                                <table class="table table-bordered table-sm">
+                                    <tbody>
+                                        <tr>
+                                            <th width = '20%'>Planillas de Envasado</th>
+                                            <td width = '70%'>{{ $parte->guias_envasado }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th width = '20%'>Planillas de Envasado Crudo</th>
+                                            <td width = '70%'>{{ $parte->guias_envasado_crudo }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th width = '20%'>Guías de Ingreso a Cámaras</th>
+                                            <td width = '70%'>{{ $parte->guias_camara }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th width = '20%'>Consumos de Almacén</th>
+                                            <td width = '70%'>{{ $parte->guias_almacen }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th width = '20%'>Guías de Residuos Sólidos</th>
+                                            <td width = '70%'>{{ $parte->guias_residuos }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>

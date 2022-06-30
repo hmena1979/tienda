@@ -280,5 +280,25 @@
 		}
 	}
 
+	function BusTc($fecha)
+    {
+        $context = stream_context_create(array(
+            'http' => array('ignore_errors' => true),
+        ));
+
+        // return $fecha;
+        $url = 'https://api.apis.net.pe/v1/tipo-cambio-sunat?fecha='.$fecha;
+
+        $api = file_get_contents($url,false,$context);
+
+        if($api == false){
+            return 0;
+        }else{
+            $api = str_replace('&Ntilde;','Ñ',$api);
+            $api = json_decode($api);
+            return $api->venta;
+        }
+    }
+
 
 ?>

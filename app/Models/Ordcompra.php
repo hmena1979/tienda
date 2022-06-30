@@ -14,6 +14,12 @@ class Ordcompra extends Model
     protected $table = 'ordcompras';
     protected $hidden = ['created_at','updated_at'];
     protected $guarded = [];
+    protected $appends = ['fecha_id'];
+
+    public function getFechaIdAttribute()
+    {
+        return $this->fecha. ' | '. str_pad($this->id, 5, '0', STR_PAD_LEFT);
+    }
 
     public function cliente(){
         return $this->belongsTo('App\Models\Cliente');

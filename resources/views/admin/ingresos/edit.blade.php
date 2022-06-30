@@ -30,6 +30,7 @@
                             <div class="col-md-1 form-group">
                                 {{-- {{ $ingreso->detingreso->count() }} --}}
                                 {!! Form::hidden('detalles', $ingreso->detingresos->count(),['id'=>'detalles']) !!}
+                                {!! Form::hidden('id', null,['id'=>'id']) !!}
                                 {!! Form::label('peringreso', 'Periodo:') !!}
 								{!! Form::text('peringreso', null, ['class'=>'form-control activo']) !!}
 							</div>
@@ -100,6 +101,17 @@
                                 {!! Form::label('entregadopor', 'Entregado Por:') !!}
                                 {!! Form::text('entregadopor', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
                             </div>
+                            <div class="col-md-3 form-group">
+                                {!! Form::label('ordencompra', 'Orden de Compra:', ['class' => 'adddetalle']) !!}
+                                <div class="row no-gutters">
+                                    <div class="col-md-10">
+                                        {!! Form::select('ordencompra',$ordcompras,null,['class'=>'custom-select adddetalle','placeholder'=>'']) !!}
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button class="btn btn-block btn-convertir adddetalle" type="button" id="addordencompra" title="Agregar Productos"><i class="fas fa-plus"></i></button>
+                                    </div>
+                                </div>                                
+                            </div> 
                         </div>
 						{{-- {!! Form::submit('Guardar', ['class'=>'btn btn-convertir', 'id'=>'guardar']) !!} --}}
 					</div>				
@@ -296,11 +308,20 @@
             $('.activo').prop('disabled',true);
         }
 
-        if($('#fechaingreso').val()){
+        if($('#fechaingreso').val() && $('#entregadopor').val()){
             $('.adddetalle').show();
         }else{
             $('.adddetalle').hide();
         }
+
+        $('#addordencompra').click(function(){
+            if ($('#ordencompra').val()) {
+                $.get(url_global+"/admin/ingresos/"+$('#id').val()+'/'+$('#ordencompra').val()+"/cargaoc/",function(respuesta){
+                    location.reload();
+                    // alert(respuesta)
+                })
+            }
+        });
 
         $('#producto_id').select2({
             placeholder:"Ingrese 4 dígitos del Nombre del Producto",
