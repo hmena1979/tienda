@@ -1098,12 +1098,14 @@ class ExcelController extends Controller
         $sheet->mergeCells('I'.$linea .':K'.$linea);
         $sheet->setCellValue('L'.$linea, 'PRODUCCIÓN');
         $sheet->mergeCells('L'.$linea .':O'.$linea);
-        $sheet->setCellValue('P'.$linea, 'OBSERVACIONES');
-        $sheet->getStyle('A'.$linea.':R'.$linea)->getFont()->setSize(9)->setBold(true);
-        $sheet->getStyle('A'.$linea.':R'.$linea)
+        $sheet->setCellValue('P'.$linea, 'RENDIMIENTOS');
+        $sheet->mergeCells('P'.$linea .':R'.$linea);
+        $sheet->setCellValue('S'.$linea, 'OBSERVACIONES');
+        $sheet->getStyle('A'.$linea.':U'.$linea)->getFont()->setSize(9)->setBold(true);
+        $sheet->getStyle('A'.$linea.':U'.$linea)
             ->getAlignment()
             ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('A'.$linea.':R'.$linea)
+        $sheet->getStyle('A'.$linea.':U'.$linea)
             ->getAlignment()
             ->setVertical(StyleAlignment::VERTICAL_CENTER);
 
@@ -1122,15 +1124,18 @@ class ExcelController extends Controller
         $sheet->setCellValue('M'.$linea, 'Blocks');
         $sheet->setCellValue('N'.$linea, 'O/Weight');
         $sheet->setCellValue('O'.$linea, 'Kilos');
-        $sheet->mergeCells('P'.($linea-1) .':R'.$linea);
-        $sheet->getStyle('A'.$linea.':R'.$linea)->getFont()->setSize(9)->setBold(true);
-        $sheet->getStyle('A'.$linea.':R'.$linea)
+        $sheet->setCellValue('P'.$linea, 'Parcial');
+        $sheet->setCellValue('Q'.$linea, 'Total');
+        $sheet->mergeCells('Q'.$linea .':R'.$linea);
+        $sheet->mergeCells('S'.($linea-1) .':U'.$linea);
+        $sheet->getStyle('A'.$linea.':U'.$linea)->getFont()->setSize(9)->setBold(true);
+        $sheet->getStyle('A'.$linea.':U'.$linea)
         ->getAlignment()
         ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('A'.$linea.':R'.$linea)
+        $sheet->getStyle('A'.$linea.':U'.$linea)
         ->getAlignment()
         ->setVertical(StyleAlignment::VERTICAL_CENTER);
-        $sheet->getStyle('A'.$linea.':R'.$linea)->getAlignment()->setWrapText(true);
+        $sheet->getStyle('A'.$linea.':U'.$linea)->getAlignment()->setWrapText(true);
 
         $pProceso = Detpartecamara::with('trazabilidad')
             ->join('trazabilidads','detpartecamaras.trazabilidad_id','trazabilidads.id')
@@ -1173,12 +1178,13 @@ class ExcelController extends Controller
                     $sheet->setCellValue('M'.$linea, $codigo->blocks);
                     $sheet->setCellValue('N'.$linea, $codigo->sobrepeso);
                     $sheet->setCellValue('O'.$linea, $codigo->total);
-                    $sheet->setCellValue('P'.$linea, $codigo->observaciones);
-                    $sheet->mergeCells('P'.$linea .':R'.$linea);
-                    $sheet->getStyle('F'.$lineaInicio.':R'.$linea)
+                    $sheet->setCellValue('P'.$linea, $codigo->parcial);
+                    $sheet->setCellValue('S'.$linea, $codigo->observaciones);
+                    $sheet->mergeCells('S'.$linea .':U'.$linea);
+                    $sheet->getStyle('F'.$lineaInicio.':U'.$linea)
                         ->getAlignment()
                         ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
-                    $sheet->getStyle('F'.$lineaInicio.':R'.$linea)
+                    $sheet->getStyle('F'.$lineaInicio.':U'.$linea)
                         ->getAlignment()
                         ->setVertical(StyleAlignment::VERTICAL_CENTER);
                     $linea++;
@@ -1199,6 +1205,14 @@ class ExcelController extends Controller
             $sheet->getStyle('C'.$inicioPP.':E'.$linea)
                 ->getAlignment()
                 ->setVertical(StyleAlignment::VERTICAL_CENTER);
+            
+            $sheet->mergeCells('Q'.$inicioPP.':R'.$linea);
+            $sheet->getStyle('Q'.$inicioPP.':R'.$linea)
+                ->getAlignment()
+                ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+            $sheet->getStyle('Q'.$inicioPP.':R'.$linea)
+                ->getAlignment()
+                ->setVertical(StyleAlignment::VERTICAL_CENTER);
         }
         $linea++;
         $sheet->setCellValue('A'.$linea, 'TOTAL PRODUCCION (KGS.)');
@@ -1207,16 +1221,18 @@ class ExcelController extends Controller
         $sheet->setCellValue('M'.$linea, $parte->detpartecamaras->sum('blocks'));
         $sheet->setCellValue('N'.$linea, $parte->detpartecamaras->sum('sobrepeso'));
         $sheet->setCellValue('O'.$linea, $parte->detpartecamaras->sum('total'));
+        $sheet->setCellValue('P'.$linea, $parte->detpartecamaras->sum('parcial').'%');
         // $sheet->setCellValue('P'.$linea, $parte->detpartecamaras->sum('parcial').'%');
         $sheet->mergeCells('P'.$linea .':R'.$linea);
-        $sheet->getStyle('A'.$lineaInicio.':R'.$linea)
+        $sheet->mergeCells('S'.$linea .':U'.$linea);
+        $sheet->getStyle('A'.$lineaInicio.':U'.$linea)
             ->getAlignment()
             ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('A'.$lineaInicio.':R'.$linea)
+        $sheet->getStyle('A'.$lineaInicio.':U'.$linea)
             ->getAlignment()
             ->setVertical(StyleAlignment::VERTICAL_CENTER);
-        $sheet->getStyle('A'.$linea.':R'.$linea)->getFont()->setSize(9)->setBold(true);
-        $sheet->getStyle('A'.$cuadroInicio.':R'.$linea)->applyFromArray($estiloBorde);
+        $sheet->getStyle('A'.$linea.':U'.$linea)->getFont()->setSize(9)->setBold(true);
+        $sheet->getStyle('A'.$cuadroInicio.':U'.$linea)->applyFromArray($estiloBorde);
 
         // CONSUMOS ALMACEM ------------------------------------------------------------------------
         $linea++;$linea++;

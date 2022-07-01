@@ -733,7 +733,7 @@ return [
                     'icon'    => 'fas fa-cog',
                     'icon_color' => 'cyan',
                     'can' => 'admin.utils.cierre',
-                    'url'  => '#',
+                    'route'  => 'admin.saldos.cierremes',
                 ],
                 [
                     'text' => 'Regenerar Saldos',

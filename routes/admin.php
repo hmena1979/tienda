@@ -380,6 +380,7 @@ Route::resource('residuos', ResiduoController::class)->names('admin.residuos');
 //Regenera Saldos de Productos
 Route::get('/saldos/gregenera', [SaldoController::class,'gregenera'])->name('admin.saldos.gregenera');
 Route::post('/saldos/pregenera', [SaldoController::class,'pregenera'])->name('admin.saldos.pregenera');
+Route::get('/saldos/cierremes/{periodo?}', [SaldoController::class,'cierremes'])->name('admin.saldos.cierremes');
 Route::resource('saldos', SaldoController::class)->names('admin.saldos');
 
 //Parámetros: Empresa | Sede

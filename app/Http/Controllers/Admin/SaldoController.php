@@ -7,8 +7,9 @@ use App\Models\Producto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Admin\KardexController;
-
+use App\Models\Kardex;
 use App\Models\Saldo;
+use App\Models\Sede;
 
 class SaldoController extends Controller
 {
@@ -153,5 +154,64 @@ class SaldoController extends Controller
             }
         }
         return redirect()->route('admin.saldos.gregenera')->with('message', 'Saldo regenerado')->with('typealert', 'success');
+    }
+
+    public function cierremes($periodo = '000000')
+    {
+        if($periodo == '000000'){
+            $periodo = session('periodo');
+        }
+        $perant = pAnterior($periodo);
+        //-------------------Regenera Stock------------------------------------------------
+        $productos = Producto::select('id')
+            ->where('empresa_id',session('empresa'))
+            ->where('sede_id',session('sede'))
+            ->get();
+        $kardex = new KardexController();
+        foreach($productos as $producto){
+            $b = $kardex->Regenerate($periodo,$producto->id);
+        }
+        //---------------------------------------------------------------------------------
+        //-------------------Genera saldos------------------------------------------------
+        Saldo::where('periodo', $periodo )->delete();
+        $productos = Producto::select('id','stock','precompra')
+            ->where('empresa_id',session('empresa'))
+            ->where('sede_id',session('sede'))
+            ->get();
+        foreach($productos as $producto){
+            $entradas = Kardex::where('periodo', $periodo)->where('producto_id',$producto->id)->sum('cant_ent');
+            $salidas = Kardex::where('periodo', $periodo)->where('producto_id',$producto->id)->sum('cant_sal');
+            $salant = Saldo::where('periodo',$perant)->where('producto_id',$producto)->first();
+            if($salant) {
+                $inicial = $salant->saldo;
+            } else {
+                $salant = Saldo::where('periodo','000000')->where('producto_id',$producto->id)->first();
+                if ($salant) {
+                    if ($salant->saldo == null) {
+                        $inicial = 0;
+                    } else {
+                        $inicial = $salant->saldo;
+                    }
+                } else {
+                    $inicial = 0.00;
+                }
+            }
+            Saldo::insert([
+                'periodo' => $periodo,
+                'producto_id' => $producto->id,
+                'inicial' => $inicial,
+                'entradas' => $entradas,
+                'salidas' => $salidas,
+                'saldo' => $inicial + $entradas - $salidas,
+                'precio' => $producto->precompra
+                ]);
+        }
+        //---------------------------------------------------------------------------------
+        $sede = Sede::findOrFail(session('sede'));
+        $sede->update([
+            'periodo' => pSiguiente($periodo)
+        ]);
+        session(['periodo' => $sede->periodo]);
+        return redirect('/admin')->with('message', 'Periodo cerrado')->with('typealert', 'success');
     }
 }
