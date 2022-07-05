@@ -16,13 +16,24 @@
 					<div class="headercontent">
 						<h2 class="title"><i class="fas fa-industry"></i> Parte de Producción</h2>
                         <ul>
+                            @if ($parte->estado == 1)
                             <li>
                                 {!! Form::submit('Guardar', ['class'=>'btn btn-convertir mt-1']) !!}
                             </li>
+                            @endif
                             @can('admin.partes.generar')
+                            @if ($parte->estado == 1)
                             <li>
                                 <a class="btn btn-convertir mt-1" href="{{ route('admin.partes.generar',$parte) }}">Generar</a>
                             </li>
+                            <li>
+                                <a class="btn btn-convertir mt-1" href="{{ route('admin.partes.finalizar',$parte) }}">Finalizar</a>
+                            </li>
+                            @else
+                            <li>
+                                <a class="btn btn-convertir mt-1" href="{{ route('admin.partes.abrir',$parte) }}">Abrir</a>
+                            </li>
+                            @endif
                             @endcan
                         </ul>
                     </div>

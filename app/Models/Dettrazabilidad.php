@@ -41,4 +41,19 @@ class Dettrazabilidad extends Model
     {
         return $this->hasOne('App\Models\Detparte');
     }
+
+    public function detingcamara()
+    {
+        return $this->hasOne('App\Models\Detingcamara');
+    }
+
+    public function detsalcamara()
+    {
+        return $this->hasOne('App\Models\Detsalcamara');
+    }
+    
+    public function productoterminado()
+    {
+    	return $this->belongsTo('App\Models\Productoterminado');
+    }
 }

@@ -10,9 +10,11 @@ use Illuminate\Support\Facades\Validator;
 
 use App\Models\Cliente;
 use App\Models\Categoria;
+use App\Models\Country;
 use App\Models\Detcliente;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Empresa;
+use App\Models\User;
 
 class ClienteController extends Controller
 {
@@ -52,8 +54,9 @@ class ClienteController extends Controller
         $tipdoc = Categoria::where('modulo', 1)->orderBy('codigo')->pluck('nombre','codigo');
         $sexo = Categoria::where('modulo', 2)->pluck('nombre','codigo');
         $estciv = Categoria::where('modulo', 3)->pluck('nombre','codigo');
+        $countries = Country::orderBy('nombre')->pluck('nombre','id');
 
-        return view('admin.clientes.create', compact('tipdoc','sexo','estciv'));
+        return view('admin.clientes.create', compact('tipdoc','sexo','estciv','countries'));
     }
 
     public function store(Request $request)
@@ -86,8 +89,14 @@ class ClienteController extends Controller
     	if($validator->fails()){
             return back()->withErrors($validator)->with('message', 'Se ha producido un error')->with('typealert', 'danger')->withinput();
         }else{
-            Cliente::create($request->all());
-            return redirect()->route('admin.clientes.index')->with('store', 'Proveedor | Cliente Agregado');
+            $cliente = Cliente::create($request->all());
+            $cuenta = User::permission('admin.clientes.cuenta')->where('id',Auth::user()->id)->count();
+            if ($cuenta > 0) {
+                return redirect()->route('admin.clientes.edit', $cliente)->with('store', 'Proveedor | Cliente Agregado');
+            } else {
+                return redirect()->route('admin.clientes.index')->with('store', 'Proveedor | Cliente Agregado');
+            }
+
         }
     }
 
@@ -113,6 +122,7 @@ class ClienteController extends Controller
         $tipdoc = Categoria::where('modulo', 1)->orderBy('codigo')->pluck('nombre','codigo');
         $sexo = Categoria::where('modulo', 2)->pluck('nombre','codigo');
         $estciv = Categoria::where('modulo', 3)->pluck('nombre','codigo');
+        $countries = Country::orderBy('nombre')->pluck('nombre','id');
 
         $bancos = Banco::pluck('nombre', 'id');
         $tipos = [
@@ -121,7 +131,7 @@ class ClienteController extends Controller
             3 => 'MAESTRA',
         ];
 
-        return view('admin.clientes.edit', compact('cliente','tipdoc','sexo','estciv','bancos','tipos'));
+        return view('admin.clientes.edit', compact('cliente','tipdoc','sexo','estciv','bancos','tipos','countries'));
     }
     
     public function update(Request $request, Cliente $cliente)
@@ -169,6 +179,29 @@ class ClienteController extends Controller
     {
         //$prov = Paciente::select('id','numdoc','razsoc','telefono','email','tipo')->get();
         if($request->ajax()){
+            $confidencial = User::permission('admin.clientes.confidencial')->where('id',Auth::user()->id)->count();
+            if ($confidencial > 0) {
+                return datatables()
+                    // ->of(Cliente::select('id','numdoc','razsoc','celular','email'))
+                    ->of(Cliente::where('numdoc','!=','00000000')
+                    ->where('numdoc','!=','99999999')
+                    ->where('numdoc','!=','11111111')
+                    ->select('id','numdoc','razsoc','celular','email'))
+                    ->addColumn('btn','admin.clientes.action')
+                    ->rawColumns(['btn'])
+                    ->toJson();
+            } else {
+                return datatables()
+                    // ->of(Cliente::select('id','numdoc','razsoc','celular','email'))
+                    ->of(Cliente::where('numdoc','!=','00000000')
+                    ->where('numdoc','!=','99999999')
+                    ->where('numdoc','!=','11111111')
+                    ->where('confidencial',2)
+                    ->select('id','numdoc','razsoc','celular','email'))
+                    ->addColumn('btn','admin.clientes.action')
+                    ->rawColumns(['btn'])
+                    ->toJson();
+            }
             return datatables()
                 // ->of(Cliente::select('id','numdoc','razsoc','celular','email'))
                 ->of(Cliente::where('numdoc','!=','00000000')

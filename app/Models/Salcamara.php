@@ -6,22 +6,22 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Pproceso extends Model
+class Salcamara extends Model
 {
     use HasFactory;
     use SoftDeletes;
     protected $dates = ['deteted_at'];
-    protected $table = 'pprocesos';
+    protected $table = 'salcamaras';
     protected $hidden = ['created_at','updated_at'];
     protected $guarded = [];
 
-    public function trazabilidads()
+    public function detsalcamaras()
     {
-        return $this->hasMany('App\Models\Trazabilidad');
+        return $this->hasMany('App\Models\Detsalcamara');
     }
-    
-    public function productoterminado()
+
+    public function supervisor()
     {
-    	return $this->belongsTo('App\Models\Productoterminado');
+    	return $this->belongsTo('App\Models\Supervisor');
     }
 }

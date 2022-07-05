@@ -128,7 +128,7 @@ class OrdcomprasController extends Controller
         }else{
             $data = $request->except('numero');
             $ordcompra->update($data);
-            return redirect()->route('admin.ordcompras.index')->with('update', 'Orden de Compra Actualizada');
+            return redirect()->route('admin.ordcompras.edit',$ordcompra)->with('update', 'Orden de Compra Actualizada');
         }
     }
 

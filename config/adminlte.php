@@ -678,6 +678,15 @@ return [
                     'can'  => 'admin.contratas.index',
                 ],
                 [
+                    'text' => 'Paises',
+                    'icon'    => 'fas fa-globe-americas',
+                    'icon_color' => 'cyan',
+                    'route'  => 'admin.countries.index',
+                    'active' => ['admin/countries','admin/countries/*','admin/countries/create'
+                                ,'admin/countries/*/edit'],
+                    'can'  => 'admin.countries.index',
+                ],
+                [
                     'text' => 'Detracciones',
                     'icon'    => 'fas fa-receipt',
                     'icon_color' => 'cyan',

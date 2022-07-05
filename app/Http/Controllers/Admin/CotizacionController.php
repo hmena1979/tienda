@@ -10,6 +10,9 @@ use App\Models\Cotizacion;
 use App\Models\Detcotizacion;
 use App\Models\Categoria;
 use App\Models\Cliente;
+use App\Models\Detordcompra;
+use App\Models\Ordcompra;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class CotizacionController extends Controller
@@ -158,5 +161,34 @@ class CotizacionController extends Controller
         $suma = Detcotizacion::where('cotizacion_id',$idCotizacion)->sum('subtotal');
         Cotizacion::where('id',$idCotizacion)->update(['total' => $suma]);
         return 1;
+    }
+
+    public function genoc(Cotizacion $cotizacion)
+    {
+        $orden = Ordcompra::create([
+            'empresa_id' => $cotizacion->empresa_id,
+            'sede_id' => $cotizacion->sede_id,
+            'periodo' => session('periodo'),
+            'fecha' => date('Y-m-d'),
+            'cliente_id' => $cotizacion->cliente_id,
+            'moneda' => $cotizacion->moneda,
+            'total' => $cotizacion->total,
+            'observaciones' => $cotizacion->observaciones,
+            'contacto' => $cotizacion->contacto,
+            'creado' => Auth::user()->id,
+            'cotizacion' => $cotizacion->numero,
+        ]);
+        foreach ($cotizacion->detcotizacions as $det) {
+            Detordcompra::create([
+                'ordcompra_id' => $orden->id,
+                'producto_id' => $det->producto_id,
+                'cantidad' => $det->cantidad,
+                'precio' => $det->precio,
+                'subtotal' => $det->subtotal,
+                'glosa' => $det->glosa,
+            ]);
+        }
+        return redirect()->route('admin.ordcompras.edit',$orden)->with('store', 'Orden de Compra creada');
+
     }
 }

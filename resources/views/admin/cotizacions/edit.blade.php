@@ -21,7 +21,12 @@
 						<h2 class="title"><i class="fas fa-file-alt"></i> Cotizaciones</h2>
 						<ul>
                             <li>
-                                {!! Form::submit('Guardar', ['class'=>'btn btn-convertir mt-2', 'id'=>'guardar']) !!}
+                                {!! Form::submit('Guardar', ['class'=>'btn btn-convertir mt-1', 'id'=>'guardar']) !!}
+                            </li>
+                            <li>
+                                <a class="btn btn-convertir mt-1" href="{{ route('admin.cotizacions.genoc',$cotizacion) }}" datatoggle="tooltip" data-placement="top" title="Generar Orden de Compra">
+                                    Crear OC
+                                </a>
                             </li>
 						</ul>
 					</div>
@@ -156,6 +161,10 @@
                                 {!! Form::label('nomcomercial', 'Nombre comercial:') !!}
 								{!! Form::text('nomcomercial', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
 							</div>
+							<div class="col-md-6 form-group">
+                                {!! Form::label('contacto', 'Contacto:') !!}
+								{!! Form::text('contacto', null, ['class'=>'form-control','autocomplete'=>'off']) !!}
+							</div>
 						</div>
 						<div class="row">							
 							<div class="col-md-4 form-group">
@@ -207,15 +216,27 @@
                                 {!! Form::label('producto_id', 'Producto:') !!}
                                 {!! Form::select('producto_id',[],null,['class'=>'custom-select','placeholder'=>'']) !!}
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
+                                <div class="row">
+                                    <div class="col-md-6 form-group">
+                                        {!! Form::label('cantidad', 'Cantidad:') !!}
+                                        {!! Form::text('cantidad', null, ['class'=>'form-control decimal subtotal','id'=>'cantidad']) !!}
+                                    </div>
+                                    <div class="col-md-6 form-group">
+                                        {!! Form::label('pre_ini', 'Precio Inicial:') !!}
+                                        {!! Form::text('pre_ini', null, ['class'=>'form-control decimal subtotal','id'=>'pre_ini']) !!}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
                                 <div class="row">
                                     <div class="col-md-4 form-group">
-                                        {!! Form::label('cantidad', 'Cantidad:') !!}
-                                        {!! Form::text('cantidad', null, ['class'=>'form-control decimal','id'=>'cantidad']) !!}
+                                        {!! Form::label('igv', 'IGV:') !!}
+                                        {!! Form::select('igv',['1'=>'Incluído','2'=>'No Incluído'],null,['class'=>'custom-select subtotal','id'=>'igv']) !!}
                                     </div>
                                     <div class="col-md-4 form-group">
-                                        {!! Form::label('dprecio', 'Precio:') !!}
-                                        {!! Form::text('precio', null, ['class'=>'form-control decimal','id'=>'precio']) !!}
+                                        {!! Form::label('precio', 'Precio:') !!}
+                                        {!! Form::text('precio', null, ['class'=>'form-control decimal subtotal','id'=>'precio']) !!}
                                     </div>
                                     <div class="col-md-4 form-group">
                                         {!! Form::label('subtotal', 'SubTotal:') !!}
@@ -223,6 +244,9 @@
                                     </div>
                                 </div>
                             </div>
+
+                        </div>
+                        <div class="row">
                             <div class="col-md-4 form-group">
                                 {!! Form::label('glosa', 'Glosa:') !!}
                                 {!! Form::text('glosa', null, ['class'=>'form-control mayuscula']) !!}
@@ -304,8 +328,8 @@
             $('#ape_pat').prop('disabled', false);
             $('#ape_mat').prop('disabled', false);
             $('#nombres').prop('disabled', false);
-            $("#sexo_id").prop('disabled', false);
-            $("#estciv_id").prop('disabled', false);
+            // $("#sexo_id").prop('disabled', false);
+            // $("#estciv_id").prop('disabled', false);
             $.ajax({
                 url: "{{ route('admin.clientes.storeAjax') }}",
                 type: "POST",
@@ -329,15 +353,15 @@
                         $("#ape_mat").prop('disabled', true);
                         $("#nombres").prop('disabled', true);
                         $("#razsoc").prop('disabled', false);
-                        $("#sexo_id").prop('disabled', true);
-                        $("#estciv_id").prop('disabled', true);
+                        // $("#sexo_id").prop('disabled', true);
+                        // $("#estciv_id").prop('disabled', true);
                     } else {
                         $("#ape_pat").prop('disabled', false);
                         $("#ape_mat").prop('disabled', false);
                         $("#nombres").prop('disabled', false);
                         $("#razsoc").prop('disabled', true);
-                        $("#sexo_id").prop('disabled', false);
-                        $("#estciv_id").prop('disabled', false);
+                        // $("#sexo_id").prop('disabled', false);
+                        // $("#estciv_id").prop('disabled', false);
                     }
                     // console.log(error);
                     let html = 'Se encontraron los siguientes errores:';
@@ -468,15 +492,15 @@
                 $("#ape_mat").prop('disabled', true);
                 $("#nombres").prop('disabled', true);
                 $("#razsoc").prop('disabled', false);
-                $("#sexo_id").prop('disabled', true);
-                $("#estciv_id").prop('disabled', true);
+                // $("#sexo_id").prop('disabled', true);
+                // $("#estciv_id").prop('disabled', true);
             } else {
                 $("#ape_pat").prop('disabled', false);
                 $("#ape_mat").prop('disabled', false);
                 $("#nombres").prop('disabled', false);
                 $("#razsoc").prop('disabled', true);
-                $("#sexo_id").prop('disabled', false);
-                $("#estciv_id").prop('disabled', false);
+                // $("#sexo_id").prop('disabled', false);
+                // $("#estciv_id").prop('disabled', false);
             }
         });
 
@@ -485,16 +509,31 @@
         });
         // Fin Agregar Cliente
 
-        $('#cantidad').blur(function(){
-            var cantidad = NaNToCero($('#cantidad').val());
-            var precio = NaNToCero($('#precio').val());
-            $('#subtotal').val(Redondea(cantidad*precio,2))
-        });
+        // $('#cantidad').blur(function(){
+        //     var cantidad = NaNToCero($('#cantidad').val());
+        //     var precio = NaNToCero($('#precio').val());
+        //     $('#subtotal').val(Redondea(cantidad*precio,2))
+        // });
 
-        $('#precio').blur(function(){
-            var cantidad = NaNToCero($('#cantidad').val());
-            var precio = NaNToCero($('#precio').val());
-            $('#subtotal').val(Redondea(cantidad*precio,2))
+        // $('#precio').blur(function(){
+        //     var cantidad = NaNToCero($('#cantidad').val());
+        //     var precio = NaNToCero($('#precio').val());
+        //     $('#subtotal').val(Redondea(cantidad*precio,2))
+        // });
+
+        $('.subtotal').blur(function(){
+            const cantidad = NaNToCero($('#cantidad').val());
+            const pre_ini = NaNToCero($('#pre_ini').val());
+            const igv = NaNToCero($('#igv').val());
+            const porigv = {{ session('igv') }} / 100;
+            if (pre_ini > 0) {
+                if(igv == 1){
+                    $('#precio').val(Redondea(pre_ini / (1+porigv),2));
+                }else{
+                    $('#precio').val(pre_ini);
+                }
+                $('#subtotal').val(Redondea(cantidad * $('#precio').val(),2));
+            }
         });
 
         $('#add').click(function(){
@@ -507,6 +546,8 @@
                 success: function(respuesta){
                     $('#producto_id').val(null);
                     $('#cantidad').val(null);
+                    $('#pre_ini').val(null);
+                    $('#igv').val(1);
                     $('#precio').val(null);
                     $('#subtotal').val(null);
                     $('#glosa').val(null);
@@ -536,6 +577,8 @@
             $('#detalles').show();
             $('#producto_id').val(null);
             $('#cantidad').val(null);
+            $('#pre_ini').val(null);
+            $('#igv').val(1);
             $('#precio').val(null);
             $('#subtotal').val(null);
             $('#glosa').val(null);

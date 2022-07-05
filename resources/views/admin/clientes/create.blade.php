@@ -12,11 +12,19 @@
         <div class="alert alert-warning" role="alert" style="display:none" id = 'buscando'>
 			Buscando número de documento
 		</div>
+        {!! Form::open(['route'=>'admin.clientes.store']) !!}
 		<div class="row">
 			<div class="col-md-12">
 				<div class="panelprin shadow">
+                    <div class="headercontent">
+						<h2 class="title"><i class="fas fa-address-card"></i> Proveedor | Cliente</h2>
+						<ul>
+                            <li>
+                                {!! Form::submit('Guardar', ['class'=>'btn btn-convertir mt-1', 'id'=>'guardar']) !!}
+                            </li>
+						</ul>
+					</div>
 					<div class="inside">
-						{!! Form::open(['route'=>'admin.clientes.store']) !!}
 						<div class="row">
 							<div class="col-md-4 form-group">
                                 {!! Form::hidden('empresa_id', session('empresa')) !!}
@@ -55,7 +63,11 @@
                                 {!! Form::label('nomcomercial', 'Nombre comercial:') !!}
 								{!! Form::text('nomcomercial', null, ['class'=>'form-control','autocomplete'=>'off']) !!}
 							</div>
-							<div class="col-md-2 form-group">
+							<div class="col-md-6 form-group">
+                                {!! Form::label('contacto', 'Contacto:') !!}
+								{!! Form::text('contacto', null, ['class'=>'form-control','autocomplete'=>'off']) !!}
+							</div>
+							{{-- <div class="col-md-2 form-group">
                                 {!! Form::label('fecnac', 'Fecha nacimiento:') !!}
 								{!! Form::date('fecnac', null, ['class'=>'form-control','autocomplete'=>'off']) !!}
 							</div>
@@ -66,7 +78,7 @@
 							<div class="col-md-2 form-group">
                                 {!! Form::label('estciv_id', 'Estado Civil:') !!}
                                 {!! Form::select('estciv_id',$estciv,null,['class'=>'custom-select','placeholder'=>'', 'disabled']) !!}
-							</div>
+							</div> --}}
 						</div>
 						<div class="row">							
 							<div class="col-md-4 form-group">
@@ -86,13 +98,32 @@
 								{!! Form::text('telefono', null, ['class'=>'form-control','autocomplete'=>'off']) !!}
 							</div>
 						</div>
-						{!! Form::submit('Guardar', ['class'=>'btn btn-convertir', 'id'=>'guardar']) !!}
-						{!! Form::close() !!}
-					</div>				
+						{{-- {!! Form::submit('Guardar', ['class'=>'btn btn-convertir', 'id'=>'guardar']) !!} --}}
+					</div>
 				</div>
 			</div>
-
-		</div>		
+		</div>
+        @can('admin.clientes.confidencial')
+        <div class="row mtop16">
+			<div class="col-md-12">
+				<div class="panelprin shadow">
+					<div class="inside">
+                        <div class="row">
+                            <div class="col-md-2 form-group">
+                                {!! Form::label('confidencial', 'Confidencial:') !!}
+                                {!! Form::select('confidencial',[1=>'SI',2=>'NO'],null,['class'=>'custom-select']) !!}
+                            </div>
+                            <div class="col-md-2 form-group">
+                                {!! Form::label('country_id', 'Pais Destino:') !!}
+                                {!! Form::select('country_id',$countries,null,['class'=>'custom-select']) !!}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endcan
+        {!! Form::close() !!}
 	</div>
 @endsection
 {{-- @section('css')

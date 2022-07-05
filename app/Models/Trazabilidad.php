@@ -34,4 +34,9 @@ class Trazabilidad extends Model
     {
         return $this->hasOne('App\Models\Detpartecamara');
     }
+    
+    public function productoterminado()
+    {
+    	return $this->belongsTo('App\Models\Productoterminado');
+    }
 }

@@ -34,4 +34,9 @@ class Parte extends Model
     {
     	return $this->belongsTo('App\Models\Contrata');
     }
+
+    public function productoterminado()
+    {
+    	return $this->belongsTo('App\Models\Productoterminado');
+    }
 }

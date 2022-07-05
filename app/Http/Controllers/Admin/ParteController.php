@@ -19,6 +19,7 @@ use App\Models\Detrventa;
 use App\Models\Dettrazabilidad;
 use App\Models\Envasado;
 use App\Models\Ingcamara;
+use App\Models\Productoterminado;
 use App\Models\Residuo;
 use App\Models\Rventa;
 
@@ -435,5 +436,36 @@ class ParteController extends Controller
             'guias_residuos' => $guiaResiduo,
         ]);
         return redirect()->route('admin.partes.edit',$parte)->with('update', 'Parte de Producción Generado');
+    }
+
+    public function finalizar(Parte $parte)
+    {
+        foreach ($parte->detpartecamaras as $det) {
+            Productoterminado::create([
+                'empresa_id' => $parte->empresa_id,
+                'lote' => $parte->lote,
+                'parte_id' => $parte->id,
+                'pproceso_id' => $det->trazabilidad->pproceso_id,
+                'trazabilidad_id' => $det->trazabilidad_id,
+                'dettrazabilidad_id' => $det->dettrazabilidad_id,
+                'empaque' => $parte->empaque,
+                'vencimiento' => $parte->vencimiento,
+                'entradas' => $det->sacos,
+                'saldo' => $det->sacos,
+            ]);
+        }
+        $parte->update([
+            'estado' => 2,
+        ]);
+        return redirect()->route('admin.partes.edit',$parte)->with('update', 'Parte de Producción Finalizado');
+    }
+
+    public function abrir(Parte $parte)
+    {
+        Productoterminado::where('parte_id',$parte->id)->delete();
+        $parte->update([
+            'estado' => 1,
+        ]);
+        return redirect()->route('admin.partes.edit',$parte)->with('update', 'Parte de Producción Abierto');
     }
 }

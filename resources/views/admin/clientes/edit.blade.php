@@ -14,15 +14,15 @@
         <div class="alert alert-warning" role="alert" style="display:none" id = 'buscando'>
 			Buscando número de documento
 		</div>
+        {!! Form::model($cliente,['route'=>['admin.clientes.update',$cliente], 'method' => 'put']) !!}
 		<div class="row">
 			<div class="col-md-12">
 				<div class="panelprin shadow">
-                    {!! Form::model($cliente,['route'=>['admin.clientes.update',$cliente], 'method' => 'put']) !!}
                     <div class="headercontent">
 						<h2 class="title"><i class="fas fa-address-card"></i> Proveedor | Cliente: <strong>{{ $cliente->razsoc }}</h2>
 						<ul>
                             <li>
-                                {!! Form::submit('Guardar', ['class'=>'btn btn-convertir mt-2', 'id'=>'guardar']) !!}
+                                {!! Form::submit('Guardar', ['class'=>'btn btn-convertir mt-1', 'id'=>'guardar']) !!}
                             </li>
 						</ul>
 					</div>
@@ -65,7 +65,11 @@
                                 {!! Form::label('nomcomercial', 'Nombre comercial:') !!}
 								{!! Form::text('nomcomercial', null, ['class'=>'form-control','autocomplete'=>'off']) !!}
 							</div>
-							<div class="col-md-2 form-group">
+							<div class="col-md-6 form-group">
+                                {!! Form::label('contacto', 'Contacto:') !!}
+								{!! Form::text('contacto', null, ['class'=>'form-control','autocomplete'=>'off']) !!}
+							</div>
+							{{-- <div class="col-md-2 form-group">
                                 {!! Form::label('fecnac', 'Fecha nacimiento:') !!}
 								{!! Form::date('fecnac', null, ['class'=>'form-control','autocomplete'=>'off']) !!}
 							</div>
@@ -76,7 +80,7 @@
 							<div class="col-md-2 form-group">
                                 {!! Form::label('estciv_id', 'Estado Civil:') !!}
                                 {!! Form::select('estciv_id',$estciv,null,['class'=>'custom-select','placeholder'=>'']) !!}
-							</div>
+							</div> --}}
 						</div>
 						<div class="row">							
 							<div class="col-md-4 form-group">
@@ -96,11 +100,31 @@
 								{!! Form::text('telefono', null, ['class'=>'form-control','autocomplete'=>'off']) !!}
 							</div>
 						</div>
-					</div>				
-                    {!! Form::close() !!}
+					</div>
 				</div>
 			</div>
 		</div>
+        @can('admin.clientes.confidencial')
+        <div class="row mtop16">
+			<div class="col-md-12">
+				<div class="panelprin shadow">
+					<div class="inside">
+                        <div class="row">
+                            <div class="col-md-2 form-group">
+                                {!! Form::label('confidencial', 'Confidencial:') !!}
+                                {!! Form::select('confidencial',[1=>'SI',2=>'NO'],null,['class'=>'custom-select']) !!}
+                            </div>
+                            <div class="col-md-2 form-group">
+                                {!! Form::label('country_id', 'Pais Destino:') !!}
+                                {!! Form::select('country_id',$countries,null,['class'=>'custom-select']) !!}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endcan
+        {!! Form::close() !!}
         @can('admin.clientes.cuenta')
         <div class="row mtop16" id="addcuenta">
 			<div class="col-md-12">

@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\ClienteController;
 use App\Http\Controllers\Admin\ConsumoController;
 use App\Http\Controllers\Admin\ContrataController;
 use App\Http\Controllers\Admin\CotizacionController;
+use App\Http\Controllers\Admin\CountryController;
 use App\Http\Controllers\Admin\CuentaController;
 use App\Http\Controllers\Admin\DespieceController;
 use App\Http\Controllers\Admin\DestinoController;
@@ -260,6 +261,7 @@ Route::post('/cotizacions/change', [CotizacionController::class,'change'])->name
 Route::get('/cotizacions/{cotizacion}/tablaitem', [CotizacionController::class,'tablaitem'])->name('admin.cotizacions.tablaitem');
 Route::get('/cotizacions/{detcotizacion}/destroyitem', [CotizacionController::class,'destroyitem'])->name('admin.cotizacions.destroyitem');
 Route::post('/cotizacions/additem', [CotizacionController::class,'additem'])->name('admin.cotizacions.additem');
+Route::get('/cotizacions/{cotizacion}/genoc', [CotizacionController::class,'genoc'])->name('admin.cotizacions.genoc');
 Route::resource('cotizacions', CotizacionController::class)->names('admin.cotizacions');
 Route::get('/cotizacions/{periodo?}', [CotizacionController::class,'index'])->name('admin.cotizacions.index');
 
@@ -357,6 +359,8 @@ Route::get('/partes/{parte}/tablaitem', [ParteController::class,'tablaitem'])->n
 Route::get('/partes/{parte}/tablaitemcamara', [ParteController::class,'tablaitemcamara'])->name('admin.partes.tablaitemcamara');
 Route::get('/partes/{parte}/tablaitemconsumo', [ParteController::class,'tablaitemconsumo'])->name('admin.partes.tablaitemconsumo');
 Route::get('/partes/{parte}/generar', [ParteController::class,'generar'])->name('admin.partes.generar');
+Route::get('/partes/{parte}/finalizar', [ParteController::class,'finalizar'])->name('admin.partes.finalizar');
+Route::get('/partes/{parte}/abrir', [ParteController::class,'abrir'])->name('admin.partes.abrir');
 Route::resource('partes', ParteController::class)->names('admin.partes');
 Route::get('/partes/{periodo?}', [ParteController::class,'index'])->name('admin.partes.index');
 
@@ -376,6 +380,9 @@ Route::get('/ingcamaras/{periodo?}', [IngcamaraController::class,'index'])->name
 
 //Residuos Sólidos
 Route::resource('residuos', ResiduoController::class)->names('admin.residuos');
+
+//Ciudades
+Route::resource('countries', CountryController::class)->names('admin.countries');
 
 //Regenera Saldos de Productos
 Route::get('/saldos/gregenera', [SaldoController::class,'gregenera'])->name('admin.saldos.gregenera');

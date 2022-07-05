@@ -6,27 +6,27 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Supervisor extends Model
+class Detsalcamara extends Model
 {
     use HasFactory;
     use SoftDeletes;
     protected $dates = ['deteted_at'];
-    protected $table = 'supervisors';
+    protected $table = 'detsalcamaras';
     protected $hidden = ['created_at','updated_at'];
     protected $guarded = [];
 
-    public function envasado()
-    {
-        return $this->hasOne('App\Models\Envasado');
-    }
-
-    public function ingcamara()
-    {
-        return $this->hasOne('App\Models\Ingcamara');
-    }
-
     public function salcamara()
     {
-        return $this->hasOne('App\Models\Salcamara');
+        return $this->belongsTo('App\Models\Salcamara');
+    }
+
+    public function detdetsalcamaras()
+    {
+        return $this->hasMany('App\Models\Detdetsalcamara');
+    }
+
+    public function dettrazabilidad()
+    {
+    	return $this->belongsTo('App\Models\Dettrazabilidad');
     }
 }

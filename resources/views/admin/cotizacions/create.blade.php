@@ -118,6 +118,10 @@
                                 {!! Form::label('nomcomercial', 'Nombre comercial:') !!}
 								{!! Form::text('nomcomercial', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!}
 							</div>
+							<div class="col-md-6 form-group">
+                                {!! Form::label('contacto', 'Contacto:') !!}
+								{!! Form::text('contacto', null, ['class'=>'form-control','autocomplete'=>'off']) !!}
+							</div>
 						</div>
 						<div class="row">							
 							<div class="col-md-4 form-group">
@@ -204,8 +208,8 @@
             $('#ape_pat').prop('disabled', false);
             $('#ape_mat').prop('disabled', false);
             $('#nombres').prop('disabled', false);
-            $("#sexo_id").prop('disabled', false);
-            $("#estciv_id").prop('disabled', false);
+            // $("#sexo_id").prop('disabled', false);
+            // $("#estciv_id").prop('disabled', false);
             $.ajax({
                 url: "{{ route('admin.clientes.storeAjax') }}",
                 type: "POST",
@@ -229,15 +233,15 @@
                         $("#ape_mat").prop('disabled', true);
                         $("#nombres").prop('disabled', true);
                         $("#razsoc").prop('disabled', false);
-                        $("#sexo_id").prop('disabled', true);
-                        $("#estciv_id").prop('disabled', true);
+                        // $("#sexo_id").prop('disabled', true);
+                        // $("#estciv_id").prop('disabled', true);
                     } else {
                         $("#ape_pat").prop('disabled', false);
                         $("#ape_mat").prop('disabled', false);
                         $("#nombres").prop('disabled', false);
                         $("#razsoc").prop('disabled', true);
-                        $("#sexo_id").prop('disabled', false);
-                        $("#estciv_id").prop('disabled', false);
+                        // $("#sexo_id").prop('disabled', false);
+                        // $("#estciv_id").prop('disabled', false);
                     }
                     // console.log(error);
                     let html = 'Se encontraron los siguientes errores:';
@@ -368,15 +372,15 @@
                 $("#ape_mat").prop('disabled', true);
                 $("#nombres").prop('disabled', true);
                 $("#razsoc").prop('disabled', false);
-                $("#sexo_id").prop('disabled', true);
-                $("#estciv_id").prop('disabled', true);
+                // $("#sexo_id").prop('disabled', true);
+                // $("#estciv_id").prop('disabled', true);
             } else {
                 $("#ape_pat").prop('disabled', false);
                 $("#ape_mat").prop('disabled', false);
                 $("#nombres").prop('disabled', false);
                 $("#razsoc").prop('disabled', true);
-                $("#sexo_id").prop('disabled', false);
-                $("#estciv_id").prop('disabled', false);
+                // $("#sexo_id").prop('disabled', false);
+                // $("#estciv_id").prop('disabled', false);
             }
         });
 
