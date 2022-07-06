@@ -452,6 +452,15 @@ return [
                                 ,'admin/ingcamaras/*/edit'],
                 ],
                 [
+                    'text' => 'Guía de Salida a Cámaras',
+                    'icon'    => 'fas fa-clipboard-check',
+                    'icon_color' => 'cyan',
+                    'route'  => 'admin.salcamaras.index',
+                    'can'  => 'admin.salcamaras.index',
+                    'active' => ['admin/salcamaras','admin/salcamaras/*','admin/salcamaras/create'
+                                ,'admin/salcamaras/*/edit'],
+                ],
+                [
                     'text' => 'Residuos Sólidos',
                     'icon'    => 'far fa-trash-alt',
                     'icon_color' => 'cyan',

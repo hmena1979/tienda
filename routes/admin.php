@@ -47,6 +47,7 @@ use App\Http\Controllers\Admin\PprocesoController;
 use App\Http\Controllers\Admin\RcompraController;
 use App\Http\Controllers\Admin\ResiduoController;
 use App\Http\Controllers\Admin\RventaController;
+use App\Http\Controllers\Admin\SalcamaraController;
 use App\Http\Controllers\Admin\SaldoController;
 use App\Http\Controllers\Admin\SunatController;
 use App\Http\Controllers\Admin\SupervisorController;
@@ -384,6 +385,29 @@ Route::resource('residuos', ResiduoController::class)->names('admin.residuos');
 //Ciudades
 Route::resource('countries', CountryController::class)->names('admin.countries');
 
+//Planilla de Salida a Camaras
+Route::post('/salcamaras/change', [SalcamaraController::class,'change'])->name('admin.salcamaras.change');
+// Route::get('/salcamaras/{salcamara}/tablaitem', [SalcamaraController::class,'tablaitem'])->name('admin.salcamaras.tablaitem');
+// Route::post('/salcamaras/additem', [SalcamaraController::class,'additem'])->name('admin.salcamaras.additem');
+// Route::get('/salcamaras/{detsalcamara}/detsalcamara', [SalcamaraController::class,'detingcamara'])->name('admin.salcamaras.detsalcamara');
+// Route::get('/salcamaras/{detsalcamara}/destroyitem', [SalcamaraController::class,'destroyitem'])->name('admin.salcamaras.destroyitem');
+Route::post('/salcamaras/aedetsalcamara', [SalcamaraController::class,'aedetsalcamara'])->name('admin.salcamaras.aedetsalcamara');
+Route::get('/salcamaras/{detsalcamara}/tablaitem', [SalcamaraController::class,'tablaitem'])->name('admin.salcamaras.tablaitem');
+Route::get('/salcamaras/{detsalcamara}/listdetalle', [SalcamaraController::class,'listdetalle'])->name('admin.salcamaras.listdetalle');
+Route::post('/salcamaras/addeditdet', [SalcamaraController::class,'addeditdet'])->name('admin.salcamaras.addeditdet');
+Route::get('/salcamaras/{detdetsalcamara}/detdetsalcamara', [SalcamaraController::class,'detdetsalcamara'])->name('admin.salcamaras.detdetsalcamara');
+Route::get('/salcamaras/{detsalcamara}/detsalcamara', [SalcamaraController::class,'detsalcamara'])->name('admin.salcamaras.detsalcamara');
+Route::get('/salcamaras/{detsalcamara}/destroydetsalcamara', [SalcamaraController::class,'destroydetsalcamara'])->name('admin.salcamaras.destroydetsalcamara');
+Route::get('/salcamaras/{detdetsalcamara}/destroyitem', [SalcamaraController::class,'destroyitem'])->name('admin.salcamaras.destroyitem');
+Route::get('/salcamaras/{productoterminado}/productoterminado', [SalcamaraController::class,'productoterminado'])->name('admin.salcamaras.productoterminado');
+Route::get('/salcamaras/{salcamara}/aprobar', [SalcamaraController::class,'aprobar'])->name('admin.salcamaras.aprobar');
+Route::get('/salcamaras/{salcamara}/abrir', [SalcamaraController::class,'abrir'])->name('admin.salcamaras.abrir');
+// Route::get('/salcamaras/{envio}/aedet', [SalcamaraController::class, 'aedet'])->name('admin.salcamaras.aedet');
+// Route::get('/salcamaras/{detsalcamara}/detsalcamara', [SalcamaraController::class,'trazabilidad'])->name('admin.salcamaras.trazabilidad');
+Route::resource('salcamaras', SalcamaraController::class)->names('admin.salcamaras');
+Route::get('/salcamaras/{periodo?}', [SalcamaraController::class,'index'])->name('admin.salcamaras.index');
+Route::get('/salcamaras/edit/{salcamara}/{detsalcamara?}', [SalcamaraController::class,'edit'])->name('admin.salcamaras.edit');
+
 //Regenera Saldos de Productos
 Route::get('/saldos/gregenera', [SaldoController::class,'gregenera'])->name('admin.saldos.gregenera');
 Route::post('/saldos/pregenera', [SaldoController::class,'pregenera'])->name('admin.saldos.pregenera');
@@ -426,6 +450,7 @@ Route::get('/pdf/{ordcompra}/ordcompra', [PDFController::class,'ordcompra'])->na
 Route::get('/pdf/{tipo}/{tipoproducto_id}/productos', [PDFController::class,'productos'])->name('admin.pdf.productos');
 Route::get('/pdf/{envasado}/envasado', [PDFController::class,'envasado'])->name('admin.pdf.envasado');
 Route::get('/pdf/{ingcamara}/ingcamara', [PDFController::class,'ingcamara'])->name('admin.pdf.ingcamara');
+Route::get('/pdf/{salcamara}/salcamara', [PDFController::class,'salcamara'])->name('admin.pdf.salcamara');
 Route::get('/pdf/{residuo}/residuo', [PDFController::class,'residuo'])->name('admin.pdf.residuo');
 
 //EXCEL

@@ -24,4 +24,9 @@ class Salcamara extends Model
     {
     	return $this->belongsTo('App\Models\Supervisor');
     }
+
+    public function transportista()
+    {
+    	return $this->belongsTo('App\Models\Transportista');
+    }
 }

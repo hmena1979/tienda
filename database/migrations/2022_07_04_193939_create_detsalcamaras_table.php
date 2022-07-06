@@ -17,7 +17,7 @@ class CreateDetsalcamarasTable extends Migration
             $table->id();
             $table->unsignedBigInteger('salcamara_id');
             $table->unsignedBigInteger('dettrazabilidad_id');
-            $table->string('lotes',50)->nullable();
+            $table->string('lotes')->nullable();
             $table->decimal('cantidad')->nullable();
             $table->decimal('peso')->nullable();
             $table->decimal('total')->nullable();

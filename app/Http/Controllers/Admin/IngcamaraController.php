@@ -3,16 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreDetingcamaraRequest;
-use App\Models\Detingcamara;
-use App\Models\Ingcamara;
-use App\Models\Lote;
-use App\Models\Supervisor;
-use App\Models\Trazabilidad;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
+
+use App\Models\Ingcamara;
+use App\Http\Requests\StoreDetingcamaraRequest;
+use App\Models\Detingcamara;
+use App\Models\Lote;
+use App\Models\Supervisor;
+use App\Models\Trazabilidad;
 
 class IngcamaraController extends Controller
 {

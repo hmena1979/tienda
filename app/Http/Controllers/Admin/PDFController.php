@@ -24,6 +24,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Rventa;
 use App\Models\Rcompra;
 use App\Models\Residuo;
+use App\Models\Salcamara;
 use App\Models\Sede;
 use App\Models\Tesoreria;
 use App\Models\TipoComprobante;
@@ -340,6 +341,24 @@ class PDFController extends Controller
         return $pdf->stream(
             'GUIA DE INGRESO A CAMARAS'
             .str_pad($ingcamara->numero, 6, '0', STR_PAD_LEFT)
+            .'.pdf', array('Attachment'=>false));
+    }
+
+    public function salcamara(Salcamara $salcamara)
+    {
+        $empresa = Empresa::findOrFail(session('empresa'));
+        $sede = Sede::findOrFail(session('sede'));
+        $users = User::orderBy('name')->pluck('name','id');
+        $data = [
+            'salcamara' => $salcamara,
+            'empresa' => $empresa,
+            'sede' => $sede,
+            'users' => $users,
+        ];
+        $pdf = PDF::loadView('pdf.salcamara', $data)->setPaper('A4', 'portrait');
+        return $pdf->stream(
+            'GUIA DE SALIDA A CAMARAS'
+            .str_pad($salcamara->numero, 6, '0', STR_PAD_LEFT)
             .'.pdf', array('Attachment'=>false));
     }
 

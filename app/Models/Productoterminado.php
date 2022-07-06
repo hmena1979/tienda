@@ -12,6 +12,14 @@ class Productoterminado extends Model
     protected $table = 'productoterminados';
     protected $hidden = ['created_at','updated_at'];
     protected $guarded = [];
+    protected $appends = ['lote_saldo'];
+
+    public function getLoteSaldoAttribute()
+    {
+
+        return $this->lote. ' | '. $this->vencimiento. ' | '. $this->saldo;
+    }
+
 
     public function detdetsalcamara()
     {

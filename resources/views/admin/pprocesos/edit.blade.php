@@ -42,13 +42,13 @@
                 {{-- <a class='btn btn-convertir btn-block' href="#"><b><i class="fas fa-plus"></i> Trazabilidad</b></a> --}}
                 <button id="btnaddtrazabilidad" class="btn btn-convertir btn-block"><i class="fas fa-plus"></i> Trazabilidad</button>
                 {{-- @if ($trazabilidad) --}}
-                    @foreach ($pproceso->trazabilidads as $det)
-                    @if ($det->id == $trazabilidad->id)
-                    <a class='btn btn-primary btn-block' href="{{ route('admin.pprocesos.edit',[$pproceso->id, $det->id]) }}">{{ $det->nombre }}</a>
-                    @else
-                    <a class='btn btn-outline-primary btn-block' href="{{ route('admin.pprocesos.edit',[$pproceso->id, $det->id]) }}">{{ $det->nombre }}</a>    
-                    @endif
-                    @endforeach
+                @foreach ($pproceso->trazabilidads as $det)
+                @if ($det->id == $trazabilidad->id)
+                <a class='btn btn-primary btn-block' href="{{ route('admin.pprocesos.edit',[$pproceso->id, $det->id]) }}">{{ $det->nombre }}</a>
+                @else
+                <a class='btn btn-outline-primary btn-block' href="{{ route('admin.pprocesos.edit',[$pproceso->id, $det->id]) }}">{{ $det->nombre }}</a>    
+                @endif
+                @endforeach
                 {{-- @endif --}}
             </div>
             <div class="col-md-10">
@@ -201,7 +201,7 @@
                 url: "{{ route('admin.pprocesos.addeditdet') }}",
                 type: "POST",
                 async: true,
-                data: $('#formdet').serialize(),                
+                data: $('#formdet').serialize(),
                 success: function(respuesta){
                     $('#aedet').hide();
                     $('#guardaDet').hide();

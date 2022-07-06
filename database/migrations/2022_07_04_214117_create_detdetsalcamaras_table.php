@@ -19,6 +19,7 @@ class CreateDetdetsalcamarasTable extends Migration
             $table->unsignedBigInteger('productoterminado_id');
             $table->string('lote',15)->nullable();
             $table->decimal('cantidad')->nullable();
+            $table->decimal('peso')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

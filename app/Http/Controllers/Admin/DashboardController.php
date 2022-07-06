@@ -186,7 +186,7 @@ class DashboardController extends Controller
 		// $this->agregar_permiso('2','PROVEEDOR|CLIENTE','admin.clientes.edit','Puede editar Proveedor|Cliente');
 		// $this->agregar_permiso('2','PROVEEDOR|CLIENTE','admin.clientes.destroy','Puede eliminar Proveedor|Cliente');
 		// $this->agregar_permiso('2','PROVEEDOR|CLIENTE','admin.clientes.cuenta','Puede agregar eliminar Cuentas');
-		$this->agregar_permiso('2','PROVEEDOR|CLIENTE','admin.clientes.confidencial','Puede Ver Clientes Confidenciales');
+		// $this->agregar_permiso('2','PROVEEDOR|CLIENTE','admin.clientes.confidencial','Puede Ver Clientes Confidenciales');
 		
 		// $this->agregar_permiso('5','CATEGORIAS','admin.categorias.index','Puede ver listado Categorías');
 		// $this->agregar_permiso('5','CATEGORIAS','admin.categorias.create','Puede agregar Categorías');
@@ -405,13 +405,18 @@ class DashboardController extends Controller
 		// $this->agregar_permiso('45','RESIDUOS SÓLIDOS','admin.residuos.edit','Puede editar Residuos Sólidos');
 		// $this->agregar_permiso('45','RESIDUOS SÓLIDOS','admin.residuos.destroy','Puede eliminar Residuos Sólidos');
 		// $this->agregar_permiso('45','RESIDUOS SÓLIDOS','admin.residuos.precio','Puede ver e ingresar precio');
-//----------------------------------------------------------------------------------------------------
-		$this->agregar_permiso('46','PAISES','admin.countries.index','Puede ver listado Paises');
-		$this->agregar_permiso('46','PAISES','admin.countries.create','Puede agregar Paises');
-		$this->agregar_permiso('46','PAISES','admin.countries.edit','Puede editar Paises');
-		$this->agregar_permiso('46','PAISES','admin.countries.destroy','Puede eliminar Paises');
-		//Proveedor permiso
 
+		// $this->agregar_permiso('46','PAISES','admin.countries.index','Puede ver listado Paises');
+		// $this->agregar_permiso('46','PAISES','admin.countries.create','Puede agregar Paises');
+		// $this->agregar_permiso('46','PAISES','admin.countries.edit','Puede editar Paises');
+		// $this->agregar_permiso('46','PAISES','admin.countries.destroy','Puede eliminar Paises');
+		//----------------------------------------------------------------------------------------------------
+		$this->agregar_permiso('47','GUÍA SALIDA A CÁMARAS','admin.salcamaras.index','Puede ver listado Salida a Cámaras');
+		$this->agregar_permiso('47','GUÍA SALIDA A CÁMARAS','admin.salcamaras.create','Puede agregar Salida a Cámaras');
+		$this->agregar_permiso('47','GUÍA SALIDA A CÁMARAS','admin.salcamaras.edit','Puede editar Salida a Cámaras');
+		$this->agregar_permiso('47','GUÍA SALIDA A CÁMARAS','admin.salcamaras.destroy','Puede eliminar Salida a Cámaras');
+		$this->agregar_permiso('47','GUÍA SALIDA A CÁMARAS','admin.salcamaras.aprobar','Puede aprobar Salida a Cámaras');
+		
 
 		// return redirect()->route('admin.inicio')->with('update', 'Permisos Agregados');
 		// return redirect()->route('admin.inicio')->with('update', 'Registro Actualizado');		

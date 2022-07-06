@@ -15,11 +15,13 @@ class CreateSalcamarasTable extends Migration
     {
         Schema::create('salcamaras', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('empresa_id')->default(1);
+            $table->string('periodo',6);
             $table->string('numero',6);
             $table->date('fecha');//Fecha de Movimiento
-            $table->string('lotes',50)->nullable();
+            $table->text('lotes')->nullable();
             $table->string('contenedor',15)->nullable();
-            $table->string('precinto',15)->nullable();
+            $table->string('precinto',30)->nullable();
             $table->unsignedTinyInteger('motivo')->default(1);//(1)Exportación (2)Muestreo
             $table->unsignedBigInteger('transportista_id')->nullable();
             $table->string('placas',50)->nullable();

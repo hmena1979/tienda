@@ -24,4 +24,9 @@ class Detdetsalcamara extends Model
     {
         return $this->belongsTo('App\Models\Productoterminado');
     }
+
+    public function dettrazabilidad()
+    {
+        return $this->belongsTo('App\Models\Dettrazabilidad');
+    }
 }

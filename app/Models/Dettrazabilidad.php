@@ -19,7 +19,7 @@ class Dettrazabilidad extends Model
     public function getMpdCodigoAttribute()
     {
 
-        return $this->mpd->nombre. ' '.$this->codigo;
+        return $this->mpd->nombre. ' '. $this->codigo;
     }
 
     public function trazabilidad()

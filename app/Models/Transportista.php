@@ -29,4 +29,9 @@ class Transportista extends Model
     {
         return $this->hasOne('App\Models\Materiaprima');
     }
+
+    public function salcamara()
+    {
+        return $this->hasOne('App\Models\Salcamara');
+    }
 }
