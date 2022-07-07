@@ -68,7 +68,7 @@ class ConsumoController extends Controller
             ->where('sede_id',session('sede'))
             ->get();
 
-            return view('admin.consumos.index', compact('rventas','periodo','impuesto'));
+            return view('admin.consumos.index', compact('rventas','periodo'));
     }
 
     public function create()

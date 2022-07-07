@@ -18,6 +18,7 @@
 						<ul>
 							<li>
                                 <div class="cita mt-2">
+									{!! Form::open(['route'=>'admin.pedidos.change']) !!}
                                     <div class="input-group tamvar">
                                         {!! Form::select('mes',getMeses(),substr($periodo,0,2),['class'=>'custom-select']) !!}
                                         {!! Form::text('año', substr($periodo,2,4), ['class'=>'form-control','maxlength'=>'4','autocomplete'=>'off']) !!}
@@ -25,6 +26,7 @@
                                             {!! Form::submit('Mostar', ['class'=>'btn btn-convertir']) !!}
                                         </div>
                                     </div>
+									{!! Form::close() !!}
                                 </div>
                             </li>
 							@can('admin.pedidos.create')
@@ -70,6 +72,9 @@
 												</button>
 											</form>
                                             @endcan
+											<a class="" href="{{ route('admin.pdf.pedido',$pedido) }}" target="_blank" datatoggle="tooltip" data-placement="top" title="Imprimir">
+												<i class="fas fa-print"></i>
+											</a>
 										</div>
 									</td>
 								</tr>

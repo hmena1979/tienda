@@ -262,6 +262,7 @@ Route::post('/cotizacions/change', [CotizacionController::class,'change'])->name
 Route::get('/cotizacions/{cotizacion}/tablaitem', [CotizacionController::class,'tablaitem'])->name('admin.cotizacions.tablaitem');
 Route::get('/cotizacions/{detcotizacion}/destroyitem', [CotizacionController::class,'destroyitem'])->name('admin.cotizacions.destroyitem');
 Route::post('/cotizacions/additem', [CotizacionController::class,'additem'])->name('admin.cotizacions.additem');
+Route::get('/cotizacions/{detcotizacion}/edititem', [CotizacionController::class,'edititem'])->name('admin.cotizacions.edititem');
 Route::get('/cotizacions/{cotizacion}/genoc', [CotizacionController::class,'genoc'])->name('admin.cotizacions.genoc');
 Route::resource('cotizacions', CotizacionController::class)->names('admin.cotizacions');
 Route::get('/cotizacions/{periodo?}', [CotizacionController::class,'index'])->name('admin.cotizacions.index');
@@ -289,8 +290,10 @@ Route::get('/ordcompras/{producto_id}/compras', [OrdcomprasController::class,'co
 Route::get('/ordcompras/{producto_id}/cotizaciones', [OrdcomprasController::class,'cotizaciones'])->name('admin.ordcompras.cotizaciones');
 Route::get('/ordcompras/{ordcompra}/tablaitem', [OrdcomprasController::class,'tablaitem'])->name('admin.ordcompras.tablaitem');
 Route::get('/ordcompras/{detordcompra}/destroyitem', [OrdcomprasController::class,'destroyitem'])->name('admin.ordcompras.destroyitem');
+Route::get('/ordcompras/{detordcompra}/edititem', [OrdcomprasController::class,'edititem'])->name('admin.ordcompras.edititem');
 Route::get('/ordcompras/{ordcompra}/finalizar', [OrdcomprasController::class,'finalizar'])->name('admin.ordcompras.finalizar');
 Route::get('/ordcompras/{ordcompra}/autorizar', [OrdcomprasController::class,'autorizar'])->name('admin.ordcompras.autorizar');
+Route::get('/ordcompras/{ordcompra}/abrir', [OrdcomprasController::class,'abrir'])->name('admin.ordcompras.abrir');
 Route::post('/ordcompras/additem', [OrdcomprasController::class,'additem'])->name('admin.ordcompras.additem');
 Route::resource('ordcompras', OrdcomprasController::class)->names('admin.ordcompras');
 Route::get('/ordcompras/{periodo?}', [OrdcomprasController::class,'index'])->name('admin.ordcompras.index');
@@ -452,6 +455,7 @@ Route::get('/pdf/{envasado}/envasado', [PDFController::class,'envasado'])->name(
 Route::get('/pdf/{ingcamara}/ingcamara', [PDFController::class,'ingcamara'])->name('admin.pdf.ingcamara');
 Route::get('/pdf/{salcamara}/salcamara', [PDFController::class,'salcamara'])->name('admin.pdf.salcamara');
 Route::get('/pdf/{residuo}/residuo', [PDFController::class,'residuo'])->name('admin.pdf.residuo');
+Route::get('/pdf/{pedido}/pedido', [PDFController::class,'pedido'])->name('admin.pdf.pedido');
 
 //EXCEL
 Route::get('/excel/{desde}/{hasta}/materiaprima', [ExcelController::class,'materiaprima'])->name('admin.excel.materiaprima');

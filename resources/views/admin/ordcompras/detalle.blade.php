@@ -24,10 +24,10 @@
             <td class="text-right">{{ number_format($det->subtotal,2) }}</td>
             <td>
                 <div class="opts">
-                    {{-- <button type="button" class="btn" title="Editar" onclick="edititem('{{ $det->id }}');">
-                        <i class="fas fa-edit"></i>
-                    </button> --}}
                     @if ($ordcompra->estado == 1)
+                    <button type="button" class="btn" title="Editar" onclick="edititem('{{ $det->id }}');">
+                        <i class="fas fa-edit"></i>
+                    </button>
                     <button type="button" class="btn" title="Eliminar" onclick="destroyitem('{{ $det->id }}');">
                         <i class="fas fa-trash-alt"></i>
                     </button>                        
@@ -38,7 +38,7 @@
         @endforeach
         <tr>
             <td class="text-right negrita" colspan="4">SUBTOTAL</td>
-            <td class="text-right">{{ number_format($total,2) }}</td>
+            <td class="text-right">{{ number_format($total+$ordcompra->ajuste,2) }}</td>
             <td></td>
         </tr>
         <tr>
@@ -48,13 +48,14 @@
         </tr>
         <tr>
             <td class="text-right negrita" colspan="4">TOTAL</td>
-            <td class="text-right">{{ number_format($total+($total*(session('igv')/100)),2) }}</td>
+            <td class="text-right">{{ number_format($total+($total*(session('igv')/100))+$ordcompra->ajuste,2) }}</td>
             <td></td>
         </tr>
         </tbody>
 </table>
 <script>
     $('#additem').click(function(){
+        $('#tipo').val(1);
         $('#detalles').hide();
         $('#aeitem').show();
         $('#producto_id').select2({

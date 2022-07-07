@@ -33,6 +33,13 @@
                                 <button type="button" id='autorizar' class="btn btn-convertir mt-1">Autorizar</button>
                             </li>
                             @endif
+                            @if ($ordcompra->estado <> 1)
+                            <li>
+                                <a class="btn btn-convertir mt-1" href="{{ route('admin.ordcompras.abrir',$ordcompra) }}">
+                                    Abrir
+                                </a>
+                            </li>
+                            @endif
                             <li>
                                 <a class="btn btn-convertir mt-1" href="{{ route('admin.pdf.ordcompra',$ordcompra) }}" target="_blank" datatoggle="tooltip" data-placement="top" title="Imprimir">
                                     <i class="fas fa-print"></i>
@@ -116,6 +123,10 @@
                             <div class="col-md-3 form-group">
                                 {!! Form::label('autorizado', 'Autorizado Por:') !!}
 								{!! Form::select('autorizado',$users,null,['class'=>'custom-select activo', 'placeholder'=>'Autorizado por','disabled']) !!}
+							</div>
+                            <div class="col-md-1 form-group">
+                                {!! Form::label('ajuste', 'Ajuste:') !!}
+                                {!! Form::text('ajuste', null, ['class'=>'form-control decimal','autocomplete'=>'off']) !!}
 							</div>
                         </div>
 					</div>				
@@ -227,6 +238,8 @@
                         <div class="row">
                             <div class="col-md-4 form-group">
                                 {!! Form::hidden('ordcompra_id', $ordcompra->id, ['id'=>'ordcompra_id']) !!}
+                                {!! Form::hidden('iddet', null, ['id'=>'iddet']) !!}
+                                {!! Form::hidden('tipo', 1, ['id'=>'tipo']) !!}
                                 {!! Form::label('producto_id', 'Producto:') !!}
                                 {!! Form::select('producto_id',[],null,['class'=>'custom-select','placeholder'=>'']) !!}
                             </div>
@@ -618,11 +631,11 @@
             const porigv = {{ session('igv') }} / 100;
             if (pre_ini > 0) {
                 if(igv == 1){
-                    $('#precio').val(Redondea(pre_ini / (1+porigv),2));
+                    $('#precio').val(Redondea(pre_ini / (1+porigv),6));
                 }else{
                     $('#precio').val(pre_ini);
                 }
-                $('#subtotal').val(Redondea(cantidad * $('#precio').val(),2));
+                $('#subtotal').val(Redondea(cantidad * $('#precio').val(),6));
             }
         });
 
@@ -708,6 +721,45 @@
             }
             })
 	}
+
+    function edititem(id) {
+        $.get(url_global+"/admin/ordcompras/"+id+"/edititem/",function(response){
+            $('#detalles').hide();
+            $('#aeitem').show();
+            $('#ordcompra_id').val(response.ordcompra_id);
+            $('#iddet').val(response.id);
+            $('#tipo').val(2);
+            $('#producto_id').select2({
+                placeholder:"Ingrese 4 dígitos del Nombre del Producto",
+                minimumInputLength: 4,
+                ajax:{
+                    url: "{{ route('admin.productos.seleccionadot') }}",
+                    dataType:'json',
+                    delay:250,
+                    processResults:function(response){
+                        return{
+                            results: response
+                        };
+                    },
+                    cache: true,
+                }
+            });
+            var data = {
+                id: response.producto_id,
+                text: response.producto.nombre
+            };
+            var newOption = new Option(data.text, data.id, false, false);
+            $('#producto_id').append(newOption).trigger('change');
+            $('#producto_id').val(response.producto_id);
+
+            $('#cantidad').val(response.cantidad);
+            $('#pre_ini').val(response.pre_ini);
+            $('#igv').val(response.igv);
+            $('#precio').val(response.precio);
+            $('#subtotal').val(response.subtotal);
+            $('#glosa').val(response.glosa);
+        })
+    }
 
 </script>
 @endsection

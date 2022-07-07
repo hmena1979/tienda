@@ -125,7 +125,7 @@ class CotizacionController extends Controller
                 'file' => $file,
             ]);
             $cotizacion->update($data);
-            return redirect()->route('admin.cotizacions.index')->with('update', 'Cotización Actualizada');
+            return redirect()->route('admin.cotizacions.edit',$cotizacion)->with('update', 'Cotización Actualizada');
         }
     }
 
@@ -148,10 +148,23 @@ class CotizacionController extends Controller
     public function additem(StoreDetcotizacionRequest $request)
     {
         if ($request->ajax()) {
-            Detcotizacion::create($request->all());
+            if ($request->input('tipo') == 1) {
+                Detcotizacion::create($request->except('tipo','iddet'));
+            } else {
+                $detcotizacion = Detcotizacion::findOrFail($request->input('iddet'));
+                $detcotizacion->update($request->except('tipo','iddet'));
+            }
             $suma = Detcotizacion::where('cotizacion_id',$request->input('cotizacion_id'))->sum('subtotal');
             Cotizacion::where('id',$request->input('cotizacion_id'))->update(['total' => $suma]);
             return true;
+        }
+    }
+
+    public function edititem(Request $request, $detcotizacion)
+    {
+        if ($request->ajax()) {
+            $detcotizacion = Detcotizacion::with('producto')->where('id', $detcotizacion)->first();
+            return response()->json($detcotizacion);
         }
     }
 
@@ -177,6 +190,7 @@ class CotizacionController extends Controller
             'contacto' => $cotizacion->contacto,
             'creado' => Auth::user()->id,
             'cotizacion' => $cotizacion->numero,
+            'ajuste' => $cotizacion->ajuste,
         ]);
         foreach ($cotizacion->detcotizacions as $det) {
             Detordcompra::create([

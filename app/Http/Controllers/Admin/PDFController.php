@@ -15,6 +15,7 @@ use App\Models\Lote;
 use App\Models\Masivo;
 use App\Models\Materiaprima;
 use App\Models\Ordcompra;
+use App\Models\Pedido;
 use App\Models\Producto;
 use Illuminate\Http\Request;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -381,4 +382,27 @@ class PDFController extends Controller
         
           // return view('pdf.materiaprima', $data);
     }
+
+    public function pedido(Pedido $pedido)
+    {
+        $empresa = Empresa::findOrFail(session('empresa'));
+        $sede = Sede::findOrFail(session('sede'));
+        $estados = [
+            1 => 'PENDIENTE',
+            2 => 'SOLICITADO',
+            3 => 'RECEPCIONADO',
+            4 => 'ATENDIDO',
+            5 => 'RECHAZADO',
+            6 => 'FINALIZADO',
+        ];
+        $data = [
+            'pedido' => $pedido,
+            'empresa' => $empresa,
+            'sede' => $sede,
+            'estados' => $estados,
+        ];
+        $pdf = PDF::loadView('pdf.pedido', $data)->setPaper('A4', 'portrait');
+        return $pdf->stream($pedido->id.'.pdf', array('Attachment'=>false));
+    }
+
 }

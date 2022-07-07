@@ -24,26 +24,31 @@
 						<h2 class="title"><i class="fas fa-file-archive"></i> Pedidos</h2>
 						<ul>
                             <li>
-                                {!! Form::submit('Guardar', ['class'=>'btn btn-convertir mt-2', 'id'=>'guardar']) !!}
+                                {!! Form::submit('Guardar', ['class'=>'btn btn-convertir mt-1', 'id'=>'guardar']) !!}
                             </li>
                             @if ($pedido->estado == 1)
                             <li>
-                                <button type="button" id='enviar' class="btn btn-convertir mt-2">Realizar Pedido</button>
+                                <button type="button" id='enviar' class="btn btn-convertir mt-1">Realizar Pedido</button>
                             </li>
                             @endif
                             @if ($pedido->estado == 2 && $procesa)
                             <li>
-                                <button type="button" id='recepcionado' class="btn btn-convertir mt-2">Recepcionado</button>
+                                <button type="button" id='recepcionado' class="btn btn-convertir mt-1">Recepcionado</button>
                             </li>
                             @endif
                             @if ($pedido->estado == 3 && $procesa)
                             <li>
-                                <button type="button" id='atender' class="btn btn-convertir mt-2">Atender</button>
+                                <button type="button" id='atender' class="btn btn-convertir mt-1">Atender</button>
                             </li>
                             <li>
-                                <button type="button" id='rechazar' class="btn btn-rechazar mt-2">Rechazar</button>
+                                <button type="button" id='rechazar' class="btn btn-rechazar mt-1">Rechazar</button>
                             </li>
                             @endif
+                            <li>
+                                <a class="btn btn-convertir mt-1" href="{{ route('admin.pdf.pedido',$pedido) }}" target="_blank" datatoggle="tooltip" data-placement="top" title="Imprimir">
+                                    <i class="fas fa-print"></i>
+                                </a>
+                            </li>
 						</ul>
 					</div>
                     {{-- {{ dd($comprobante) }} --}}

@@ -132,7 +132,7 @@
                         <table class="totales">
                             <tr>
                                 <td class="negrita">SUBTOTAL @if($ordcompra->moneda=='PEN') S/ @else US$ @endif</td>
-                                <td class="text-right">{{ number_format($ordcompra->total,2) }}</td>
+                                <td class="text-right">{{ number_format($ordcompra->total+$ordcompra->ajuste,2) }}</td>
                             </tr>
                             <tr>
                                 <td class="negrita">IGV ({{ intval(session('igv')) }}%) @if($ordcompra->moneda=='PEN') S/ @else US$ @endif</td>
@@ -140,7 +140,7 @@
                             </tr>
                             <tr>
                                 <td class="negrita">TOTAL @if($ordcompra->moneda=='PEN') S/ @else US$ @endif</td>
-                                <td class="text-right">{{ number_format($ordcompra->total+($ordcompra->total*(session('igv')/100)),2) }}</td>
+                                <td class="text-right">{{ number_format($ordcompra->total+($ordcompra->total*(session('igv')/100))+$ordcompra->ajuste,2) }}</td>
                             </tr>
                         </table>
                     </td>

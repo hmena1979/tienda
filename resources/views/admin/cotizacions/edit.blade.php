@@ -99,10 +99,14 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-12 form-group">
+                            <div class="col-md-11 form-group">
                                 {!! Form::label('observaciones', 'Observaciones:') !!}
-                                {!! Form::textarea('observaciones',null,['class'=>'form-control mayuscula', 'rows'=>'3', 'id'=>'editor']) !!}
+                                {!! Form::textarea('observaciones',null,['class'=>'form-control mayuscula', 'rows'=>'1', 'id'=>'editor']) !!}
                             </div>
+                            <div class="col-md-1 form-group">
+                                {!! Form::label('ajuste', 'Ajuste:') !!}
+                                {!! Form::text('ajuste', null, ['class'=>'form-control decimal','autocomplete'=>'off']) !!}
+							</div>
                         </div>
 					</div>				
 				</div>
@@ -213,6 +217,8 @@
                         <div class="row">
                             <div class="col-md-4 form-group">
                                 {!! Form::hidden('cotizacion_id', $cotizacion->id, ['id'=>'cotizacion_id']) !!}
+                                {!! Form::hidden('iddet', null, ['id'=>'iddet']) !!}
+                                {!! Form::hidden('tipo', 1, ['id'=>'tipo']) !!}
                                 {!! Form::label('producto_id', 'Producto:') !!}
                                 {!! Form::select('producto_id',[],null,['class'=>'custom-select','placeholder'=>'']) !!}
                             </div>
@@ -528,11 +534,11 @@
             const porigv = {{ session('igv') }} / 100;
             if (pre_ini > 0) {
                 if(igv == 1){
-                    $('#precio').val(Redondea(pre_ini / (1+porigv),2));
+                    $('#precio').val(Redondea(pre_ini / (1+porigv),6));
                 }else{
                     $('#precio').val(pre_ini);
                 }
-                $('#subtotal').val(Redondea(cantidad * $('#precio').val(),2));
+                $('#subtotal').val(Redondea(cantidad * $('#precio').val(),6));
             }
         });
 
@@ -618,6 +624,45 @@
             }
             })
 	}
+
+    function edititem(id) {
+        $.get(url_global+"/admin/cotizacions/"+id+"/edititem/",function(response){
+            $('#detalles').hide();
+            $('#aeitem').show();
+            $('#ordcompra_id').val(response.cotizacion_id);
+            $('#iddet').val(response.id);
+            $('#tipo').val(2);
+            $('#producto_id').select2({
+                placeholder:"Ingrese 4 dígitos del Nombre del Producto",
+                minimumInputLength: 4,
+                ajax:{
+                    url: "{{ route('admin.productos.seleccionadot') }}",
+                    dataType:'json',
+                    delay:250,
+                    processResults:function(response){
+                        return{
+                            results: response
+                        };
+                    },
+                    cache: true,
+                }
+            });
+            var data = {
+                id: response.producto_id,
+                text: response.producto.nombre
+            };
+            var newOption = new Option(data.text, data.id, false, false);
+            $('#producto_id').append(newOption).trigger('change');
+            $('#producto_id').val(response.producto_id);
+
+            $('#cantidad').val(response.cantidad);
+            $('#pre_ini').val(response.pre_ini);
+            $('#igv').val(response.igv);
+            $('#precio').val(response.precio);
+            $('#subtotal').val(response.subtotal);
+            $('#glosa').val(response.glosa);
+        })
+    }
 
 </script>
 @endsection

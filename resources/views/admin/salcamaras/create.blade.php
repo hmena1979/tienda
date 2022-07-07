@@ -44,11 +44,11 @@
                             </div>
                             <div class="col-md-2">
                                 {!! Form::label('contenedor', 'Contenedor:') !!}
-                                {!! Form::text('contenedor', null, ['class'=>'form-control numero','maxlength'=>'15','autocomplete'=>'off']) !!}
+                                {!! Form::text('contenedor', null, ['class'=>'form-control mayuscula','maxlength'=>'15','autocomplete'=>'off']) !!}
                             </div>
                             <div class="col-md-2">
                                 {!! Form::label('precinto', 'Precinto:') !!}
-                                {!! Form::text('precinto', null, ['class'=>'form-control numero','maxlength'=>'30','autocomplete'=>'off']) !!}
+                                {!! Form::text('precinto', null, ['class'=>'form-control mayuscula','maxlength'=>'30','autocomplete'=>'off']) !!}
                             </div>
                             <div class="col-md-2 form-group">
                                 {!! Form::label('supervisor_id', 'Supervisor:') !!}

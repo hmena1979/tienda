@@ -148,13 +148,26 @@ class OrdcomprasController extends Controller
         return view('admin.ordcompras.detalle',compact('ordcompra','total'));
     }
 
-    public function additem(StoreDetordcompraRequest  $request)
+    public function additem(StoreDetordcompraRequest $request)
     {
         if ($request->ajax()) {
-            Detordcompra::create($request->all());
+            if ($request->input('tipo') == 1) {
+                Detordcompra::create($request->except('tipo','iddet'));
+            } else {
+                $detordcompra = Detordcompra::findOrFail($request->input('iddet'));
+                $detordcompra->update($request->except('tipo','iddet'));
+            }
             $suma = Detordcompra::where('ordcompra_id',$request->input('ordcompra_id'))->sum('subtotal');
             Ordcompra::where('id',$request->input('ordcompra_id'))->update(['total' => $suma]);
             return true;
+        }
+    }
+
+    public function edititem(Request $request, $detordcompra)
+    {
+        if ($request->ajax()) {
+            $detordcompra = Detordcompra::with('producto')->where('id', $detordcompra)->first();
+            return response()->json($detordcompra);
         }
     }
 
@@ -272,6 +285,12 @@ class OrdcomprasController extends Controller
     {
         $ordcompra->update(['estado' => 2]);
         return true;
+    }
+
+    public function abrir(Ordcompra $ordcompra)
+    {
+        $ordcompra->update(['estado' => 1]);
+        return redirect()->route('admin.ordcompras.edit',$ordcompra)->with('update', 'Orden de Compra actualizada');
     }
 
     public function autorizar(Ordcompra $ordcompra)
