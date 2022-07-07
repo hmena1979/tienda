@@ -83,6 +83,21 @@ function sumarDias(pfecha,pdias){
 	return nfecha;
 }
 
+function sumarAnio(pfecha,panio){
+	if(panio==''){
+		return pfecha;
+	}
+	var dia = String(parseInt(pfecha.substr(8,2)));
+	var mes = pfecha.substr(5,2);
+	var anio = String(Number(pfecha.substr(0,4)) + panio);
+	var fecha = new Date(anio+'/'+mes+'/'+dia);
+	
+	var tmpfecha = new Date();
+	fecha.setDate(fecha.getDate());
+	var nfecha = String(fecha.getFullYear()) + '-' + (String(fecha.getMonth() + 1)).padStart(2,0) + '-' + (String(fecha.getDate())).padStart(2,0);
+	return nfecha;
+}
+
 function numeroOperacion(fecha){
 	var dia = fecha.substr(8,2);
 	var mes = fecha.substr(5,2);

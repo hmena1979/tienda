@@ -65,10 +65,12 @@ class ParteController extends Controller
     {
         $rules = [
             'lote' => 'required',
+            'lotes' => 'required',
             'recepcion' => 'required',
             'congelacion' => 'required',
             'empaque' => 'required',
             'vencimiento' => 'required',
+            'tc' => 'required',
             'contrata_id' => 'required',
             'hombres' => 'required',
             'mujeres' => 'required',
@@ -84,10 +86,12 @@ class ParteController extends Controller
         ];
         $messages = [
             'lote.required' => 'Seleccione Lote',
+            'lotes.required' => 'Seleccione Lotes de Materia Prima',
             'recepcion.required' => 'Ingrese fecha de recepción',
             'congelacion.required' => 'Ingrese fecha de congelación',
             'empaque.required' => 'Ingrese fecha de empaque',
             'vencimiento.required' => 'Ingrese fecha de vencimiento',
+            'tc.required' => 'Ingrese Tipo de Cambio',
             'contrata_id.required' => 'Ingrese Mano de Obra',
             'hombres.required' => 'Ingrese cantidad de Hombres que participaron en el Proceso',
             'mujeres.required' => 'Ingrese cantidad de Mujeres que participaron en el Proceso',
@@ -97,7 +101,13 @@ class ParteController extends Controller
     	if($validator->fails()){
             return back()->withErrors($validator)->with('message', 'Se ha producido un error')->with('typealert', 'danger')->withinput();
         }else{
-            $parte = Parte::create($request->all());
+            $data = $request->except('lotes');
+            $lotes = json_encode($request->input('lotes'));
+            $data = array_merge($data,[
+                'lotes' => $lotes,
+            ]);
+            $parte = Parte::create($data);
+
             return redirect()->route('admin.partes.edit',$parte)->with('store', 'Registro agregado');
         }
     }
@@ -118,10 +128,12 @@ class ParteController extends Controller
     {
         $rules = [
             'lote' => 'required',
+            'lotes' => 'required',
             'recepcion' => 'required',
             'congelacion' => 'required',
             'empaque' => 'required',
             'vencimiento' => 'required',
+            'tc' => 'required',
             'contrata_id' => 'required',
             'hombres' => 'required',
             'mujeres' => 'required',
@@ -136,10 +148,12 @@ class ParteController extends Controller
 
         $messages = [
             'lote.required' => 'Seleccione Lote',
+            'lotes.required' => 'Seleccione Lotes Ingreso Materia Prima',
             'recepcion.required' => 'Ingrese fecha de recepción',
             'congelacion.required' => 'Ingrese fecha de congelación',
             'empaque.required' => 'Ingrese fecha de empaque',
             'vencimiento.required' => 'Ingrese fecha de vencimiento',
+            'tc.required' => 'Ingrese Tipo de Cambio',
             'contrata_id.required' => 'Ingrese Mano de Obra',
             'hombres.required' => 'Ingrese cantidad de Hombres que participaron en el Proceso',
             'mujeres.required' => 'Ingrese cantidad de Mujeres que participaron en el Proceso',
@@ -149,8 +163,14 @@ class ParteController extends Controller
     	if($validator->fails()){
             return back()->withErrors($validator)->with('message', 'Se ha producido un error')->with('typealert', 'danger')->withinput();
         }else{
-            $parte->update($request->all());
-            return redirect()->route('admin.partes.index')->with('update', 'Registro Actualizado');
+            $data = $request->except('lotes');
+            $lotes = json_encode($request->input('lotes'));
+            $data = array_merge($data,[
+                'lotes' => $lotes,
+            ]);
+            $parte->update($data);
+            // return redirect()->route('admin.partes.index')->with('update', 'Registro Actualizado');
+            return redirect()->route('admin.partes.edit',$parte)->with('update', 'Registro Actualizado');
         }
     }
 
@@ -191,7 +211,8 @@ class ParteController extends Controller
         $parte->detparteproductos()->delete();
         // $materiaPrima = Materiaprima::where('lote',$parte->lote)->sum('pplanta');
         $materiaPrima = Materiaprima::selectRaw('sum(pplanta) as peso, sum(pplanta*precio) as total')
-            ->where('lote',$parte->lote)
+            ->whereIn('lote',json_decode($parte->lotes))
+            // ->where('lote',$parte->lote)
             ->first();
         // $residuo = Residuo::where('lote',$parte->lote)->sum('peso');
         $residuo = Residuo::selectRaw('sum(peso) as peso, sum(total) as total')
@@ -426,7 +447,7 @@ class ParteController extends Controller
             'sobrepeso' => $totales->sobrepeso,
             'residuos' => $residuo->peso,
             'costoresiduos' => $residuo->total,
-            'manoobra' => round($manoobra * BusTc($parte->empaque),2),//Round($totalesCamara->manoobra * BusTc($parte->empaque),2),
+            'manoobra' => round($manoobra * $parte->tc,2),//Round($totalesCamara->manoobra * BusTc($parte->empaque),2),
             'costoproductos' => $costoProductos,
             'merma' => $merma,
             'guias_envasado' => $guiaEnvasado,

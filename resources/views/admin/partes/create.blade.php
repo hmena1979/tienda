@@ -39,23 +39,27 @@
                                 {!! Form::label('empaque', 'Fecha Empaque:') !!}
                                 {!! Form::date('empaque', Carbon\Carbon::now(), ['class'=>'form-control']) !!}
                             </div>
+							<div class="col-md-2 form-group">
+								{!! Form::label('vencimiento', 'Fecha Vencimiento:') !!}
+								{!! Form::date('vencimiento', Carbon\Carbon::now()->addYear(2), ['class'=>'form-control']) !!}
+							</div>
+							<div class="col-md-1 form-group">
+                                {!! Form::label('tc', 'TC:') !!}
+                                {!! Form::text('tc', null, ['class'=>'form-control decimal','autocomplete'=>'off']) !!}
+                            </div>
+						</div>
+						<div class="row">
 							<div class="col-md-4">
 								<div class="row">
-									<div class="col-md-5 form-group">
-										{!! Form::label('vencimiento', 'Fecha Vencimiento:') !!}
-                                		{!! Form::date('vencimiento', Carbon\Carbon::now()->addYear(2), ['class'=>'form-control']) !!}
-									</div>
 									<div class="col-md-7 form-group">
 										{!! Form::label('trazabilidad', 'Código Trazabilidad:') !!}
 										{!! Form::text('trazabilidad', null, ['class'=>'form-control mayuscula','maxlength'=>'20','autocomplete'=>'off']) !!}
 									</div>
+									<div class="col-md-5 form-group">
+										{!! Form::label('produccion', 'Producción:') !!}
+										{!! Form::select('produccion',[1 => 'Propia', 2 => 'Por Encargo'],null,['class'=>'custom-select']) !!}
+									</div>
 								</div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-2 form-group">
-								{!! Form::label('produccion', 'Producción:') !!}
-								{!! Form::select('produccion',[1 => 'Propia', 2 => 'Por Encargo'],null,['class'=>'custom-select']) !!}
 							</div>
 							<div class="col-md-3 form-group">
                                 {!! Form::label('contrata_id', 'Mano de Obra:') !!}
@@ -69,7 +73,7 @@
 								{!! Form::label('mujeres', 'Mujeres:') !!}
 								{!! Form::text('mujeres', null, ['class'=>'form-control numero','maxlength'=>'4','autocomplete'=>'off']) !!}
 							</div>
-							<div class="col-md-2 form-group">
+							<div class="col-md-1 form-group">
 								{!! Form::label('turno', 'Turno:') !!}
 								{!! Form::select('turno',[1 => 'Dia', 2 => 'Noche'],null,['class'=>'custom-select']) !!}
 							</div>
@@ -79,9 +83,13 @@
 							</div>
 						</div>
 						<div class="row">
-                            <div class="col-md-12 form-group">
+							<div class="col-md-4 form-group">
+                                {!! Form::label('lotes[]', 'Lotes Ingreso Materia Prima:') !!}
+								{!! Form::select('lotes[]',$lotes,null,['class' => 'form-control lotes', 'multiple'=>'multiple']) !!}
+                            </div>
+                            <div class="col-md-8 form-group">
                                 {!! Form::label('observaciones', 'Observaciones:') !!}
-                                {!! Form::textarea('observaciones',null,['class'=>'form-control mayuscula', 'rows'=>'2']) !!}
+                                {!! Form::textarea('observaciones',null,['class'=>'form-control mayuscula', 'rows'=>'1']) !!}
                             </div>
                         </div>
                         
@@ -96,13 +104,23 @@
 {{-- @section('css')
     <link rel="stylesheet" href="{{ url('/static/css/admin.css?v='.time()) }}">
 @stop --}}
-{{-- @section('script')
+@section('script')
 <script>
-	$('#codigo').blur(function(){
-		this.value = this.value.toUpperCase();
-	});
-	$('#nombre').blur(function(){
-		this.value = this.value.toUpperCase();
+	var url_global='{{url("/")}}';
+	$(document).ready(function(){
+		$('.lotes').select2({
+			placeholder:"Seleccione Lotes"
+		});
+
+		$('#recepcion').blur(function(){
+            $.get(url_global+"/admin/rcompras/"+this.value+"/bustc/",function(response){
+                $('#tc').val(response['venta']);
+            });
+        });
+
+        $('#empaque').blur(function(){
+            $('#vencimiento').val(sumarAnio(this.value,2));
+        });
 	});
 </script>
-@endsection --}}
+@endsection
