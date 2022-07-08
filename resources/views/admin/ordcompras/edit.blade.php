@@ -247,11 +247,11 @@
                                 <div class="row">
                                     <div class="col-md-6 form-group">
                                         {!! Form::label('cantidad', 'Cantidad:') !!}
-                                        {!! Form::text('cantidad', null, ['class'=>'form-control decimal subtotal','id'=>'cantidad']) !!}
+                                        {!! Form::text('cantidad', null, ['class'=>'form-control decimal subtotal','id'=>'cantidad','autocomplete'=>'off']) !!}
                                     </div>
                                     <div class="col-md-6 form-group">
                                         {!! Form::label('pre_ini', 'Precio Inicial:') !!}
-                                        {!! Form::text('pre_ini', null, ['class'=>'form-control decimal subtotal','id'=>'pre_ini']) !!}
+                                        {!! Form::text('pre_ini', null, ['class'=>'form-control decimal subtotal','id'=>'pre_ini','autocomplete'=>'off']) !!}
                                     </div>
                                 </div>
                             </div>
@@ -263,7 +263,7 @@
                                     </div>
                                     <div class="col-md-4 form-group">
                                         {!! Form::label('precio', 'Precio:') !!}
-                                        {!! Form::text('precio', null, ['class'=>'form-control decimal subtotal','id'=>'precio']) !!}
+                                        {!! Form::text('precio', null, ['class'=>'form-control decimal subtotal','id'=>'precio','autocomplete'=>'off']) !!}
                                     </div>
                                     <div class="col-md-4 form-group">
                                         {!! Form::label('subtotal', 'SubTotal:') !!}

@@ -34,6 +34,10 @@
                                 {!! Form::label('numero', 'Número:') !!}
                                 {!! Form::text('numero', null, ['class'=>'form-control numero','maxlength'=>'6','autocomplete'=>'off']) !!}
                             </div>
+                            <div class="col-md-2">
+                                {!! Form::label('lote', 'Número:') !!}
+                                {!! Form::text('lote', null, ['class'=>'form-control mayuscula','maxlength'=>'15','autocomplete'=>'off']) !!}
+                            </div>
                             <div class="col-md-2 form-group">
                                 {!! Form::label('fecha', 'Fecha:') !!}
                                 {!! Form::date('fecha', Carbon\Carbon::now(), ['class'=>'form-control']) !!}
@@ -46,6 +50,8 @@
                                 {!! Form::label('contenedor', 'Contenedor:') !!}
                                 {!! Form::text('contenedor', null, ['class'=>'form-control mayuscula','maxlength'=>'15','autocomplete'=>'off']) !!}
                             </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-2">
                                 {!! Form::label('precinto', 'Precinto:') !!}
                                 {!! Form::text('precinto', null, ['class'=>'form-control mayuscula','maxlength'=>'30','autocomplete'=>'off']) !!}

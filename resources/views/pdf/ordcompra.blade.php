@@ -71,8 +71,10 @@
                         {{date('d-m-Y',strtotime($ordcompra->fecha))}}
                     </td>
                     <td width='25%'>
-                        <span class="negrita">VENCIMIENTO : </span> 
-                        {{date('d-m-Y',strtotime($ordcompra->vencimiento))}}
+                        <span class="negrita">VENCIMIENTO : </span>
+                        @if ($ordcompra->vencimiento)
+                        {{date('d-m-Y',strtotime($ordcompra->vencimiento))}}                            
+                        @endif
                     </td>
                     <td width='25%'><span class="negrita">FORMA PAGO : </span> {{$ordcompra->fpago==1?'CONTADO':'CRÉDITO'}}</td>
                     <td width='30%'><span class="negrita">MONEDA : </span> {{$ordcompra->moneda == 'PEN' ? 'SOLES' : 'DÓLARES'}}</td>

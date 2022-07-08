@@ -16,6 +16,8 @@ class CreateDetsalcamarasTable extends Migration
         Schema::create('detsalcamaras', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('salcamara_id');
+            $table->unsignedBigInteger('pproceso_id');
+            $table->unsignedBigInteger('trazabilidad_id');
             $table->unsignedBigInteger('dettrazabilidad_id');
             $table->string('lotes')->nullable();
             $table->decimal('cantidad')->nullable();
