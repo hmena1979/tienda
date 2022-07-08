@@ -284,39 +284,76 @@ class ClienteController extends Controller
     public function seleccionado(Request $request, $tipo = 1)
     {
         if($request->ajax()){
+            $confidencial = User::permission('admin.clientes.confidencial')->where('id',Auth::user()->id)->count();
             $term = trim($request->q);
             if (empty($term)) {
                 return response()->json([]);
             }
-            switch ($tipo) {
-                case 1:
-                    $clientes = Cliente::select('id','razsoc','numdoc')
-                    ->where('numdoc','<>','00000000')
-                    ->where('numdoc','<>','99999999')
-                    ->where('numdoc','<>','11111111')
-                    ->where('empresa_id',session('empresa'))
-                    ->where('numdoc','like','%'.$term.'%')
-                    ->orWhere('razsoc','like','%'.$term.'%')
-                    ->limit(5)
-                    ->get();
-                    break;
-                case 2:
-                    $clientes = Cliente::select('id','razsoc','numdoc')
-                    ->where('numdoc','<>','99999999')
-                    ->where('numdoc','<>','11111111')
-                    ->where('numdoc','like','%'.$term.'%')
-                    ->where('empresa_id',session('empresa'))
-                    ->orWhere('razsoc','like','%'.$term.'%')
-                    ->limit(5)
-                    ->get();
-                    break;
-                case 3:
-                    $clientes = Cliente::select('id','razsoc','numdoc')
-                    ->where('numdoc','99999999')
-                    ->where('empresa_id',session('empresa'))
-                    ->limit(5)
-                    ->get();
-                    break;
+            if ($confidencial > 0) {
+                switch ($tipo) {
+                    case 1:
+                        $clientes = Cliente::select('id','razsoc','numdoc')
+                        ->where('numdoc','<>','00000000')
+                        ->where('numdoc','<>','99999999')
+                        ->where('numdoc','<>','11111111')
+                        ->where('empresa_id',session('empresa'))
+                        ->where('numdoc','like','%'.$term.'%')
+                        ->orWhere('razsoc','like','%'.$term.'%')
+                        ->limit(5)
+                        ->get();
+                        break;
+                    case 2:
+                        $clientes = Cliente::select('id','razsoc','numdoc')
+                        ->where('numdoc','<>','99999999')
+                        ->where('numdoc','<>','11111111')
+                        ->where('numdoc','like','%'.$term.'%')
+                        ->where('empresa_id',session('empresa'))
+                        ->orWhere('razsoc','like','%'.$term.'%')
+                        ->limit(5)
+                        ->get();
+                        break;
+                    case 3:
+                        $clientes = Cliente::select('id','razsoc','numdoc')
+                        ->where('numdoc','99999999')
+                        ->where('empresa_id',session('empresa'))
+                        ->limit(5)
+                        ->get();
+                        break;
+                }
+            } else {
+                switch ($tipo) {
+                    case 1:
+                        $clientes = Cliente::select('id','razsoc','numdoc')
+                        ->where('numdoc','<>','00000000')
+                        ->where('numdoc','<>','99999999')
+                        ->where('numdoc','<>','11111111')
+                        ->where('empresa_id',session('empresa'))
+                        ->where('numdoc','like','%'.$term.'%')
+                        ->orWhere('razsoc','like','%'.$term.'%')
+                        ->where('confidencial',2)
+                        ->limit(5)
+                        ->get();
+                        break;
+                    case 2:
+                        $clientes = Cliente::select('id','razsoc','numdoc')
+                        ->where('numdoc','<>','99999999')
+                        ->where('numdoc','<>','11111111')
+                        ->where('empresa_id',session('empresa'))
+                        ->where('numdoc','like','%'.$term.'%')
+                        ->orWhere('razsoc','like','%'.$term.'%')
+                        ->where('confidencial',2)
+                        ->limit(5)
+                        ->get();
+                        break;
+                    case 3:
+                        $clientes = Cliente::select('id','razsoc','numdoc')
+                        ->where('numdoc','99999999')
+                        ->where('empresa_id',session('empresa'))
+                        ->where('confidencial',2)
+                        ->limit(5)
+                        ->get();
+                        break;
+                }
             }
 
             $respuesta = array();

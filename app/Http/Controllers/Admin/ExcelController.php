@@ -28,6 +28,7 @@ use App\Models\Empresa;
 use App\Models\Mpobtenida;
 use App\Models\Parte;
 use App\Models\Pproceso;
+use App\Models\Residuo;
 use App\Models\Trazabilidad;
 use App\Models\User;
 
@@ -304,7 +305,11 @@ class ExcelController extends Controller
     public function tolvasview(Request $request)
     {
         $periodo = $request->input('mes').$request->input('anio');
-        $materiasPrimas = Materiaprima::where('periodo',$periodo)->orderBy('ticket_balanza')->get();
+        // $materiasPrimas = Materiaprima::where('periodo',$periodo)->orderBy('ticket_balanza')->get();
+        $materiasPrimas = Materiaprima::whereMonth('ingplanta',$request->input('mes'))
+            ->whereYear('ingplanta',$request->input('anio'))
+            ->orderBy('ticket_balanza')
+            ->get();
         $empresa = Empresa::findOrFail(session('empresa'));
         $enombre = Embarcacion::pluck('nombre','id');
         $ematricula = Embarcacion::pluck('matricula','id');
@@ -554,7 +559,7 @@ class ExcelController extends Controller
 
     public function parte(Parte $parte)
     {
-        $materiaPrimas = Materiaprima::where('lote',$parte->lote)->orderBy('ticket_balanza')->get();
+        $materiaPrimas = Materiaprima::whereIn('lote',json_decode($parte->lotes))->orderBy('ticket_balanza')->get();
         $mpObtenidas = Mpobtenida::get();
         $empresa = Empresa::findOrFail($parte->empresa_id);
         $enombre = Embarcacion::pluck('nombre','id');
@@ -1327,5 +1332,162 @@ class ExcelController extends Controller
         header('Content-Disposition: attachment; filename="'. urlencode($fileName).'"');
         $writer->save('php://output');
         
+    }
+
+    
+    public function residuos(Request $request)
+    {
+        $residuos = Residuo::whereMonth('emision',$request->input('mes'))
+            ->whereYear('emision',$request->input('anio'))
+            ->get();
+        $empresa = Empresa::findOrFail(session('empresa'));
+        //Creación de Excel
+        $excel = new Spreadsheet();
+
+        //Información del Archivo
+        $excel
+            ->getProperties()
+            ->setCreator($empresa->razsoc)
+            ->setLastModifiedBy('Proceso')
+            ->setTitle('Control Residuos Sólidos')
+            ->setSubject('Residios Solidos por Mes')
+            ->setDescription('Residios Solidos por Mes')
+            ->setKeywords('RSolidos')
+            ->setCategory('Categoría Excel');
+
+        //Fuente y Tamaño por defecto
+        $excel
+            ->getDefaultStyle()
+            ->getFont()
+            ->setName('Calibri')
+            ->setSize(9);
+
+        //Creación de Hoja y Llenado de Información
+        $sheet = $excel->getActiveSheet();
+        $sheet->setTitle("RESIDUOS SÓLIDOS ".getMes($request->input('mes')).' - '.$request->input('anio'));
+        $linea = 1;
+        // Logo
+        $logo = new Drawing();
+        $logo->setName('Logo');
+        $logo->setDescription('Logo');
+        $logo->setPath('./static/images/logopesquera.jpeg');
+        $logo->setCoordinates('A'.$linea);
+        $logo->setHeight(60);
+        $logo->setWorksheet($excel->getActiveSheet());
+
+        $linea++;$linea++;
+        $salto = "\r\n";
+
+        $sheet->setCellValue('A'.$linea,'CONTROL DE RESIDUOS SÓLIDOS '.getMes($request->input('mes')).' - '.$request->input('anio'));
+        $sheet->getStyle('A'.$linea)->getFont()->getColor()->setARGB('FF000080');
+        $sheet->mergeCells('A'.$linea.':N'.$linea);
+        $sheet->getStyle('A'.$linea)->getFont()->setSize(12)->setBold(true);
+        $sheet->getStyle('A'.$linea)
+            ->getAlignment()
+            ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+        $linea++;$linea++;
+        // $sheet->getStyle('I')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_NUMBER);
+        $sheet->getStyle('E')->getNumberFormat()->setFormatCode('#,##0.0000');
+        $sheet->getStyle('M')->getNumberFormat()->setFormatCode('#,##0.00');
+
+        $sheet->setCellValue('A'.$linea,'N°');
+        $sheet->setCellValue('B'.$linea,'FECHA'.$salto.'RECEPCIÓN');
+        $sheet->setCellValue('C'.$linea,'LOTE');
+        $sheet->setCellValue('D'.$linea,'ESPECIE');
+        $sheet->setCellValue('E'.$linea,'TM');
+        $sheet->setCellValue('F'.$linea,'EMPRESA');
+        $sheet->setCellValue('G'.$linea,'EMPRESA RESIDUOS');
+        $sheet->setCellValue('H'.$linea,'REPORTE DE'.$salto.'PESAJE N°');
+        $sheet->setCellValue('I'.$linea,'FECHA'.$salto.'EMISIÓN');
+        $sheet->setCellValue('J'.$linea,'N° GUÍA'.$salto.'MPS');
+        $sheet->setCellValue('K'.$linea,'N° GUÍA'.$salto.'HL');
+        $sheet->setCellValue('L'.$linea,'N° GUÍA'.$salto.'TRANSPORTISTA');
+        $sheet->setCellValue('M'.$linea,'TOTAL KGS');
+        $sheet->setCellValue('N'.$linea,'N° DE'.$salto.'PLACA');
+        $sheet->getStyle('A'.$linea.':N'.$linea)
+            ->getAlignment()
+            ->setVertical(StyleAlignment::VERTICAL_CENTER)
+            ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A'.$linea.':N'.$linea)->getFont()->setBold(true);
+        $sheet->getStyle('A'.$linea.':N'.$linea)->getAlignment()->setWrapText(true);
+        $sheet->getStyle('A'.$linea.':N'.$linea)->getFont()->getColor()->setARGB('FFFFFFFF');
+        $sheet->getStyle('A'.$linea.':N'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF000080');
+
+
+        //Detalles
+        $color = 1;
+        $pesoMateriaPrima = 0;
+        $pesoAcumulado = 0;
+        $cuadroInicio = $linea + 1;
+        foreach($residuos as $residuo) {
+            $linea++;
+            $parte = Parte::where('lote',$residuo->lote)->first();
+            $pesoMateriaPrima += $parte?$parte->materiaprima:0;
+            $pesoAcumulado += $residuo->peso;
+            $sheet->setCellValue('A'.$linea,$color);
+            $sheet->setCellValue('B'.$linea,$parte?$parte->recepcion:'');
+            $sheet->setCellValue('C'.$linea,$parte?$parte->lote:'');
+            $sheet->setCellValue('D'.$linea,$residuo->especie);
+            $sheet->setCellValue('E'.$linea,$parte?$parte->materiaprima/1000:'');
+            $sheet->setCellValue('F'.$linea,$empresa->razsoc);
+            $sheet->setCellValue('G'.$linea,$residuo->cliente->razsoc);
+            $sheet->setCellValue('H'.$linea,$residuo->ticket_balanza);
+            $sheet->setCellValue('I'.$linea,$residuo->emision);
+            $sheet->setCellValue('J'.$linea,$residuo->guiamps);
+            $sheet->setCellValue('K'.$linea,$residuo->guiahl);
+            $sheet->setCellValue('L'.$linea,$residuo->guiatrasporte);
+            $sheet->setCellValue('M'.$linea,$residuo->peso);
+            $sheet->setCellValue('N'.$linea,$residuo->placa);
+            $color++;
+        }
+        $linea++;
+        $sheet->mergeCells('A'.$linea.':D'.$linea);
+        $sheet->setCellValue('E'.$linea, $pesoMateriaPrima/1000);
+        $sheet->setCellValue('F'.$linea, 'TOTAL');
+        $sheet->mergeCells('F'.$linea.':L'.$linea);
+        $sheet->setCellValue('M'.$linea, $pesoAcumulado);
+        $sheet->getStyle('A'.$linea.':N'.$linea)
+            ->getFill()
+            ->setFillType(Fill::FILL_SOLID)
+            ->getStartColor()
+            ->setARGB('FFEDE739');
+        $sheet->getStyle('F'.$linea.':L'.$linea)
+                ->getAlignment()
+                ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A'.$linea.':N'.$linea)->getFont()->setBold(true);
+        
+        $estiloBorde = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                ],
+            ],
+        ];
+        $sheet->getStyle('A'.$cuadroInicio.':N'.$linea)->applyFromArray($estiloBorde);
+          
+        // Ancho de Columnas
+        $sheet->getColumnDimension('A')->setWidth(4);
+        $sheet->getColumnDimension('B')->setWidth(11);
+        $sheet->getColumnDimension('C')->setWidth(13);
+        $sheet->getColumnDimension('D')->setWidth(8);
+        $sheet->getColumnDimension('E')->setWidth(10);
+        $sheet->getColumnDimension('F')->setWidth(20);
+        $sheet->getColumnDimension('G')->setWidth(24);
+        $sheet->getColumnDimension('H')->setWidth(10);
+        $sheet->getColumnDimension('I')->setWidth(11);
+        $sheet->getColumnDimension('J')->setWidth(11);
+        $sheet->getColumnDimension('K')->setWidth(11);
+        $sheet->getColumnDimension('L')->setWidth(15);
+        $sheet->getColumnDimension('M')->setWidth(10);
+        $sheet->getColumnDimension('N')->setWidth(10);
+
+        //Envio de Archivo para Descarga
+        $fileName= 'RESIDUOS-'.getMes($request->input('mes')).'-'.$request->input('anio').".xlsx";
+        # Crear un "escritor"
+        $writer = new Xlsx($excel);
+        # Le pasamos la ruta de guardado
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="'. urlencode($fileName).'"');
+        $writer->save('php://output');
     }
 }

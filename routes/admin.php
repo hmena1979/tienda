@@ -462,6 +462,7 @@ Route::get('/excel/{desde}/{hasta}/materiaprima', [ExcelController::class,'mater
 Route::get('/excel/{desde}/{hasta}/materiaprimaii', [ExcelController::class,'materiaprimaii'])->name('admin.excel.materiaprimaii');
 Route::get('/excel/tolvasindex', [ExcelController::class,'tolvasindex'])->name('admin.excel.tolvasindex');
 Route::post('/excel/tolvasview', [ExcelController::class,'tolvasview'])->name('admin.excel.tolvasview');
+Route::post('/excel/residuos', [ExcelController::class,'residuos'])->name('admin.excel.residuos');
 Route::get('/excel/{parte}/parte', [ExcelController::class,'parte'])->name('admin.excel.parte');
 
 //Modulo importaciones

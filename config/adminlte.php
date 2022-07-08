@@ -315,7 +315,7 @@ return [
                     'icon_color' => 'cyan',
                     'submenu' => [
                         [
-                            'text' => 'Mensual Tolvas',
+                            'text' => 'Reportes Mensuales',
                             'icon'    => 'fas fa-print',
                             'icon_color' => 'white',
                             'route'  => 'admin.excel.tolvasindex',
