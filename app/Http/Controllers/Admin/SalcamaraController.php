@@ -62,7 +62,6 @@ class SalcamaraController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'fecha' => 'required',
             'numero' => ['required',
                 function($attribute, $value, $fail) {
                     $contador = Salcamara::where('numero',$value)
@@ -72,28 +71,31 @@ class SalcamaraController extends Controller
                         $fail(__('Ya se encuentra registrado'));
                     }
                 }],
+            'fecha' => 'required',
             'supervisor_id' => 'required',
         ];
         if ($request->input('motivo') == 1) {
             $rules = array_merge($rules,[
+                'lote' => 'required',
                 'contenedor' => 'required',
-                'precinto' => 'required',
                 'transportista_id' => 'required',
                 'placas' => 'required',
                 'grt' => 'required',
                 'gr' => 'required',
+                'precinto_ag' => 'required',
             ]);
         }
         $messages = [
+    		'numero.required' => 'Ingrese Número.',
             'fecha.required' => 'Ingrese fecha',
             'supervisor_id.required' => 'Seleccione Supervisor',
-    		'numero.required' => 'Ingrese Número.',
+    		'lote.required' => 'Ingrese Lote.',
     		'contenedor.required' => 'Ingrese Contenedor.',
-    		'precinto.required' => 'Ingrese Precinto.',
     		'transportista_id.required' => 'Seleccione Transportista.',
     		'placas.required' => 'Ingrese Placa.',
     		'grt.required' => 'Ingrese Guía de Remisión Transportista.',
     		'gr.required' => 'Ingrese Guía de Remisión Remitente.',
+    		'precinto_ag.required' => 'Ingrese Precinto.',
         ];
         $validator = Validator::make($request->all(),$rules,$messages);
     	if($validator->fails()){
@@ -127,8 +129,6 @@ class SalcamaraController extends Controller
     public function update(Request $request, Salcamara $salcamara)
     {
         $rules = [
-            'fecha' => 'required',
-            'supervisor_id' => 'required',
             'numero' => [
                 'required',
                 Rule::unique('salcamaras')->where(function ($query) use ($salcamara) {
@@ -137,20 +137,39 @@ class SalcamaraController extends Controller
                         ->where('empresa_id',session('empresa'));
                 }),
             ],
+            'fecha' => 'required',
+            'supervisor_id' => 'required',
         ];
-
+        if ($request->input('motivo') == 1) {
+            $rules = array_merge($rules,[
+                'lote' => 'required',
+                'contenedor' => 'required',
+                'transportista_id' => 'required',
+                'placas' => 'required',
+                'grt' => 'required',
+                'gr' => 'required',
+                'precinto_ag' => 'required',
+            ]);
+        }
         $messages = [
-    		'fecha.required' => 'Ingrese fecha',
-            'supervisor_id.required' => 'Seleccione Supervisor',
     		'numero.required' => 'Ingrese Número.',
-    		'numero.unique' => 'Ya fue registrado.',
+            'fecha.required' => 'Ingrese fecha',
+            'supervisor_id.required' => 'Seleccione Supervisor',
+    		'lote.required' => 'Ingrese Lote.',
+    		'contenedor.required' => 'Ingrese Contenedor.',
+    		'transportista_id.required' => 'Seleccione Transportista.',
+    		'placas.required' => 'Ingrese Placa.',
+    		'grt.required' => 'Ingrese Guía de Remisión Transportista.',
+    		'gr.required' => 'Ingrese Guía de Remisión Remitente.',
+    		'precinto_ag.required' => 'Ingrese Precinto.',
         ];
         $validator = Validator::make($request->all(),$rules,$messages);
     	if($validator->fails()){
             return back()->withErrors($validator)->with('message', 'Se ha producido un error')->with('typealert', 'danger')->withinput();
         }else{
             $salcamara->update($request->all());
-            return redirect()->route('admin.salcamaras.index')->with('update', 'Registro Actualizado');
+            // return redirect()->route('admin.salcamaras.index')->with('update', 'Registro Actualizado');
+            return redirect()->route('admin.salcamaras.edit',$salcamara)->with('update', 'Registro Actualizado');
         }
     }
 
@@ -174,14 +193,20 @@ class SalcamaraController extends Controller
     {
         if ($request->ajax()) {
             if ($request->input('tipoSalcamara') == 1) {
+                $trazabilidad = Trazabilidad::findOrFail($request->input('trazabilidad_id'));
                 Detsalcamara::create([ 
                     'salcamara_id' => $request->input('salcamara_id'),
+                    'pproceso_id' => $trazabilidad->pproceso_id,
+                    'trazabilidad_id' => $trazabilidad->id,
                     'dettrazabilidad_id' => $request->input('dettrazabilidad_id'),
                 ]);
                 return 1;
             } else {
                 $detsalcamara = Detsalcamara::findOrFail($request->input('iddetsalcamara'));
+                $trazabilidad = Trazabilidad::findOrFail($request->input('trazabilidad_id'));
                 $detsalcamara->update([
+                    'pproceso_id' => $trazabilidad->pproceso_id,
+                    'trazabilidad_id' => $trazabilidad->id,
                     'dettrazabilidad_id' => $request->input('dettrazabilidad_id'),
                 ]);
                 return 1;
@@ -204,7 +229,7 @@ class SalcamaraController extends Controller
                 Detdetsalcamara::create([
                     'detsalcamara_id' => $request->input('detsalcamara_id'),
                     'productoterminado_id' => $request->input('productoterminado_id'),
-                    'lote' => $request->input('lote'),
+                    'lote' => $request->input('lotedet'),
                     'cantidad' => $request->input('cantidad'),
                     'peso' => $request->input('peso'),
                 ]);
@@ -237,7 +262,7 @@ class SalcamaraController extends Controller
                 Detdetsalcamara::where('id',$request->input('iddet'))->update([
                     'detsalcamara_id' => $request->input('detsalcamara_id'),
                     'productoterminado_id' => $request->input('productoterminado_id'),
-                    'lote' => $request->input('lote'),
+                    'lote' => $request->input('lotedet'),
                     'cantidad' => $request->input('cantidad'),
                 ]);
             }

@@ -35,7 +35,7 @@
                                 {!! Form::text('numero', null, ['class'=>'form-control numero','maxlength'=>'6','autocomplete'=>'off']) !!}
                             </div>
                             <div class="col-md-2">
-                                {!! Form::label('lote', 'Número:') !!}
+                                {!! Form::label('lote', 'Lote:') !!}
                                 {!! Form::text('lote', null, ['class'=>'form-control mayuscula','maxlength'=>'15','autocomplete'=>'off']) !!}
                             </div>
                             <div class="col-md-2 form-group">
@@ -50,12 +50,6 @@
                                 {!! Form::label('contenedor', 'Contenedor:') !!}
                                 {!! Form::text('contenedor', null, ['class'=>'form-control mayuscula','maxlength'=>'15','autocomplete'=>'off']) !!}
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-2">
-                                {!! Form::label('precinto', 'Precinto:') !!}
-                                {!! Form::text('precinto', null, ['class'=>'form-control mayuscula','maxlength'=>'30','autocomplete'=>'off']) !!}
-                            </div>
                             <div class="col-md-2 form-group">
                                 {!! Form::label('supervisor_id', 'Supervisor:') !!}
                                 {!! Form::select('supervisor_id',$supervisores,null,['class'=>'custom-select','placeholder'=>'']) !!}
@@ -66,7 +60,7 @@
                                 {!! Form::label('transportista_id', 'Transportista:') !!}
                                 {!! Form::select('transportista_id',$transportistas,null,['class'=>'custom-select activo','placeholder'=>'']) !!}
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 {!! Form::label('placas', 'Placas:') !!}
                                 {!! Form::text('placas', null, ['class'=>'form-control mayuscula','maxlength'=>'50','autocomplete'=>'off']) !!}
                             </div>
@@ -80,9 +74,21 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-12 form-group">
+                            <div class="col-md-2">
+                                {!! Form::label('precinto_hl', 'Precinto HL:') !!}
+                                {!! Form::text('precinto_hl', null, ['class'=>'form-control mayuscula','maxlength'=>'30','autocomplete'=>'off']) !!}
+                            </div>
+                            <div class="col-md-3">
+                                {!! Form::label('precinto_linea', 'Precinto Linea:') !!}
+                                {!! Form::text('precinto_linea', null, ['class'=>'form-control mayuscula','maxlength'=>'50','autocomplete'=>'off']) !!}
+                            </div>
+                            <div class="col-md-2">
+                                {!! Form::label('precinto_ag', 'Precinto AG:') !!}
+                                {!! Form::text('precinto_ag', null, ['class'=>'form-control mayuscula','maxlength'=>'30','autocomplete'=>'off']) !!}
+                            </div>
+                            <div class="col-md-5 form-group">
                                 {!! Form::label('observaciones', 'Observaciones:') !!}
-                                {!! Form::textarea('observaciones',null,['class'=>'form-control mayuscula', 'rows'=>'3', 'id'=>'editor']) !!}
+                                {!! Form::textarea('observaciones',null,['class'=>'form-control mayuscula', 'rows'=>'1', 'id'=>'editor']) !!}
                             </div>
                         </div>
 					</div>				

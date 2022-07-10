@@ -46,13 +46,16 @@
 					<div class="inside">
                         <div class="row">
                             <div class="col-md-2">
-                                {!! Form::hidden('id', null,['id' => 'id']) !!}
                                 {!! Form::label('numero', 'Número:') !!}
                                 {!! Form::text('numero', null, ['class'=>'form-control numero','maxlength'=>'6','autocomplete'=>'off']) !!}
                             </div>
+                            <div class="col-md-2">
+                                {!! Form::label('lote', 'Lote:') !!}
+                                {!! Form::text('lote', null, ['class'=>'form-control mayuscula','maxlength'=>'15','autocomplete'=>'off']) !!}
+                            </div>
                             <div class="col-md-2 form-group">
                                 {!! Form::label('fecha', 'Fecha:') !!}
-                                {!! Form::date('fecha', null, ['class'=>'form-control']) !!}
+                                {!! Form::date('fecha', Carbon\Carbon::now(), ['class'=>'form-control']) !!}
                             </div>
                             <div class="col-md-2 form-group">
                                 {!! Form::label('motivo', 'Motivo Retiro:') !!}
@@ -61,10 +64,6 @@
                             <div class="col-md-2">
                                 {!! Form::label('contenedor', 'Contenedor:') !!}
                                 {!! Form::text('contenedor', null, ['class'=>'form-control mayuscula','maxlength'=>'15','autocomplete'=>'off']) !!}
-                            </div>
-                            <div class="col-md-2">
-                                {!! Form::label('precinto', 'Precinto:') !!}
-                                {!! Form::text('precinto', null, ['class'=>'form-control mayuscula','maxlength'=>'30','autocomplete'=>'off']) !!}
                             </div>
                             <div class="col-md-2 form-group">
                                 {!! Form::label('supervisor_id', 'Supervisor:') !!}
@@ -76,7 +75,7 @@
                                 {!! Form::label('transportista_id', 'Transportista:') !!}
                                 {!! Form::select('transportista_id',$transportistas,null,['class'=>'custom-select activo','placeholder'=>'']) !!}
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 {!! Form::label('placas', 'Placas:') !!}
                                 {!! Form::text('placas', null, ['class'=>'form-control mayuscula','maxlength'=>'50','autocomplete'=>'off']) !!}
                             </div>
@@ -90,9 +89,21 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-12 form-group">
+                            <div class="col-md-2">
+                                {!! Form::label('precinto_hl', 'Precinto HL:') !!}
+                                {!! Form::text('precinto_hl', null, ['class'=>'form-control mayuscula','maxlength'=>'30','autocomplete'=>'off']) !!}
+                            </div>
+                            <div class="col-md-3">
+                                {!! Form::label('precinto_linea', 'Precinto Linea:') !!}
+                                {!! Form::text('precinto_linea', null, ['class'=>'form-control mayuscula','maxlength'=>'50','autocomplete'=>'off']) !!}
+                            </div>
+                            <div class="col-md-2">
+                                {!! Form::label('precinto_ag', 'Precinto AG:') !!}
+                                {!! Form::text('precinto_ag', null, ['class'=>'form-control mayuscula','maxlength'=>'30','autocomplete'=>'off']) !!}
+                            </div>
+                            <div class="col-md-5 form-group">
                                 {!! Form::label('observaciones', 'Observaciones:') !!}
-                                {!! Form::textarea('observaciones',null,['class'=>'form-control mayuscula', 'rows'=>'3', 'id'=>'editor']) !!}
+                                {!! Form::textarea('observaciones',null,['class'=>'form-control mayuscula', 'rows'=>'1', 'id'=>'editor']) !!}
                             </div>
                         </div>
 					</div>				
@@ -247,7 +258,7 @@
                                     {!! Form::hidden('iddet', null, ['id'=> 'iddet']) !!}
                                     {!! Form::hidden('tipodet', 1, ['id' => 'tipodet']) !!}
                                     {!! Form::hidden('stock', null, ['id' => 'stock']) !!}
-                                    {!! Form::hidden('lote', null, ['id' => 'lote']) !!}
+                                    {!! Form::hidden('lotedet', null, ['id' => 'lotedet']) !!}
                                     {!! Form::label('productoterminado_id', 'Lote Disponible:') !!}
                                     {!! Form::select('productoterminado_id',[],null,['class'=>'custom-select','id'=>'productoterminado_id','placeholder' => '']) !!}
                                 </div>
@@ -321,7 +332,7 @@
         $('#productoterminado_id').change(function(){
             $.get(url_global+"/admin/salcamaras/"+ this.value +"/productoterminado/",function(response){
                 $('#stock').val(response.saldo);
-                $('#lote').val(response.lote);
+                $('#lotedet').val(response.lote);
                 $('#cantidad').val(response.saldo);
                 $('#total').val(response.saldo * 20);
             });
@@ -456,9 +467,19 @@
         });
    
         $('#cantidad').blur(function(){
-            var cantidad = NaNToCero($('#cantidad').val());
-            var peso = NaNToCero($('#peso').val());
-            $('#total').val(Redondea(cantidad*peso,2))
+            const cantidad = NaNToCero($('#cantidad').val());
+            const peso = NaNToCero($('#peso').val());
+            if (cantidad > $('#stock').val()) {
+                Swal.fire(
+                    'Error',
+                    'La cantidad es mayor al Stock',
+                    'error'
+                    );
+                this.value = 0;
+                $('#total').val(0)
+            } else {
+                $('#total').val(Redondea(cantidad*peso,2))
+            }
         });
 
         $('#peso').blur(function(){

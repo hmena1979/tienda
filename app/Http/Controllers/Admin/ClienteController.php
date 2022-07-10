@@ -12,6 +12,7 @@ use App\Models\Cliente;
 use App\Models\Categoria;
 use App\Models\Country;
 use App\Models\Detcliente;
+use App\Models\Detmasivo;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Empresa;
 use App\Models\User;
@@ -397,14 +398,33 @@ class ClienteController extends Controller
     	if($validator->fails()){
             return back()->withErrors($validator)->with('message', 'Se ha producido un error')->with('typealert', 'danger')->withinput();
         }else{
-            Detcliente::create([
-                'cliente_id' => $cliente->id,
-                'banco_id' => $request->input('banco_id'),
-                'moneda' => $request->input('moneda'),
-                'tipo' => $request->input('tipo'),
-                'cuenta' => $request->input('cuenta'),
-                'cci' => $request->input('cci'),
-            ]);
+            if ($request->input('tipreg') == 1) {
+                Detcliente::create([
+                    'cliente_id' => $cliente->id,
+                    'banco_id' => $request->input('banco_id'),
+                    'moneda' => $request->input('moneda'),
+                    'tipo' => $request->input('tipo'),
+                    'cuenta' => $request->input('cuenta'),
+                    'cci' => $request->input('cci'),
+                ]);
+            } else {
+                $detcliente = Detcliente::findOrFail($request->input('idregistro'));
+                $cuentaAnterior = $detcliente->cuenta;
+                $cciAnterior = $detcliente->cci;
+                $detcliente->update([
+                    'banco_id' => $request->input('banco_id'),
+                    'moneda' => $request->input('moneda'),
+                    'tipo' => $request->input('tipo'),
+                    'cuenta' => $request->input('cuenta'),
+                    'cci' => $request->input('cci'),
+                ]);
+                Detmasivo::where('cuenta',$cuentaAnterior)->update([
+                    'cuenta' => $detcliente->cuenta,
+                ]);
+                Detmasivo::where('cuenta',$cciAnterior)->update([
+                    'cuenta' => $detcliente->cci,
+                ]);
+            }
             return redirect()->route('admin.clientes.edit',$cliente)->with('store', 'Cuenta Agregada');
         }
     }
@@ -419,6 +439,13 @@ class ClienteController extends Controller
     {
         $cuentas = Detcliente::with(['banco'])->where('cliente_id', $cliente->id)->get();
         return response()->json($cuentas);
+    }
+
+    public function detcliente(Request $request, Detcliente $detcliente)
+    {
+        if ($request->ajax()) {
+            return response()->json($detcliente);
+        }
     }
 
     public function actualizacuenta()

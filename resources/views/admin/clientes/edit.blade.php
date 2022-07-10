@@ -126,11 +126,31 @@
         @endcan
         {!! Form::close() !!}
         @can('admin.clientes.cuenta')
-        <div class="row mtop16" id="addcuenta">
+        <div class="row mtop16 oculto" id="addcuenta">
 			<div class="col-md-12">
+                {!! Form::open(['route'=>['admin.clientes.storedetalle',$cliente]]) !!}
+                {!! Form::hidden('tipreg', 1,['id'=>'tipreg']) !!}
+                {!! Form::hidden('idregistro', null,['id'=>'idregistro']) !!}
 				<div class="panelprin shadow">
+                    <div class="headercontent">
+						<h2 class="title"><i class="fas fa-address-card"></i> Agregar | Editar Cuenta</h2>
+						<ul>
+                            <li>
+                                {!! Form::submit('Aceptar', ['class'=>'btn btn-convertir', 'id'=>'add']) !!}
+                            </li>
+                            {{-- <li>
+                                <button type="button" id='add' class="btn btn-block btn-convertir mt-2" datatoggle="tooltip" data-placement="top" title="Aceptar">
+                                    <i class="fas fa-check"></i> Aceptar
+                                </button>
+                            </li> --}}
+                            <li>
+                                <button type="button" id='cancel' class="btn btn-block btn-convertir mt-1" datatoggle="tooltip" data-placement="top" title="Descartar">
+                                    Descartar
+                                </button>
+                            </li>
+						</ul>
+					</div>
 					<div class="inside">
-                        {!! Form::open(['route'=>['admin.clientes.storedetalle',$cliente]]) !!}
                         <div class="row">
                             <div class="col-md-2 form-group">
 								{!! Form::label('banco_id', 'Banco:') !!}
@@ -156,17 +176,14 @@
 								{!! Form::label('cci', 'CCI:') !!}
 								{!! Form::text('cci', null, ['class'=>'form-control numero','autocomplete'=>'off']) !!}
 							</div>
-                            <div class="col-md-1">
-                                {!! Form::submit('+', ['class'=>'btn btn-block btn-convertir mtop20', 'id'=>'add']) !!}
-                            </div>
                         </div>
-                        {!! Form::close() !!}
                     </div>
                 </div>
+                {!! Form::close() !!}
             </div>
         </div>
         @endcan
-        <div class="row mtop16">
+        <div class="row mtop16" id='detalles'>
 			<div class="col-md-12">
 				<div class="panelprin shadow">
 					<div class="inside">
@@ -370,12 +387,28 @@
 
         $('#cuenta').blur(function(){
             var longitud = this.value.length;
-            if ($('#banco_id').val() == 2 && (longitud <= 13)) {
-                Swal.fire(
-                    'Error!',
-                    'Cuenta Ahorro BCP debe contener 14 dígitos!<br>Cuenta Corriente BCP debe contener 13 dígitos!',
-                    'error'
-                    );
+            if ($('#banco_id').val() == 2) {
+                if ($('#tipo').val() == 1 && longitud != 14) {
+                    Swal.fire(
+                        'Error!',
+                        'Cuenta Ahorro BCP debe contener 14 dígitos!',
+                        'error'
+                        );
+                }
+                if ($('#tipo').val() == 2 && longitud != 13) {
+                    Swal.fire(
+                        'Error!',
+                        'Cuenta Corriente BCP debe contener 13 dígitos!',
+                        'error'
+                        );
+                }
+                if ($('#tipo').val() == 3 && longitud != 13) {
+                    Swal.fire(
+                        'Error!',
+                        'Cuenta Maestra BCP debe contener 13 dígitos!',
+                        'error'
+                        );
+                }
             }
             if ($('#banco_id').val() == 3 && longitud != 18) {
                 Swal.fire(
@@ -387,6 +420,22 @@
             
         });
 
+        $('#cancel').click(function(){
+            $('#addcuenta').hide();
+            $('#detalles').show();
+            $('#tipreg').val(1);
+            $('#idregistro').val(null);
+            $('#banco_id').val(null);
+            $('#moneda').val('PEN');
+            if ($('#tipdoc_id').val() == '6' && $('#numdoc').val().substr(0,2) == '20') {
+                $('#tipo').val(2);
+            } else {
+                $('#tipo').val(1);
+            }
+            $('#cuenta').val(null);
+            $('#cci').val(null);
+        });
+
         function veritems(){
             var id = $('#id').val();
             $.get(url_global+"/admin/clientes/"+id+"/tablaitem/",function(response){
@@ -396,5 +445,29 @@
         }
 
     });
+    function edititem(id) {
+        $('#tipreg').val(2);
+        $.get(url_global+"/admin/clientes/"+id+"/detcliente/",function(response){
+            $('#idregistro').val(response.id);
+            $('#banco_id').val(response.banco_id);
+            $('#moneda').val(response.moneda);
+            $('#tipo').val(response.tipo);
+            $('#cuenta').val(response.cuenta);
+            $('#cci').val(response.cci);
+            $('#addcuenta').show();
+            $('#detalles').hide();
+        });
+    }
+
+    function additem() {
+        if ($('#tipdoc_id').val() == '6' && $('#numdoc').val().substr(0,2) == '20') {
+            $('#tipo').val(2);
+        } else {
+            $('#tipo').val(1);
+        }
+        $('#addcuenta').show();
+        $('#detalles').hide();
+    }
+
 </script>
 @endsection

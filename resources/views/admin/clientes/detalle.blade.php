@@ -7,7 +7,9 @@
             <th width="20%">Cuenta</th>
             <th width="20%">CCI</th>
             <th width="10%">
-                
+                <button type="button" class="btn btn-block btn-addventa" title="Agregar Cuenta" onclick="additem();">
+                    +
+                </button>
             </th>
         </tr>
     </thead>
@@ -22,7 +24,10 @@
             <td class="text-center align-middle">
                 <div class='opts'>
                     @can('admin.clientes.cuenta')
-                    <button type="button" class="btn" id='destroyitem' title="Eliminar" onclick="destroyitem('{{ $det->id }}');">
+                    <button type="button" class="btn" title="Editar" onclick="edititem('{{ $det->id }}');">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button type="button" class="btn" title="Eliminar" onclick="destroyitem('{{ $det->id }}');">
                         <i class="fas fa-trash-alt"></i>
                     </button>
                     @endcan

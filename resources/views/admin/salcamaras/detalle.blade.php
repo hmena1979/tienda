@@ -15,9 +15,9 @@
                 @foreach($detsalcamara->detdetsalcamaras as $det)
                 <tr>
                     <td>{{ $det->lote }}</td>
-                    <td class="text-center">{{ $det->cantidad }}</td>
+                    <td class="text-center">{{ number_format($det->cantidad) }}</td>
                     <td class="text-center">{{ $det->peso }}</td>
-                    <td class="text-center">{{ $det->cantidad * $det->peso }}</td>
+                    <td class="text-center">{{ number_format($det->cantidad * $det->peso) }}</td>
                     <td>
                         {{-- @if ($ingcamara->estado == 1) --}}
                         <div class="opts">
@@ -34,9 +34,17 @@
                 @endforeach
                 <tr>
                     <td></td>
-                    <th class="text-center">{{ number_format($detsalcamara->detdetsalcamaras->sum('cantidad')) }}</th>
+                    <th class="text-center">
+                        @if ($detsalcamara->detdetsalcamaras->sum('cantidad'))
+                        {{ number_format($detsalcamara->detdetsalcamaras->sum('cantidad')) }}
+                        @endif
+                    </th>
                     <td></td>
-                    <th class="text-center">{{ number_format($detsalcamara->detdetsalcamaras->sum('cantidad')*20) }}</th>
+                    <th class="text-center">
+                        @if ($detsalcamara->detdetsalcamaras->sum('cantidad'))
+                        {{ number_format($detsalcamara->detdetsalcamaras->sum('cantidad')*20) }}
+                        @endif
+                    </th>
                     <td colspan="2"></td>
                 </tr>
             </tbody>
@@ -54,8 +62,16 @@
             </thead>
             <tbody>
                 <tr>
-                    <th class="text-center colorprin">{{ number_format($detsalcamara->salcamara->sacos) }}</th>
-                    <th class="text-center colorprin">{{ number_format($detsalcamara->salcamara->pesoneto) }}</th>
+                    <th class="text-center colorprin">
+                        @if ($detsalcamara->salcamara->sacos)
+                        {{ number_format($detsalcamara->salcamara->sacos) }}                            
+                        @endif
+                    </th>
+                    <th class="text-center colorprin">
+                        @if ($detsalcamara->salcamara->pesoneto)
+                        {{ number_format($detsalcamara->salcamara->pesoneto) }}                            
+                        @endif
+                    </th>
                 </tr>
             </tbody>
         </table>
