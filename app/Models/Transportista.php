@@ -30,6 +30,11 @@ class Transportista extends Model
         return $this->hasOne('App\Models\Materiaprima');
     }
 
+    public function embarque()
+    {
+        return $this->hasOne('App\Models\Embarque');
+    }
+
     public function salcamara()
     {
         return $this->hasOne('App\Models\Salcamara');

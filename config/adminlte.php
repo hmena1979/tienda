@@ -15,7 +15,7 @@ return [
     */
 
     'title' => '',
-    'title_prefix' => 'Pesquera | ',
+    'title_prefix' => 'Pesquera HL | ',
     'title_postfix' => '',
 
     /*
@@ -477,6 +477,15 @@ return [
                     'can'  => 'admin.partes.index',
                     'active' => ['admin/partes','admin/partes/*','admin/partes/create'
                                 ,'admin/partes/*/edit'],
+                ],
+                [
+                    'text' => 'Embarques',
+                    'icon'    => 'fab fa-docker',
+                    'icon_color' => 'cyan',
+                    'route'  => 'admin.embarques.index',
+                    'can'  => 'admin.embarques.index',
+                    'active' => ['admin/embarques','admin/embarques/*','admin/embarques/create'
+                                ,'admin/embarques/*/edit'],
                 ],
             ],
         ],

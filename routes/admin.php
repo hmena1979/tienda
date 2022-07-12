@@ -23,6 +23,7 @@ use App\Http\Controllers\Admin\ProductoController;
 use App\Http\Controllers\Admin\TipoComprobanteController;
 use App\Http\Controllers\Admin\DetraccionController;
 use App\Http\Controllers\Admin\EmbarcacionController;
+use App\Http\Controllers\Admin\EmbarqueController;
 use App\Http\Controllers\Admin\EmpAcopiadoraController;
 use App\Http\Controllers\Admin\EnvasadoController;
 use App\Http\Controllers\Admin\EnvasadocrudoController;
@@ -384,17 +385,15 @@ Route::resource('ingcamaras', IngcamaraController::class)->names('admin.ingcamar
 Route::get('/ingcamaras/{periodo?}', [IngcamaraController::class,'index'])->name('admin.ingcamaras.index');
 
 //Residuos Sólidos
+Route::post('/residuos/change', [ResiduoController::class,'change'])->name('admin.residuos.change');
 Route::resource('residuos', ResiduoController::class)->names('admin.residuos');
+Route::get('/residuos/{periodo?}', [ResiduoController::class,'index'])->name('admin.residuos.index');
 
 //Ciudades
 Route::resource('countries', CountryController::class)->names('admin.countries');
 
 //Planilla de Salida a Camaras
 Route::post('/salcamaras/change', [SalcamaraController::class,'change'])->name('admin.salcamaras.change');
-// Route::get('/salcamaras/{salcamara}/tablaitem', [SalcamaraController::class,'tablaitem'])->name('admin.salcamaras.tablaitem');
-// Route::post('/salcamaras/additem', [SalcamaraController::class,'additem'])->name('admin.salcamaras.additem');
-// Route::get('/salcamaras/{detsalcamara}/detsalcamara', [SalcamaraController::class,'detingcamara'])->name('admin.salcamaras.detsalcamara');
-// Route::get('/salcamaras/{detsalcamara}/destroyitem', [SalcamaraController::class,'destroyitem'])->name('admin.salcamaras.destroyitem');
 Route::post('/salcamaras/aedetsalcamara', [SalcamaraController::class,'aedetsalcamara'])->name('admin.salcamaras.aedetsalcamara');
 Route::get('/salcamaras/{detsalcamara}/tablaitem', [SalcamaraController::class,'tablaitem'])->name('admin.salcamaras.tablaitem');
 Route::get('/salcamaras/{detsalcamara}/listdetalle', [SalcamaraController::class,'listdetalle'])->name('admin.salcamaras.listdetalle');
@@ -406,11 +405,14 @@ Route::get('/salcamaras/{detdetsalcamara}/destroyitem', [SalcamaraController::cl
 Route::get('/salcamaras/{productoterminado}/productoterminado', [SalcamaraController::class,'productoterminado'])->name('admin.salcamaras.productoterminado');
 Route::get('/salcamaras/{salcamara}/aprobar', [SalcamaraController::class,'aprobar'])->name('admin.salcamaras.aprobar');
 Route::get('/salcamaras/{salcamara}/abrir', [SalcamaraController::class,'abrir'])->name('admin.salcamaras.abrir');
-// Route::get('/salcamaras/{envio}/aedet', [SalcamaraController::class, 'aedet'])->name('admin.salcamaras.aedet');
-// Route::get('/salcamaras/{detsalcamara}/detsalcamara', [SalcamaraController::class,'trazabilidad'])->name('admin.salcamaras.trazabilidad');
 Route::resource('salcamaras', SalcamaraController::class)->names('admin.salcamaras');
 Route::get('/salcamaras/{periodo?}', [SalcamaraController::class,'index'])->name('admin.salcamaras.index');
 Route::get('/salcamaras/edit/{salcamara}/{detsalcamara?}', [SalcamaraController::class,'edit'])->name('admin.salcamaras.edit');
+
+//Embarques
+Route::post('/embarques/change', [EmbarqueController::class,'change'])->name('admin.embarques.change');
+Route::resource('embarques', EmbarqueController::class)->names('admin.embarques');
+Route::get('/embarques/{periodo?}', [EmbarqueController::class,'index'])->name('admin.embarques.index');
 
 //Regenera Saldos de Productos
 Route::get('/saldos/gregenera', [SaldoController::class,'gregenera'])->name('admin.saldos.gregenera');

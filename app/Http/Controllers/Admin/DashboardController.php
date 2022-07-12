@@ -410,13 +410,18 @@ class DashboardController extends Controller
 		// $this->agregar_permiso('46','PAISES','admin.countries.create','Puede agregar Paises');
 		// $this->agregar_permiso('46','PAISES','admin.countries.edit','Puede editar Paises');
 		// $this->agregar_permiso('46','PAISES','admin.countries.destroy','Puede eliminar Paises');
-		//----------------------------------------------------------------------------------------------------
-		$this->agregar_permiso('47','GUÍA SALIDA A CÁMARAS','admin.salcamaras.index','Puede ver listado Salida a Cámaras');
-		$this->agregar_permiso('47','GUÍA SALIDA A CÁMARAS','admin.salcamaras.create','Puede agregar Salida a Cámaras');
-		$this->agregar_permiso('47','GUÍA SALIDA A CÁMARAS','admin.salcamaras.edit','Puede editar Salida a Cámaras');
-		$this->agregar_permiso('47','GUÍA SALIDA A CÁMARAS','admin.salcamaras.destroy','Puede eliminar Salida a Cámaras');
-		$this->agregar_permiso('47','GUÍA SALIDA A CÁMARAS','admin.salcamaras.aprobar','Puede aprobar Salida a Cámaras');
+
+		// $this->agregar_permiso('47','GUÍA SALIDA A CÁMARAS','admin.salcamaras.index','Puede ver listado Salida a Cámaras');
+		// $this->agregar_permiso('47','GUÍA SALIDA A CÁMARAS','admin.salcamaras.create','Puede agregar Salida a Cámaras');
+		// $this->agregar_permiso('47','GUÍA SALIDA A CÁMARAS','admin.salcamaras.edit','Puede editar Salida a Cámaras');
+		// $this->agregar_permiso('47','GUÍA SALIDA A CÁMARAS','admin.salcamaras.destroy','Puede eliminar Salida a Cámaras');
+		// $this->agregar_permiso('47','GUÍA SALIDA A CÁMARAS','admin.salcamaras.aprobar','Puede aprobar Salida a Cámaras');
 		
+		//----------------------------------------------------------------------------------------------------
+		$this->agregar_permiso('48','EMBARQUES','admin.embarques.index','Puede ver listado Embarques');
+		$this->agregar_permiso('48','EMBARQUES','admin.embarques.create','Puede agregar Embarques');
+		$this->agregar_permiso('48','EMBARQUES','admin.embarques.edit','Puede editar Embarques');
+		$this->agregar_permiso('48','EMBARQUES','admin.embarques.destroy','Puede eliminar Embarques');
 
 		// return redirect()->route('admin.inicio')->with('update', 'Permisos Agregados');
 		// return redirect()->route('admin.inicio')->with('update', 'Registro Actualizado');		

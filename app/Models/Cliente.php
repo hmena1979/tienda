@@ -67,4 +67,9 @@ class Cliente extends Model
     {
         return $this->hasOne('App\Models\Materiaprima');
     }
+
+    public function embarque()
+    {
+        return $this->hasOne('App\Models\Embarque');
+    }
 }

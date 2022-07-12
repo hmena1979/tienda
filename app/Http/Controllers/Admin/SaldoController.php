@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Producto;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Admin\KardexController;
+
+use App\Models\Producto;
 use App\Models\Kardex;
 use App\Models\Saldo;
 use App\Models\Sede;
@@ -83,8 +85,18 @@ class SaldoController extends Controller
 
     public function update(Request $request, Saldo $saldo)
     {
+        // $rules = [
+        //     'producto_id' => "required|unique:saldos,producto_id,".$saldo->id,
+        //     'saldo' => 'required',
+        // ];
+
         $rules = [
-            'producto_id' => "required|unique:saldos,producto_id,".$saldo->id,
+            'producto_id' => [
+                'required',
+                Rule::unique('saldos')->where(function ($query) use ($saldo) {
+                    return $query->where('id','<>',$saldo->id)->where('periodo','000000');
+                }),
+            ],
             'saldo' => 'required',
         ];
         

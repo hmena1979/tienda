@@ -1,10 +1,10 @@
 {{-- @extends('adminlte::page') --}}
 @extends('admin.master')
-@section('title','Residuos Sólidos')
+@section('title','Embarques')
 
 @section('breadcrumb')
 	<li class="breadcrumb-item">
-		<a href="{{ route('admin.residuos.index') }}"><i class="far fa-trash-alt"></i> Residuos Sólidos</a>
+		<a href="{{ route('admin.embarques.index') }}"><i class="fab fa-docker"></i> Embarques</a>
 	</li>
 @endsection
 
@@ -14,11 +14,11 @@
 			<div class="col-md-12">
 				<div class="panelprin shadow">
 					<div class="headercontent">
-						<h2 class="title"><i class="far fa-trash-alt"></i> Residuos Sólidos</h2>
+						<h2 class="title"><i class="fab fa-docker"></i> Embarques</h2>
 						<ul>
 							<li>
                                 <div class="cita mt-1">
-                                    {!! Form::open(['route'=>'admin.residuos.change']) !!}
+                                    {!! Form::open(['route'=>'admin.embarques.change']) !!}
                                     <div class="input-group tamvar">
                                         {!! Form::select('mes',getMeses(),substr($periodo,0,2),['class'=>'custom-select']) !!}
                                         {!! Form::text('año', substr($periodo,2,4), ['class'=>'form-control','maxlength'=>'4','autocomplete'=>'off']) !!}
@@ -30,9 +30,9 @@
                                     {!! Form::close() !!}
                                 </div>
                             </li>
-							@can('admin.residuos.create')
+							@can('admin.embarques.create')
 							<li>
-								<a href="{{ route('admin.residuos.create') }}">
+								<a href="{{ route('admin.embarques.create') }}">
 									Agregar registro
 								</a>
 							</li>
@@ -44,32 +44,26 @@
 							<thead>
 								<tr>
 									<th width="15%">Lote</th>
-									<th width="10%">Especie</th>
-									<th width="25%">Cliente</th>
-									<th width="10%">Pesaje N°</th>
-									<th width="10%">Emisión</th>
-									<th width="10%">Guía HL</th>
-									<th width="10%">Total Kgs</th>
+									<th width="35%">Cliente</th>
+									<th width="20%">Destino</th>
+									<th width="20%">Boocking</th>
 									<th width="10%"></th>
 								</tr>
 							</thead>
 							<tbody>
-								@foreach($residuos as $residuo)
-								<tr>
-									<td>{{ $residuo->lote }}</td>
-									<td>{{ $residuo->especie }}</td>
-									<td>{{ $residuo->cliente->razsoc }}</td>
-									<td>{{ $residuo->ticket_balanza }}</td>
-									<td>{{ $residuo->emision }}</td>
-									<td>{{ $residuo->guiahl }}</td>
-									<td>{{ $residuo->peso }}</td>
+								@foreach($embarques as $embarque)
+								<tr> {{ $embarque->country->nombre }}
+									<td>{{ $embarque->lote }}</td>
+									<td>{{ $embarque->cliente->razsoc }}</td>
+									<td>{{ $embarque->country->nombre }}</td>
+									<td>{{ $embarque->booking }}</td>
 									<td>
 										<div class="opts">
-											@can('admin.residuos.edit')
-											<a class="" href="{{ route('admin.residuos.edit',$residuo) }}"datatoggle="tooltip" data-placement="top" title="Editar"><i class="fas fa-edit"></i></a>
+											@can('admin.embarques.edit')
+											<a class="" href="{{ route('admin.embarques.edit',$embarque) }}"datatoggle="tooltip" data-placement="top" title="Editar"><i class="fas fa-edit"></i></a>
 											@endcan
-											@can('admin.supervisors.destroy')
-											<form action="{{ route('admin.residuos.destroy',$residuo) }}" method="POST" class="formulario_eliminar">
+											@can('admin.embarques.destroy')
+											<form action="{{ route('admin.embarques.destroy',$embarque) }}" method="POST" class="formulario_eliminar">
 												@csrf
 												@method('delete')
 												<button type="submit" datatoggle="tooltip" data-placement="top" title="Eliminar">
@@ -77,7 +71,7 @@
 												</button>
 											</form>
                                             @endcan
-											<a class="" href="{{ route('admin.pdf.residuo',$residuo) }}" target="_blank" datatoggle="tooltip" data-placement="top" title="Imprimir"><i class="fas fa-print"></i></a>
+											<a class="" href="{{ route('admin.pdf.residuo',$embarque) }}" target="_blank" datatoggle="tooltip" data-placement="top" title="Imprimir"><i class="fas fa-print"></i></a>
 										</div>
 									</td>
 								</tr>
