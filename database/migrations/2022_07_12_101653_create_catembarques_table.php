@@ -16,7 +16,7 @@ class CreateCatembarquesTable extends Migration
         Schema::create('catembarques', function (Blueprint $table) {
             $table->id();
             $table->integer('modulo');
-            $table->string('nombre');
+            $table->string('nombre')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

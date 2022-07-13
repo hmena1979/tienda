@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UsuarioController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\CategoriaController;
+use App\Http\Controllers\Admin\CatembarqueController;
 use App\Http\Controllers\Admin\CatproductoController;
 use App\Http\Controllers\Admin\CcostoController;
 use App\Http\Controllers\Admin\ImportController;
@@ -411,8 +412,18 @@ Route::get('/salcamaras/edit/{salcamara}/{detsalcamara?}', [SalcamaraController:
 
 //Embarques
 Route::post('/embarques/change', [EmbarqueController::class,'change'])->name('admin.embarques.change');
+Route::get('/embarques/{lote}/valores',[EmbarqueController::class,'valores'])->name('admin.embarques.valores');
 Route::resource('embarques', EmbarqueController::class)->names('admin.embarques');
 Route::get('/embarques/{periodo?}', [EmbarqueController::class,'index'])->name('admin.embarques.index');
+
+//Categoria Embarques
+Route::get('/catembarques/{module?}',[CatembarqueController::class,'index'])->name('admin.catembarques.index');
+Route::get('/catembarques/{module}/create',[CatembarqueController::class,'create'])->name('admin.catembarques.create');
+Route::post('/catembarques/store',[CatembarqueController::class,'store'])->name('admin.catembarques.store');
+Route::get('/catembarques/{catembarque}/edit',[CatembarqueController::class,'edit'])->name('admin.catembarques.edit');
+Route::put('/catembarques/{catembarque}/update',[CatembarqueController::class,'update'])->name('admin.catembarques.update');
+Route::delete('/catembarques/{catembarque}/destroy',[CatembarqueController::class,'destroy'])->name('admin.catembarques.destroy');
+
 
 //Regenera Saldos de Productos
 Route::get('/saldos/gregenera', [SaldoController::class,'gregenera'])->name('admin.saldos.gregenera');
@@ -489,6 +500,7 @@ Route::post('/import/producto', [ImportController::class,'producto'])->name('adm
 Route::post('/import/producto', [ImportController::class,'producto'])->name('admin.imports.producto');
 Route::post('/import/mpd', [ImportController::class,'mpd'])->name('admin.imports.mpd');
 Route::post('/import/saldo', [ImportController::class,'saldo'])->name('admin.imports.saldo');
+Route::post('/import/catembarque', [ImportController::class,'catembarque'])->name('admin.imports.catembarque');
 
 //Modulo Busquedas
 Route::get('/busquedas/departamento', [BusquedaController::class,'departamento'])->name('admin.busquedas.departamento');

@@ -14,4 +14,8 @@ class Country extends Model
     protected $table = 'countries';
     protected $hidden = ['created_at','updated_at'];
     protected $guarded = [];
+
+    public function embarque(){
+        return $this->hasOne('App\Models\Embarque');
+    }
 }

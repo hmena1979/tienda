@@ -11,6 +11,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator;
 
 use App\Imports\CategoriaImport;
+use App\Imports\CatembarqueImport;
 use App\Imports\CatproductoImport;
 use App\Imports\ChoferImport;
 use App\Imports\UMedidaImport;
@@ -395,6 +396,26 @@ class ImportController extends Controller
 		else:
     		$file = $request->file('archivo');
     		Excel::import(new MpdImport, $file);
+
+    		return redirect('/admin/import')->with('message', 'Archivo importado')->with('typealert', 'success');
+    	endif;
+    }
+
+    public function catembarque(Request $request)
+    {
+    	$rules = [
+			'archivo' => 'required'
+    	];
+    	$messages = [
+			'archivo.required' => 'No ha selecionado archivo CatEmbarque.xlsx'
+    	];
+
+    	$validator = validator::make($request->all(), $rules, $messages);
+    	if($validator->fails()):
+    		return back()->withErrors($validator)->with('message', 'Se ha producido un error')->with('typealert', 'danger')->withinput();
+		else:
+    		$file = $request->file('archivo');
+    		Excel::import(new CatembarqueImport, $file);
 
     		return redirect('/admin/import')->with('message', 'Archivo importado')->with('typealert', 'success');
     	endif;

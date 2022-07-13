@@ -25,6 +25,19 @@
 		return $a;
 	}
 
+	function getEmbarquesArray(){
+		$a = [
+			'1' => 'STUFFING PLACE',
+			'2' => 'FFW',
+			'3' => 'AGENCIA ADUANA',
+			'4' => 'RELEASE',
+			'5' => 'PI2',
+			'6' => 'PY',
+			'7' => 'PAY T',
+		];
+		return $a;
+	}
+
 	function geMensajeriaArray(){
 		$a = [
 			'1' => 'Pagos Masivos',

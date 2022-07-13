@@ -475,6 +475,31 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row mtop16">
+                            <div class="card w-100 ml-2">
+                                <div class="card-header">
+                                    <h2 class="title">Importar Categoria Embarques</h2>
+                                </div>
+                                <div class="card-body">
+                                    {!! Form::open(['url'=>'/admin/import/catembarque', 'files' => true]) !!}
+                                        {{-- @csrf --}}
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label for="archivo" class="">Archivo:</label>
+                                                <div class="custom-file">
+                                                    {!! Form::file('archivo', ['class'=>'custom-file-input','id'=>'customFile', 'accept'=>'.xlsx']) !!}
+                                                    <label class="custom-file-label" for="customFile" data-browse="Buscar">Buscar archivo CatEmbarque.xlsx</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                {!! Form::submit('Importar', ['class'=>'btn btn-convertir mtop25']) !!}
+
+                                            </div>
+                                        </div>
+                                        {!! Form::close() !!}
+                                </div>
+                            </div>
+                        </div>
                         {{-- <div class="row">
                             <div class="card w-100 ml-2">
                                 <div class="card-header">

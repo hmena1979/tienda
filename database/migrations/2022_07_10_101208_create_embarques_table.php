@@ -23,7 +23,7 @@ class CreateEmbarquesTable extends Migration
             $table->unsignedBigInteger('country_id');
             $table->string('booking',20)->nullable();
             $table->string('grt',15)->nullable();
-            $table->unsignedBigInteger('transportista_id');
+            $table->unsignedBigInteger('transportista_id')->nullable();
             $table->string('grr',15)->nullable();
             $table->string('precinto_hl',30)->nullable();
             $table->string('factura_numero',15)->nullable();
@@ -68,6 +68,7 @@ class CreateEmbarquesTable extends Migration
             $table->decimal('adv',12)->nullable();
             $table->decimal('balance',12)->nullable();
             $table->decimal('thirdpy',12)->nullable();
+            $table->text('observaciones')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

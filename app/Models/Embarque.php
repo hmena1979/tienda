@@ -22,4 +22,8 @@ class Embarque extends Model
     public function transportista(){
         return $this->belongsTo('App\Models\Transportista');
     }
+
+    public function country(){
+        return $this->belongsTo('App\Models\Country');
+    }
 }

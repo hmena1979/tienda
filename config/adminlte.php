@@ -534,6 +534,15 @@ return [
                     'can'  => 'admin.catproductos.index',
                 ],
                 [
+                    'text' => 'Categoría Embarques',
+                    'icon'    => 'fas fa-folder-open',
+                    'icon_color' => 'cyan',
+                    'route'  => 'admin.catembarques.index',
+                    'active' => ['admin/catembarques','admin/catembarques/*','admin/catembarques/create'
+                                ,'admin/catembarques/*/edit'],
+                    'can'  => 'admin.catembarques.index',
+                ],
+                [
                     'text' => 'Producto | Servicio',
                     'icon'    => 'fas fa-window-restore',
                     'icon_color' => 'cyan',

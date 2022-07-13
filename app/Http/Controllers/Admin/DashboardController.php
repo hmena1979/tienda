@@ -417,11 +417,16 @@ class DashboardController extends Controller
 		// $this->agregar_permiso('47','GUÍA SALIDA A CÁMARAS','admin.salcamaras.destroy','Puede eliminar Salida a Cámaras');
 		// $this->agregar_permiso('47','GUÍA SALIDA A CÁMARAS','admin.salcamaras.aprobar','Puede aprobar Salida a Cámaras');
 		
+		// $this->agregar_permiso('48','EMBARQUES','admin.embarques.index','Puede ver listado Embarques');
+		// $this->agregar_permiso('48','EMBARQUES','admin.embarques.create','Puede agregar Embarques');
+		// $this->agregar_permiso('48','EMBARQUES','admin.embarques.edit','Puede editar Embarques');
+		// $this->agregar_permiso('48','EMBARQUES','admin.embarques.destroy','Puede eliminar Embarques');
 		//----------------------------------------------------------------------------------------------------
-		$this->agregar_permiso('48','EMBARQUES','admin.embarques.index','Puede ver listado Embarques');
-		$this->agregar_permiso('48','EMBARQUES','admin.embarques.create','Puede agregar Embarques');
-		$this->agregar_permiso('48','EMBARQUES','admin.embarques.edit','Puede editar Embarques');
-		$this->agregar_permiso('48','EMBARQUES','admin.embarques.destroy','Puede eliminar Embarques');
+		
+		$this->agregar_permiso('49','CATEGORÍA EMBARQUES','admin.catembarques.index','Puede ver listado Categoria Embarques');
+		$this->agregar_permiso('49','CATEGORÍA EMBARQUES','admin.catembarques.create','Puede agregar Categoria Embarques');
+		$this->agregar_permiso('49','CATEGORÍA EMBARQUES','admin.catembarques.edit','Puede editar Categoria Embarques');
+		$this->agregar_permiso('49','CATEGORÍA EMBARQUES','admin.catembarques.destroy','Puede eliminar Categoria Embarques');
 
 		// return redirect()->route('admin.inicio')->with('update', 'Permisos Agregados');
 		// return redirect()->route('admin.inicio')->with('update', 'Registro Actualizado');		

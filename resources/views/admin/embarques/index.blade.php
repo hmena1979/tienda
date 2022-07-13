@@ -52,7 +52,7 @@
 							</thead>
 							<tbody>
 								@foreach($embarques as $embarque)
-								<tr> {{ $embarque->country->nombre }}
+								<tr>
 									<td>{{ $embarque->lote }}</td>
 									<td>{{ $embarque->cliente->razsoc }}</td>
 									<td>{{ $embarque->country->nombre }}</td>

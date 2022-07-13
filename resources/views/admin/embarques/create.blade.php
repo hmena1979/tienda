@@ -28,7 +28,18 @@
 						<div class="row">
 							<div class="col-md-2 form-group">
                                 {!! Form::label('lote', 'Lote:') !!}
-                                {!! Form::text('lote', null, ['class'=>'form-control mayuscula','maxlength'=>'15','autocomplete'=>'off']) !!}
+								<div class="row no-gutters">
+									<div class="col-md-9">
+										{!! Form::text('lote', null, ['class'=>'form-control mayuscula','maxlength'=>'15','autocomplete'=>'off']) !!}
+									</div>
+									<div class="col-md-3">
+										<button class="btn btn-block btn-convertir" type="button" id="actualiza" title="Buscar"><i class="fas fa-search"></i></button>
+									</div>
+								</div>
+                            </div>
+							<div class="col-md-2 form-group">
+                                {!! Form::label('moneda', 'Moneda:') !!}
+								{!! Form::select('moneda',$moneda,'USD',['class'=>'custom-select activo']) !!}
                             </div>
 							<div class="col-md-4 form-group">
                                 {!! Form::label('cliente_id', 'Cliente:') !!}
@@ -42,10 +53,6 @@
 								{!! Form::label('booking', 'Reserva / Booking:') !!}
 								{!! Form::text('booking', null, ['class'=>'form-control mayuscula','maxlength'=>'15','autocomplete'=>'off']) !!}
 							</div>
-							{{-- <div class="col-md-2 form-group">
-                                {!! Form::label('emision', 'Fecha Emisión:') !!}
-                                {!! Form::date('emision', Carbon\Carbon::now(), ['class'=>'form-control']) !!}
-                            </div> --}}
 						</div>
 						<div class="row">
 							<div class="col-md-3 form-group">
@@ -79,16 +86,16 @@
 						</div>
 						<div class="row">
 							<div class="col-md-2 form-group">
-								{!! Form::label('valor_fob', 'Valor FOB:') !!}
-								{!! Form::text('valor_fob', null, ['class'=>'form-control decimal','maxlength'=>'12','autocomplete'=>'off']) !!}
+								{!! Form::label('valor_venta', 'Valor Venta:') !!}
+								{!! Form::text('valor_venta', null, ['class'=>'form-control decimal fob','maxlength'=>'12','autocomplete'=>'off']) !!}
 							</div>
 							<div class="col-md-2 form-group">
 								{!! Form::label('otros_gastos', 'Otros Gastos:') !!}
-								{!! Form::text('otros_gastos', null, ['class'=>'form-control decimal','maxlength'=>'12','autocomplete'=>'off']) !!}
+								{!! Form::text('otros_gastos', null, ['class'=>'form-control decimal fob','maxlength'=>'12','autocomplete'=>'off']) !!}
 							</div>
 							<div class="col-md-2 form-group">
-								{!! Form::label('valor_venta', 'Valor Venta:') !!}
-								{!! Form::text('valor_venta', null, ['class'=>'form-control decimal','maxlength'=>'12','autocomplete'=>'off']) !!}
+								{!! Form::label('valor_fob', 'Valor FOB:') !!}
+								{!! Form::text('valor_fob', null, ['class'=>'form-control decimal','maxlength'=>'12','autocomplete'=>'off']) !!}
 							</div>
 							<div class="col-md-2 form-group">
 								{!! Form::label('atd_paking', 'ATD Packing:') !!}
@@ -150,11 +157,11 @@
 									</div>
 									<div class="col-md-3 form-group">
 										{!! Form::label('peso_bruto', 'Peso Bruto(KG):') !!}
-										{!! Form::text('peso_bruto', null, ['class'=>'form-control decimal','maxlength'=>'12','autocomplete'=>'off']) !!}
+										{!! Form::text('peso_bruto', null, ['class'=>'form-control decimal peso','maxlength'=>'12','autocomplete'=>'off']) !!}
 									</div>
 									<div class="col-md-3 form-group">
 										{!! Form::label('tara', 'Tara(KG):') !!}
-										{!! Form::text('tara', null, ['class'=>'form-control decimal','maxlength'=>'12','autocomplete'=>'off']) !!}
+										{!! Form::text('tara', null, ['class'=>'form-control decimal peso','maxlength'=>'12','autocomplete'=>'off']) !!}
 									</div>
 									<div class="col-md-3 form-group">
 										{!! Form::label('vgm', 'VGM(KG):') !!}
@@ -232,18 +239,22 @@
 								{!! Form::label('awb_dhl', 'AWB DHL:') !!}
 								{!! Form::text('awb_dhl', null, ['class'=>'form-control mayuscula','maxlength'=>'20','autocomplete'=>'off']) !!}
 							</div>
-							<div class="col-md-1 form-group">
-                                {!! Form::label('pi2_id', 'PI2:') !!}
-								{!! Form::select('pi2_id',$pi2,1,['class'=>'custom-select activo']) !!}
-                            </div>
-							<div class="col-md-1 form-group">
-                                {!! Form::label('py_id', 'PY:') !!}
-								{!! Form::select('py_id',$py,1,['class'=>'custom-select activo']) !!}
-                            </div>
-							<div class="col-md-2 form-group">
-                                {!! Form::label('payt_id', 'PAY T:') !!}
-								{!! Form::select('payt_id',$payt,1,['class'=>'custom-select activo']) !!}
-                            </div>
+							<div class="col-md-5">
+								<div class="row">
+									<div class="col-md-4 form-group">
+										{!! Form::label('pi2_id', 'PI2:') !!}
+										{!! Form::select('pi2_id',$pi2,1,['class'=>'custom-select activo']) !!}
+									</div>
+									<div class="col-md-4 form-group">
+										{!! Form::label('py_id', 'PY:') !!}
+										{!! Form::select('py_id',$py,1,['class'=>'custom-select activo']) !!}
+									</div>
+									<div class="col-md-4 form-group">
+										{!! Form::label('payt_id', 'PAY T:') !!}
+										{!! Form::select('payt_id',$payt,1,['class'=>'custom-select activo']) !!}
+									</div>
+								</div>
+							</div>
 						</div>
 						<div class="row">
 							<div class="col-md-2 form-group">
@@ -259,6 +270,12 @@
 								{!! Form::text('thirdpy', null, ['class'=>'form-control decimal','maxlength'=>'12','autocomplete'=>'off']) !!}
 							</div>
 						</div>
+						<div class="row">
+                            <div class="col-md-12 form-group">
+                                {!! Form::label('observaciones', 'Observaciones:') !!}
+                                {!! Form::textarea('observaciones',null,['class'=>'form-control mayuscula', 'rows'=>'3']) !!}
+                            </div>
+                        </div>
 					</div>				
 					{!! Form::close() !!}
 				</div>
@@ -290,8 +307,34 @@
 			}
 		});
 
-		$('.calcula').blur(function(){
-			$('#total').val(Redondea($('#peso').val() * $('#precio').val(),2));
+		$('#actualiza').click(function(){
+			if ($('#lote').val()) {
+				$.get(url_global+"/admin/embarques/"+$('#lote').val()+"/valores/",function(response){
+					$('#transportista_id').val(response.transportista_id);
+					$('#grt').val(response.grt);
+					$('#grr').val(response.grr);
+					$('#precinto_hl').val(response.precinto_hl);
+					$('#atd_paking').val(response.atd_paking);
+					$('#contenedor').val(response.contenedor);
+					$('#peso_neto').val(response.peso_neto);
+					$('#sacos').val(response.sacos);
+					$('#precinto_linea').val(response.precinto_linea);
+					$('#precinto_ag').val(response.precinto_ag);
+					$('#producto').val(response.producto);
+				});
+			}
+		});
+
+		$('.peso').blur(function(){
+			const pesoBruto = Number(NaNToCero($('#peso_bruto').val()));
+			const tara = Number(NaNToCero($('#tara').val()));
+			$('#vgm').val(pesoBruto + tara);
+		});
+
+		$('.fob').blur(function(){
+			const valorVenta = Number(NaNToCero($('#valor_venta').val()));
+			const otrosGastos = Number(NaNToCero($('#otros_gastos').val()));
+			$('#valor_fob').val(valorVenta - otrosGastos);
 		});
     });
 </script>

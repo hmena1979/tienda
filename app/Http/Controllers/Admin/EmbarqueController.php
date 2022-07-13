@@ -3,13 +3,19 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Categoria;
+use App\Models\Catembarque;
+use App\Models\Cliente;
 use App\Models\Country;
+use App\Models\Detsalcamara;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\Embarque;
+use App\Models\Pproceso;
+use App\Models\Salcamara;
 use App\Models\Transportista;
 
 class EmbarqueController extends Controller
@@ -47,16 +53,17 @@ class EmbarqueController extends Controller
     {
         $transportistas = Transportista::where('empresa_id',session('empresa'))
             ->orderBy('nombre')->pluck('nombre','id');
+        $moneda = Categoria::where('modulo',4)->orderBy('nombre')->pluck('nombre','codigo');
         $countries = Country::orderBy('nombre')->pluck('nombre','id');
-        $stuffing = Country::orderBy('nombre')->pluck('nombre','id');
-        $ffw = Country::orderBy('nombre')->pluck('nombre','id');
-        $agaduana = Country::orderBy('nombre')->pluck('nombre','id');
-        $release = Country::orderBy('nombre')->pluck('nombre','id');
-        $pi2 = Country::orderBy('nombre')->pluck('nombre','id');
-        $py = Country::orderBy('nombre')->pluck('nombre','id');
-        $payt = Country::orderBy('nombre')->pluck('nombre','id');
+        $stuffing = Catembarque::where('modulo',1)->orderBy('nombre')->pluck('nombre','id');
+        $ffw = Catembarque::where('modulo',2)->orderBy('nombre')->pluck('nombre','id');
+        $agaduana = Catembarque::where('modulo',3)->orderBy('nombre')->pluck('nombre','id');
+        $release =Catembarque::where('modulo',4)->orderBy('nombre')->pluck('nombre','id');
+        $pi2 = Catembarque::whereIn('modulo',[0,5])->orderBy('nombre')->pluck('nombre','id');
+        $py = Catembarque::whereIn('modulo',[0,6])->orderBy('nombre')->pluck('nombre','id');
+        $payt = Catembarque::whereIn('modulo',[0,7])->orderBy('nombre')->pluck('nombre','id');
         return view('admin.embarques.create',
-            compact('transportistas','countries','stuffing','ffw','agaduana','release','pi2','py','payt'));
+            compact('moneda','transportistas','countries','stuffing','ffw','agaduana','release','pi2','py','payt'));
     }
 
     public function store(Request $request)
@@ -82,7 +89,7 @@ class EmbarqueController extends Controller
             return back()->withErrors($validator)->with('message', 'Se ha producido un error')->with('typealert', 'danger')->withinput();
         }else{
             $embarque = Embarque::create($request->all());
-            return redirect()->route('admin.embarques.edit',$embarque)->with('store', 'Registro agregado');
+            return redirect()->route('admin.embarques.index')->with('store', 'Registro agregado');
         }
     }
 
@@ -95,7 +102,19 @@ class EmbarqueController extends Controller
     {
         $transportistas = Transportista::where('empresa_id',session('empresa'))
             ->orderBy('nombre')->pluck('nombre','id');
-        return view('admin.embarques.edit', compact('embarque','transportistas'));
+        $clientes = Cliente::where('id',$embarque->cliente_id)->get()->pluck('numdoc_razsoc','id');
+        $moneda = Categoria::where('modulo',4)->orderBy('nombre')->pluck('nombre','codigo');
+        $countries = Country::orderBy('nombre')->pluck('nombre','id');
+        $stuffing = Catembarque::where('modulo',1)->orderBy('nombre')->pluck('nombre','id');
+        $ffw = Catembarque::where('modulo',2)->orderBy('nombre')->pluck('nombre','id');
+        $agaduana = Catembarque::where('modulo',3)->orderBy('nombre')->pluck('nombre','id');
+        $release =Catembarque::where('modulo',4)->orderBy('nombre')->pluck('nombre','id');
+        $pi2 = Catembarque::whereIn('modulo',[0,5])->orderBy('nombre')->pluck('nombre','id');
+        $py = Catembarque::whereIn('modulo',[0,6])->orderBy('nombre')->pluck('nombre','id');
+        $payt = Catembarque::whereIn('modulo',[0,7])->orderBy('nombre')->pluck('nombre','id');
+        return view('admin.embarques.edit',
+            compact('embarque','clientes','moneda','transportistas','countries','stuffing','ffw',
+                'agaduana','release','pi2','py','payt'));
     }
 
     public function update(Request $request, Embarque $embarque)
@@ -130,5 +149,52 @@ class EmbarqueController extends Controller
     {
         $embarque->delete();
         return redirect()->route('admin.embarques.index')->with('destroy', 'Registro Eliminado');
+    }
+
+    public function valores($lote)
+    {
+        $salcamara = Salcamara::where('lote',$lote)->first();
+        $productoTerminados = Detsalcamara::whereRelation('salcamara','lote','=',$lote)
+            ->groupBy('pproceso_id')
+            ->selectRaw('pproceso_id')
+            ->get();
+        if ($salcamara && $productoTerminados) {
+            $cantidad = Detsalcamara::whereRelation('salcamara','lote','=',$lote)
+                ->sum('cantidad');
+            
+            $productos = '';
+            foreach ($productoTerminados as $det) {
+                $pproceso = Pproceso::find($det->pproceso_id);
+                $productos .= $pproceso->nombre. ' ';
+            }
+            $valores = [
+                'transportista_id' => $salcamara->transportista_id,
+                'contenedor' => $salcamara->contenedor,
+                'grt' => $salcamara->grt,
+                'grr' => $salcamara->gr,
+                'precinto_hl' => $salcamara->precinto_hl,
+                'precinto_linea' => $salcamara->precinto_linea,
+                'precinto_ag' => $salcamara->precinto_ag,
+                'producto' => $productos,
+                'peso_neto' => $cantidad * 20,
+                'atd_paking' => $salcamara->fecha,
+                'sacos' => $cantidad,
+            ];
+        } else {
+            $valores = [
+                'transportista_id' => null,
+                'contenedor' => null,
+                'grt' => null,
+                'grr' => null,
+                'precinto_hl' => null,
+                'precinto_linea' => null,
+                'precinto_ag' => null,
+                'producto' => null,
+                'peso_neto' => null,
+                'atd_paking' => null,
+                'sacos' => null,
+            ];
+        }
+        return response()->json($valores);
     }
 }
