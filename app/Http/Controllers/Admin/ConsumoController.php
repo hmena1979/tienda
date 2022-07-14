@@ -237,6 +237,13 @@ class ConsumoController extends Controller
 
     public function additem(Request $request)
     {
+        if ($request->input('precompra')) {
+            $precio = $request->input('precompra');
+            $subtotal = $request->input('cantidad') * $precio;
+        } else {
+            $precio = 0;
+            $subtotal = 0;
+        }
         Tmpdetsalida::create([
             'user_id' => Auth::user()->id,
             'key' => $request->input('keydet'),
@@ -245,8 +252,8 @@ class ConsumoController extends Controller
             'adicional' => e($request->input('adicional')),
             'grupo' => $request->input('grupo'),
             'cantidad' => $request->input('cantidad'),
-            'preprom' => $request->input('precompra'),
-            'precio' => $request->input('precio'),
+            'preprom' => $precio,
+            'precio' => $precio,
             'subtotal' => $request->input('subtotal'),
             'lote' => $request->input('lote'),
             'vence' => $request->input('vence'),

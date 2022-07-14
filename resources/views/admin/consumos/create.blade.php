@@ -508,14 +508,10 @@
             if($('#cantidad').val().length == 0 || $('#cantidad').val() == 0){
                 html += "<li>"+ 'Ingrese Cantidad' +"</li>";
             }
-            if($('#precio').val().length == 0 || $('#precio').val() == 0){
-                html += "<li>"+ 'Ingrese Precio' +"</li>";
-            }
             html += "</ul>";
             if (
                 ($('#producto_id').val().length == 0) ||
-                ($('#cantidad').val().length == 0 || $('#cantidad').val() == 0) ||
-                ($('#precio').val().length == 0 || $('#precio').val() == 0)
+                ($('#cantidad').val().length == 0 || $('#cantidad').val() == 0)
                 ) {
                     $('#contenido_errorp').html(html);
                     $('#mensaje_errorp').slideDown();

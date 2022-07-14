@@ -126,7 +126,7 @@
 							</div>
                             <div class="col-md-1 form-group">
                                 {!! Form::label('ajuste', 'Ajuste:') !!}
-                                {!! Form::text('ajuste', null, ['class'=>'form-control decimal','autocomplete'=>'off']) !!}
+                                {!! Form::text('ajuste', null, ['class'=>'form-control telefono','autocomplete'=>'off']) !!}
 							</div>
                         </div>
 					</div>				

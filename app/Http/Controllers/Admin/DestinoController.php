@@ -139,6 +139,7 @@ class DestinoController extends Controller
         if($request->ajax()){
             $detdestino = Detdestino::select('id','nombre')
                 ->where('destino_id',$destino)
+                ->orderBy('nombre')
                 ->get();
             return response()->json($detdestino);
         }

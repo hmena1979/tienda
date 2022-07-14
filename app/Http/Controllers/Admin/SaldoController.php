@@ -45,7 +45,18 @@ class SaldoController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'producto_id' => 'required|unique:saldos',
+            // 'producto_id' => 'required|unique:saldos',
+            'producto_id' => ['required',
+                function($attribute, $value, $fail) {
+                    $contador = Saldo::where('producto_id',$value)
+                        ->where('periodo','000000')
+                        ->count();
+                    if ($contador > 0) {
+                        $fail(__('Ya se encuentra registrado'));
+                    }
+                }],
+
+
             'saldo' => 'required',
         ];
         
