@@ -421,12 +421,18 @@ class DashboardController extends Controller
 		// $this->agregar_permiso('48','EMBARQUES','admin.embarques.create','Puede agregar Embarques');
 		// $this->agregar_permiso('48','EMBARQUES','admin.embarques.edit','Puede editar Embarques');
 		// $this->agregar_permiso('48','EMBARQUES','admin.embarques.destroy','Puede eliminar Embarques');
-		//----------------------------------------------------------------------------------------------------
 		
-		$this->agregar_permiso('49','CATEGORÍA EMBARQUES','admin.catembarques.index','Puede ver listado Categoria Embarques');
-		$this->agregar_permiso('49','CATEGORÍA EMBARQUES','admin.catembarques.create','Puede agregar Categoria Embarques');
-		$this->agregar_permiso('49','CATEGORÍA EMBARQUES','admin.catembarques.edit','Puede editar Categoria Embarques');
-		$this->agregar_permiso('49','CATEGORÍA EMBARQUES','admin.catembarques.destroy','Puede eliminar Categoria Embarques');
+		// $this->agregar_permiso('49','CATEGORÍA EMBARQUES','admin.catembarques.index','Puede ver listado Categoria Embarques');
+		// $this->agregar_permiso('49','CATEGORÍA EMBARQUES','admin.catembarques.create','Puede agregar Categoria Embarques');
+		// $this->agregar_permiso('49','CATEGORÍA EMBARQUES','admin.catembarques.edit','Puede editar Categoria Embarques');
+		// $this->agregar_permiso('49','CATEGORÍA EMBARQUES','admin.catembarques.destroy','Puede eliminar Categoria Embarques');
+		//----------------------------------------------------------------------------------------------------
+
+		$this->agregar_permiso('50','SOLICITUD DE COMPRAS','admin.solcompras.index','Puede ver Solicitud de Compras');
+		$this->agregar_permiso('50','SOLICITUD DE COMPRAS','admin.solcompras.create','Puede crear Solicitud de Compras');
+		$this->agregar_permiso('50','SOLICITUD DE COMPRAS','admin.solcompras.edit','Puede editar Solicitud de Compras');
+		$this->agregar_permiso('50','SOLICITUD DE COMPRAS','admin.solcompras.destroy','Puede eliminar Solicitud de Compras');
+		$this->agregar_permiso('50','SOLICITUD DE COMPRAS','admin.solcompras.procesar','Puede procesar Solicitud de Compras');
 
 		// return redirect()->route('admin.inicio')->with('update', 'Permisos Agregados');
 		// return redirect()->route('admin.inicio')->with('update', 'Registro Actualizado');		

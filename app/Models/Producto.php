@@ -79,6 +79,11 @@ class Producto extends Model
         return $this->hasOne('App\Models\Detpedido');
     }
 
+    public function detsolcompra()
+    {
+        return $this->hasOne('App\Models\Detsolcompra');
+    }
+
     public function saldo(){
         return $this->hasOne('App\Models\Saldo');
     }

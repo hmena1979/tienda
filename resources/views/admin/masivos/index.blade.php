@@ -65,6 +65,17 @@
 											@can('admin.masivos.edit')
 											<a class="" href="{{ route('admin.masivos.edit',$masivo) }}"datatoggle="tooltip" data-placement="top" title="Editar"><i class="fas fa-edit"></i></a>
 											@endcan
+											@can('admin.masivos.destroy')
+											@if ($masivo->detmasivos()->count() == 0)
+											<form action="{{ route('admin.masivos.destroy',$masivo) }}" method="POST" class="formulario_eliminars">
+												@csrf
+												@method('delete')
+												<button type="submit" datatoggle="tooltip" data-placement="top" title="Eliminar">
+													<i class="fas fa-trash-alt"></i>
+												</button>
+											</form>
+											@endif
+                                            @endcan
 											{{-- <a class="" href="{{ route('admin.pdf.facturacion',$rventa) }}" target="_blank" datatoggle="tooltip" data-placement="top" title="Imprimir"><i class="fas fa-print"></i></a> --}}
 										</div>
 									</td>

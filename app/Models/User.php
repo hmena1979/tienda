@@ -48,4 +48,9 @@ class User extends Authenticatable
     {
     	return $this->hasOne('App\Models\Pedido');
     }
+
+    public function solcompra()
+    {
+    	return $this->hasOne('App\Models\Solcompra');
+    }
 }

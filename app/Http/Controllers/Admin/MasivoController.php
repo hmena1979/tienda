@@ -131,7 +131,12 @@ class MasivoController extends Controller
 
     public function destroy(Masivo $masivo)
     {
-        //
+        if($masivo->detmasivos()->count() > 0){
+            return redirect()->route('admin.masivos.index')->with('message', 'Se ha producido un error, No se puede eliminar, Masivo ya contiene detalles')->with('typealert', 'danger');
+        }
+        $masivo->delete();
+
+        return redirect()->route('admin.masivos.index')->with('destroy', 'Registro Eliminado');
     }
 
     public function tablaitem(Masivo $masivo)
