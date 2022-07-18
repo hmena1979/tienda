@@ -370,6 +370,15 @@ return [
                                 ,'admin/pedidos/*/edit'],
                 ],              
                 [
+                    'text' => 'Solicitud de Compras',
+                    'icon'    => 'fas fa-file-archive',
+                    'icon_color' => 'cyan',
+                    'route'  => 'admin.solcompras.index',
+                    'can'  => 'admin.solcompras.index',
+                    'active' => ['admin/solcompras','admin/solcompras/*','admin/solcompras/create'
+                                ,'admin/solcompras/*/edit'],
+                ],              
+                [
                     'text' => 'Reportes',
                     'icon'    => 'fas fa-print',
                     'icon_color' => 'cyan',

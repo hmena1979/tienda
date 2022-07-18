@@ -25,8 +25,8 @@
 							<div class="row">
 								<div class="col-md-2 form-group">
 									{{-- {!! Form::hidden('empresa_id', session('empresa')) !!}
-									{!! Form::hidden('periodo', session('periodo')) !!}
-									{!! Form::hidden('id', null, ['id'=>'id']) !!} --}}
+									{!! Form::hidden('periodo', session('periodo')) !!} --}}
+									{!! Form::hidden('id', null, ['id'=>'id']) !!}
 									{!! Form::label('lote', 'Lote:') !!}
 									{!! Form::select('lote',$lotes,null,['class'=>'custom-select']) !!}
 									{{-- {!! Form::text('lote', null, ['class'=>'form-control mayuscula','autocomplete'=>'off']) !!} --}}

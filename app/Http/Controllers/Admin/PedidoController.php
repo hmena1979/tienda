@@ -41,7 +41,6 @@ class PedidoController extends Controller
             $periodo = session('periodo');
         }
         
-        
         $permiso = User::permission('admin.pedidos.procesar')->where('id',Auth::user()->id)->count();
         if ($permiso) {
             $pedidos = Pedido::with(['user'])

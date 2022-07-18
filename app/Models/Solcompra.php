@@ -17,10 +17,11 @@ class Solcompra extends Model
     
     public function detsolcompras()
     {
-        return $this->hasMany('App\Models\Detsolcompras');
+        return $this->hasMany('App\Models\Detsolcompra');
     }
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo('App\Models\User');
     }
 }
