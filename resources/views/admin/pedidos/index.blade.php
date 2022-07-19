@@ -42,10 +42,11 @@
 						<table id= "grid" class="table table-hover table-sm">
 							<thead>
 								<tr>
+									<th width="6%">N°</th>
 									<th width="10%">Fecha</th>
 									<th width="20%">Usuario</th>
-									<th width="25%">Observaciones</th>
-									<th width="25%">Logística</th>
+									<th width="22%">Observaciones</th>
+									<th width="22%">Logística</th>
 									<th width="10%">Estado</th>
 									<th width="10%"></th>
 								</tr>
@@ -53,6 +54,7 @@
 							<tbody>
 								@foreach($pedidos as $pedido)
 								<tr class="{{ $colores[$pedido->estado] }}">
+									<td>{{ str_pad($pedido->id, 6, '0', STR_PAD_LEFT) }}</td>
 									<td>{{ $pedido->fecha }}</td>
 									<td>{{ $pedido->user->name }}</td>
 									<td>{{ $pedido->observaciones }}</td>

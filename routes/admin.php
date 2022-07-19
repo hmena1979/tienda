@@ -428,14 +428,15 @@ Route::delete('/catembarques/{catembarque}/destroy',[CatembarqueController::clas
 // Solicitud de Compra
 Route::post('/solcompras/change', [SolcompraController::class,'change'])->name('admin.solcompras.change');
 Route::get('solcompras/{solcompra}/tablaitem', [SolcompraController::class,'tablaitem'])->name('admin.solcompras.tablaitem');
-Route::get('/solcompras/{detsolcompra}/destroyitem', [SolcompraController::class,'destroyitem'])->name('admin.solcompras.destroyitem');
+Route::get('solcompras/{solcompra}/buscapedidos', [SolcompraController::class,'buscapedidos'])->name('admin.solcompras.buscapedidos');
+// Route::get('/solcompras/{detsolcompra}/destroyitem', [SolcompraController::class,'destroyitem'])->name('admin.solcompras.destroyitem');
 Route::post('/solcompras/additem', [SolcompraController::class,'additem'])->name('admin.solcompras.additem');
-Route::get('/solcompras/{solcompra}/enviar', [SolcompraController::class,'enviar'])->name('admin.solcompras.enviar');
-Route::get('/solcompras/{envio}/recepcionado', [SolcompraController::class,'recepcionado'])->name('admin.solcompras.recepcionado');
-Route::get('/solcompras/{envio}/rechazar', [SolcompraController::class,'rechazar'])->name('admin.solcompras.rechazar');
-Route::get('/solcompras/{envio}/atender', [SolcompraController::class,'atender'])->name('admin.solcompras.atender');
-Route::get('/solcompras/{detsolcompra}/detsolcompra', [SolcompraController::class,'detsolcompra'])->name('admin.solcompras.detsolcompra');
-Route::get('/solcompras/{envio}/editdetsolcompra', [SolcompraController::class,'editdetsolcompra'])->name('admin.solcompras.editdetsolcompra');
+// Route::get('/solcompras/{solcompra}/enviar', [SolcompraController::class,'enviar'])->name('admin.solcompras.enviar');
+// Route::get('/solcompras/{envio}/recepcionado', [SolcompraController::class,'recepcionado'])->name('admin.solcompras.recepcionado');
+// Route::get('/solcompras/{envio}/rechazar', [SolcompraController::class,'rechazar'])->name('admin.solcompras.rechazar');
+// Route::get('/solcompras/{envio}/atender', [SolcompraController::class,'atender'])->name('admin.solcompras.atender');
+// Route::get('/solcompras/{detsolcompra}/detsolcompra', [SolcompraController::class,'detsolcompra'])->name('admin.solcompras.detsolcompra');
+// Route::get('/solcompras/{envio}/editdetsolcompra', [SolcompraController::class,'editdetsolcompra'])->name('admin.solcompras.editdetsolcompra');
 Route::resource('solcompras', SolcompraController::class)->names('admin.solcompras');
 Route::get('/solcompras/{periodo?}', [SolcompraController::class,'index'])->name('admin.solcompras.index');
 

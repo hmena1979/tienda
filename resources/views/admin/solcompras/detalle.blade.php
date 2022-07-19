@@ -1,4 +1,4 @@
-{{ $solcompra->detsolcompras }}
+{{-- {{ $solcompra->detsolcompras }} --}}
 <table id= "grid" class="table table-hover table-sm">
     <thead>
         <tr>
@@ -9,11 +9,14 @@
             <th>Glosa</th>
             <th>Motivo</th>
             <th width="10%">
+                @if ($solcompra->estado == 1)
+                <button class="btn btn-block btn-addventa" type="button" id="additem">+</button>
+                @endif
             </th>
         </tr>
     </thead>
     <tbody> 
-        {{-- @foreach($solcompra->detsolcompras as $det)
+        @foreach($solcompra->detsolcompras as $det)
         <tr>
             <td>{{ $det->producto->nombre . ' X ' . $det->producto->umedida->nombre }}</td>
             <td>{{ $det->solicitado }}</td>
@@ -23,7 +26,7 @@
             <td>{{ $det->motivo }}</td>
             <td></td>
         </tr>
-        @endforeach --}}
+        @endforeach
     </tbody>
 </table>
 

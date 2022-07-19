@@ -47,6 +47,7 @@
 						<table id= "grid" class="table table-hover table-sm">
 							<thead>
 								<tr>
+									<th>N°</th>
 									<th width="10%">Fecha</th>
 									<th width="10%">Moneda</th>
 									<th width="10%">Número</th>
@@ -58,6 +59,7 @@
 							<tbody>
 								@foreach($ordcompras as $ordcompra)
 								<tr>
+									<td>{{ str_pad($ordcompra->id, 6, '0', STR_PAD_LEFT) }}</td>
 									<td>{{ $ordcompra->fecha }}</td>
 									<td>{{ $ordcompra->moneda }}</td>
 									<td>{{ str_pad($ordcompra->id, 5, '0', STR_PAD_LEFT) }}</td>

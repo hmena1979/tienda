@@ -229,15 +229,19 @@ class MasivoController extends Controller
 
     public function autorizar(Masivo $masivo)
     {
-        $conteo = Detmasivo::where('masivo_id', $masivo->id)->where('tipo', 'E')->count();
-        if ($conteo == 0) {
-            $masivo->update([
-                'estado' => 2
-            ]);
-            return 1;
-        } else {
-            return 2;
-        }
+        $masivo->update([
+            'estado' => 2
+        ]);
+        return 1;
+        // $conteo = Detmasivo::where('masivo_id', $masivo->id)->where('tipo', 'E')->count();
+        // if ($conteo == 0) {
+        //     $masivo->update([
+        //         'estado' => 2
+        //     ]);
+        //     return 1;
+        // } else {
+        //     return 2;
+        // }
     }
 
     public function revertir(Masivo $masivo)

@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Validator;
 
 use App\Models\Solcompra;
 use App\Models\Destino;
+use App\Models\Detpedido;
+use App\Models\Detsolcompra;
 use App\Models\User;
 
 class SolcompraController extends Controller
@@ -156,5 +158,35 @@ class SolcompraController extends Controller
     public function tablaitem(Solcompra $solcompra)
     {
         return view('admin.solcompras.detalle',compact('solcompra'));
+    }
+
+    public function buscapedidos(Solcompra $solcompra)
+    {
+        $detpedidos = Detpedido::with(['producto:id,ctrlstock,stock,stockmin'])
+            ->whereRelation('pedido','estado','=',3)
+            ->groupBy('producto_id')
+            ->selectRaw('producto_id, sum(catendida) as cantidad')
+            ->get();
+        
+        foreach ($detpedidos as $det) {
+            if ($det->cantidad >= $det->producto->stock) {
+                $numeros = Detpedido::with(['pedido'])
+                ->whereRelation('pedido','estado','=',3)
+                ->where('producto_id',$det->producto_id)
+                ->get();
+                $pedidos = '';
+                foreach ($numeros as $num) {
+
+                }
+                Detsolcompra::create([
+                    'solcompra_id' => $solcompra->id,
+                    'producto_id' => $det->producto_id,
+                    'solicitado' => $det->cantidad,
+                    'pedidos' => $pedidos,
+                ]);
+            }
+        }
+        return $detpedidos;
+
     }
 }

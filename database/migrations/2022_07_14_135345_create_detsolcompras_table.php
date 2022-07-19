@@ -23,7 +23,7 @@ class CreateDetsolcomprasTable extends Migration
             $table->unsignedTinyInteger('estado')->default(1); //(1)Pendiente (2)Atendido) (3)Rechazado
             $table->string('pedidos',100)->nullable();
             $table->string('glosa',100)->nullable();
-
+            $table->softDeletes();
             $table->timestamps();
         });
     }

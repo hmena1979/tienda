@@ -68,6 +68,14 @@
                                 {!! Form::label('observaciones', 'Observaciones:') !!}
                                 {!! Form::textarea('observaciones',null,['class'=>'form-control mayuscula activo', 'rows'=>'1']) !!}
                             </div>
+                            <div class="col-md-1">
+                                {{-- <button class="btn btn-block btn-convertir mt-6" type="button" id="busca" title="Buscar en Pedidos">
+                                    <i class="fas fa-file-archive"></i>
+                                </button> --}}
+                                <a class="btn btn-convertir mt-6" href="{{ route('admin.solcompras.buscapedidos',$solcompra) }}" datatoggle="tooltip" data-placement="top" title="Buscar en Pedidos">
+                                    <i class="fas fa-file-archive"></i>
+                                </a>
+                            </div>
                         </div>
 					</div>			
 				</div>
@@ -225,6 +233,13 @@
         if ($('#procesa').val() ) {
             $('.activo').prop('disabled',true);
         }
+
+        $('#busca').click(function(){
+            var id = $('#id').val();
+            $.get(url_global+"/admin/solcompras/buscapedidos/",function(response){
+                alert(response)
+            });
+        });
 
         $('#destino_id').select2({
             placeholder:"DESTINO"
@@ -475,7 +490,7 @@
     function veritems(){
 		var id = $('#id').val();
 		$.get(url_global+"/admin/solcompras/"+id+"/tablaitem/",function(response){
-            alert(id)
+            // alert(response)
 			$('#tdetitem').empty();
 			$('#tdetitem').html(response);
 		});

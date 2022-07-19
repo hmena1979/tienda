@@ -324,8 +324,8 @@
         });
 
         $('#producto_id').select2({
-            placeholder:"Ingrese 4 dígitos del Nombre del Producto",
-            minimumInputLength: 4,
+            placeholder:"Ingrese 3 dígitos del Nombre del Producto",
+            minimumInputLength: 3,
             ajax:{
                 url: "{{ route('admin.productos.seleccionado') }}",
                 dataType:'json',

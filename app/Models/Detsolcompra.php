@@ -15,7 +15,8 @@ class Detsolcompra extends Model
     protected $hidden = ['created_at','updated_at'];
     protected $guarded = [];
 
-    public function solcompra(){
+    public function solcompra()
+    {
         return $this->belongsTo('App\Models\Solcompra');
     }
 
