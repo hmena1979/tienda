@@ -317,16 +317,22 @@ class PedidoController extends Controller
             foreach($pedido->detpedidos as $det){
                 if ($det->catendida > 0){
                     // Crea registro en Detalle de Comprobante
+                    if ($det->producto->precompra) {
+                        $precio = $det->producto->precompra;
+                    } else {
+                        $precio = 0;
+                    }
                     $detVenta = $rventa->detrventa()->create([
                         'producto_id' => $det->producto_id,
                         'adicional' => $det->motivo,
                         'grupo' => 1,
                         'cantidad' => $det->catendida,
                         'devolucion' => 0,
-                        'preprom' => $det->producto->precompra,
-                        'precio' => $det->producto->precompra,
-                        'subtotal' => $det->catendida*$det->producto->precompra,
+                        'preprom' => $precio,
+                        'precio' => $precio,
+                        'subtotal' => $det->catendida*$precio,
                     ]);
+                    
                     
                     $producto = Producto::find($det->producto_id);
                     if ($producto->ctrlstock == 1) {
