@@ -5,12 +5,19 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Banco;
 use App\Models\Cliente;
+use App\Models\Detpartecamara;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 // use App\Models\Param;
 Use App\Models\Empresa;
+use App\Models\Lote;
+use App\Models\Parte;
+use App\Models\Producto;
+use App\Models\Productoterminado;
+use App\Models\Rcompra;
 use App\Models\Sede;
-
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Permission;
 
 class DashboardController extends Controller
@@ -25,7 +32,58 @@ class DashboardController extends Controller
     public function getDashboard()
     {
         if(Empresa::count() <> 0 && Sede::count() <> 0){
-            return view('admin.dashboard');
+			//Producto Terminado
+			$verproductoterminado = User::permission('admin.dashboard.productoterminado')->where('id',Auth::user()->id)->count();
+			if($verproductoterminado > 0) {
+				$productoterminado = Productoterminado::with(['pproceso:id,nombre'])
+					->groupBy('pproceso_id')
+					->selectRaw('pproceso_id,sum(saldo) as saldo')
+					->get();
+			} else {
+				$productoterminado = '';
+			}
+			//Rendimiento Ultimo Lote
+			$verrendimiento = User::permission('admin.dashboard.rendimiento')->where('id',Auth::user()->id)->count();
+			if ($verrendimiento > 0) {
+				$parte = Parte::orderBy('lote','desc')->select('id','lote')->first();
+				$detparte = Detpartecamara::with('trazabilidad')
+					->where('parte_id',$parte->id)
+					->groupBy('trazabilidad_id')
+					->selectRaw('trazabilidad_id, sum(parcial) as rendimiento')
+					->get();
+			} else {
+				$parte = '';
+				$detparte = '';
+			}
+
+			//Productos por debajo del Stock Mínimo
+			$verproductos = User::permission('admin.dashboard.stockminimo')->where('id',Auth::user()->id)->count();
+			if ($verproductos > 0) {
+				$productos = Producto::where('stock','<=','stockmin')
+					->where('stockmin','!=',0)
+					->orderBy('nombre')
+					->select('id','nombre','umedida_id','stock','stockmin')
+					->take(15)
+					->get();
+			} else {
+				$productos = '';
+			}
+
+			//Cuentas por Pagar
+			$verrcompras = User::permission('admin.dashboard.vencidos')->where('id',Auth::user()->id)->count();
+			if ($verrcompras > 0) {
+				$rcompras = Rcompra::with(['cliente:id,razsoc'])
+					->where('saldo','!=',0)
+					->selectRaw('cliente_id, sum(saldo) as saldo')
+					->groupBy('cliente_id')
+					->orderBy('saldo','desc')
+					->take(15)
+					->get();
+			} else {
+				$rcompras = '';
+			}
+			// return $rcompras;
+            return view('admin.dashboard',compact('productoterminado','parte','detparte','productos','rcompras'));
         }else{
             return view('admin.cargainicial');
         }
@@ -426,13 +484,24 @@ class DashboardController extends Controller
 		// $this->agregar_permiso('49','CATEGORÍA EMBARQUES','admin.catembarques.create','Puede agregar Categoria Embarques');
 		// $this->agregar_permiso('49','CATEGORÍA EMBARQUES','admin.catembarques.edit','Puede editar Categoria Embarques');
 		// $this->agregar_permiso('49','CATEGORÍA EMBARQUES','admin.catembarques.destroy','Puede eliminar Categoria Embarques');
-		//----------------------------------------------------------------------------------------------------
+		
+		// $this->agregar_permiso('50','SOLICITUD DE COMPRAS','admin.solcompras.index','Puede ver Solicitud de Compras');
+		// $this->agregar_permiso('50','SOLICITUD DE COMPRAS','admin.solcompras.create','Puede crear Solicitud de Compras');
+		// $this->agregar_permiso('50','SOLICITUD DE COMPRAS','admin.solcompras.edit','Puede editar Solicitud de Compras');
+		// $this->agregar_permiso('50','SOLICITUD DE COMPRAS','admin.solcompras.destroy','Puede eliminar Solicitud de Compras');
+		// $this->agregar_permiso('50','SOLICITUD DE COMPRAS','admin.solcompras.procesar','Puede procesar Solicitud de Compras');
+	//----------------------------------------------------------------------------------------------------
+		
+		$this->agregar_permiso('51','SALDO PRODUCTO TERMINADO','admin.productoterminados.index','Puede ver Saldo Producto Terminado');
+		$this->agregar_permiso('51','SALDO PRODUCTO TERMINADO','admin.productoterminados.create','Puede crear Saldo Producto Terminado');
+		$this->agregar_permiso('51','SALDO PRODUCTO TERMINADO','admin.productoterminados.edit','Puede editar Saldo Producto Terminado');
+		$this->agregar_permiso('51','SALDO PRODUCTO TERMINADO','admin.productoterminados.destroy','Puede eliminar Saldo Producto Terminado');
 
-		$this->agregar_permiso('50','SOLICITUD DE COMPRAS','admin.solcompras.index','Puede ver Solicitud de Compras');
-		$this->agregar_permiso('50','SOLICITUD DE COMPRAS','admin.solcompras.create','Puede crear Solicitud de Compras');
-		$this->agregar_permiso('50','SOLICITUD DE COMPRAS','admin.solcompras.edit','Puede editar Solicitud de Compras');
-		$this->agregar_permiso('50','SOLICITUD DE COMPRAS','admin.solcompras.destroy','Puede eliminar Solicitud de Compras');
-		$this->agregar_permiso('50','SOLICITUD DE COMPRAS','admin.solcompras.procesar','Puede procesar Solicitud de Compras');
+		$this->agregar_permiso('52','RESUMEN INICIO','admin.dashboard.productoterminado','Puede ver Stok de Producto Terminado');
+		$this->agregar_permiso('52','RESUMEN INICIO','admin.dashboard.rendimiento','Puede ver Rendimiento Lote');
+		$this->agregar_permiso('52','RESUMEN INICIO','admin.dashboard.stockminimo','Puede ver Stock Mínimo');
+		$this->agregar_permiso('52','RESUMEN INICIO','admin.dashboard.vencidos','Puede Comprobantes por Pagar');
+		$this->agregar_permiso('52','RESUMEN INICIO','admin.dashboard.grafica','Puede ver Gráfica de Embarques');
 
 		// return redirect()->route('admin.inicio')->with('update', 'Permisos Agregados');
 		// return redirect()->route('admin.inicio')->with('update', 'Registro Actualizado');		

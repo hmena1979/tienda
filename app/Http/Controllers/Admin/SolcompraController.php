@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreDetsolcompraRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -11,6 +12,7 @@ use App\Models\Solcompra;
 use App\Models\Destino;
 use App\Models\Detpedido;
 use App\Models\Detsolcompra;
+use App\Models\Producto;
 use App\Models\User;
 
 class SolcompraController extends Controller
@@ -162,11 +164,14 @@ class SolcompraController extends Controller
 
     public function buscapedidos(Solcompra $solcompra)
     {
-        $detpedidos = Detpedido::with(['producto:id,ctrlstock,stock,stockmin'])
+        Detsolcompra::where('solcompra_id',$solcompra->id)->whereNotNull('pedidos')->delete();
+        $detpedidos = Detpedido::with(['producto:id,nombre,ctrlstock,stock,stockmin'])
             ->whereRelation('pedido','estado','=',3)
             ->groupBy('producto_id')
             ->selectRaw('producto_id, sum(catendida) as cantidad')
+            ->orderBy(Producto::select('nombre')->whereColumn('detpedidos.producto_id','productos.id'))
             ->get();
+        // return $detpedidos;
         
         foreach ($detpedidos as $det) {
             if ($det->cantidad >= $det->producto->stock) {
@@ -175,18 +180,66 @@ class SolcompraController extends Controller
                 ->where('producto_id',$det->producto_id)
                 ->get();
                 $pedidos = '';
+                $coma = '';
                 foreach ($numeros as $num) {
-
+                    $pedidos .= $coma.$num->pedido->id;
+                    $coma = ', ';
                 }
                 Detsolcompra::create([
                     'solcompra_id' => $solcompra->id,
                     'producto_id' => $det->producto_id,
                     'solicitado' => $det->cantidad,
+                    'cantidad' => $det->cantidad,
                     'pedidos' => $pedidos,
                 ]);
             }
         }
-        return $detpedidos;
+        return redirect()->route('admin.solcompras.edit',$solcompra)->with('update', 'Registro Actualizado, verifique sus pedidos');
+    }
 
+    public function additem(StoreDetsolcompraRequest $request)
+    {
+        if ($request->ajax()) {
+            $data = $request->all();
+            // $data = array_merge($data,[
+            //     'catendida' => $request->input('cantidad'),
+            // ]);
+            Detsolcompra::create($data);
+            return true;
+        }
+    }
+
+    public function detsolcompra(Detsolcompra $detsolcompra)
+    {
+        $det = [
+            'id' => $detsolcompra->id,
+            'producto' => $detsolcompra->producto->nombre . ' X ' . $detsolcompra->producto->umedida->nombre,
+            'stock' => $detsolcompra->producto->stock,
+            'ctrlstock' => $detsolcompra->producto->ctrlstock,
+            'stockmin' => $detsolcompra->producto->stockmin,
+            'solicitado' => $detsolcompra->solicitado,
+            'cantidad' => $detsolcompra->cantidad,
+            'glosa' => $detsolcompra->glosa,
+        ];
+        // $det = json_decode($det);
+        return response()->json($det);
+    }
+
+    public function editdetsolcompra(Request $request, $envio)
+    {
+        if ($request->ajax()) {
+            $det = json_decode($envio);
+            $detpedido = Detsolcompra::findOrFail($det->id);
+            $detpedido->update([
+                'cantidad' => $det->cantidad,
+                'glosa' => $det->glosa,
+            ]);
+        }
+        return true;
+    }
+
+    public function destroyitem(Detsolcompra $detsolcompra){
+        $detsolcompra->delete();
+        return 1;
     }
 }

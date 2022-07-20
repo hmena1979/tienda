@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Models\Departamento;
+use App\Models\Dettrazabilidad;
 use App\Models\Provincia;
+use App\Models\Trazabilidad;
 use App\Models\Ubigeo;
 
 class BusquedaController extends Controller
@@ -56,6 +58,25 @@ class BusquedaController extends Controller
                 ->where('provincia',$provincia)
                 ->get();
             return response()->json($ubigeo);
+        }
+    }
+    
+    public function trazabilidad(Request $request, $pproceso)
+    {
+        if($request->ajax()){
+            $trazabilidad = Trazabilidad::select('id','nombre')
+                ->where('pproceso_id',$pproceso)
+                ->get();
+            return response()->json($trazabilidad);
+        }
+    }
+    
+    public function dettrazabilidad(Request $request, $trazabilidad)
+    {
+        if($request->ajax()){
+            $detalle = Dettrazabilidad::where('trazabilidad_id',$trazabilidad)->get();
+            // return $detalle[0]->codigo;
+            return response()->json($detalle);
         }
     }
 }

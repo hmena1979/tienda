@@ -17,9 +17,9 @@ class CreateDetsolcomprasTable extends Migration
             $table->id();
             $table->unsignedBigInteger('solcompra_id');
             $table->unsignedBigInteger('producto_id');
-            $table->decimal('solicitado',10,4);
+            $table->decimal('solicitado',10,4)->nullable();
             $table->decimal('cantidad',10,4);
-            $table->decimal('atendido',10,4);
+            $table->decimal('atendido',10,4)->nullable();
             $table->unsignedTinyInteger('estado')->default(1); //(1)Pendiente (2)Atendido) (3)Rechazado
             $table->string('pedidos',100)->nullable();
             $table->string('glosa',100)->nullable();

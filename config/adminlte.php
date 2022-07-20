@@ -488,6 +488,15 @@ return [
                                 ,'admin/partes/*/edit'],
                 ],
                 [
+                    'text' => 'Saldo Producto Terminado',
+                    'icon'    => 'fas fa-dolly-flatbed',
+                    'icon_color' => 'cyan',
+                    'route'  => 'admin.productoterminados.index',
+                    'can'  => 'admin.productoterminados.index',
+                    'active' => ['admin/productoterminados','admin/productoterminados/*','admin/productoterminados/create'
+                                ,'admin/productoterminados/*/edit'],
+                ],
+                [
                     'text' => 'Embarques',
                     'icon'    => 'fab fa-docker',
                     'icon_color' => 'cyan',

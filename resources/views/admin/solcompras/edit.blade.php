@@ -43,12 +43,12 @@
                             <li>
                                 <button type="button" id='rechazar' class="btn btn-rechazar mt-1">Rechazar</button>
                             </li>
-                            @endif
+                            @endif --}}
                             <li>
-                                <a class="btn btn-convertir mt-1" href="{{ route('admin.pdf.pedido',$pedido) }}" target="_blank" datatoggle="tooltip" data-placement="top" title="Imprimir">
+                                <a class="btn btn-convertir mt-1" href="{{ route('admin.pdf.solcompra',$solcompra) }}" target="_blank" datatoggle="tooltip" data-placement="top" title="Imprimir">
                                     <i class="fas fa-print"></i>
                                 </a>
-                            </li> --}}
+                            </li>
 						</ul>
 					</div>
                     {{-- {{ dd($comprobante) }} --}}
@@ -72,7 +72,7 @@
                                 {{-- <button class="btn btn-block btn-convertir mt-6" type="button" id="busca" title="Buscar en Pedidos">
                                     <i class="fas fa-file-archive"></i>
                                 </button> --}}
-                                <a class="btn btn-convertir mt-6" href="{{ route('admin.solcompras.buscapedidos',$solcompra) }}" datatoggle="tooltip" data-placement="top" title="Buscar en Pedidos">
+                                <a class="btn btn-block btn-convertir mt-6" href="{{ route('admin.solcompras.buscapedidos',$solcompra) }}" datatoggle="tooltip" data-placement="top" title="Buscar en Pedidos">
                                     <i class="fas fa-file-archive"></i>
                                 </a>
                             </div>
@@ -168,12 +168,8 @@
                                 {!! Form::text('detproducto_id',null,['class'=>'form-control', 'disabled']) !!}
                             </div>
                             <div class="col-md-2">
-                                {!! Form::label('detcantidad', 'Cantidad:') !!}
-                                {!! Form::text('detcantidad', null, ['class'=>'form-control decimal','id'=>'detcantidad','disabled']) !!}
-                            </div>
-                            <div class="col-md-5 form-group">
-                                {!! Form::label('detglosa', 'Glosa:') !!}
-                                {!! Form::text('detglosa', null, ['class'=>'form-control mayuscula','id'=>'detglosa','disabled']) !!}
+                                {!! Form::label('detsolicitado', 'Solicitado:') !!}
+                                {!! Form::text('detsolicitado', null, ['class'=>'form-control decimal','id'=>'detsolicitado','disabled']) !!}
                             </div>
                         </div>
                         <div class="row">
@@ -182,12 +178,12 @@
                                 {!! Form::text('detstock', null, ['class'=>'form-control decimal','id'=>'detstock','disabled']) !!}
                             </div>
                             <div class="col-md-2">
-                                {!! Form::label('catendida', 'Aprobado:') !!}
-                                {!! Form::text('catendida', null, ['class'=>'form-control decimal','id'=>'catendida']) !!}
+                                {!! Form::label('detcantidad', 'Cantidad:') !!}
+                                {!! Form::text('detcantidad', null, ['class'=>'form-control decimal','id'=>'detcantidad']) !!}
                             </div>
                             <div class="col-md-6 form-group">
-                                {!! Form::label('motivo', 'Motivo:') !!}
-                                {!! Form::text('motivo', null, ['class'=>'form-control mayuscula','id'=>'motivo']) !!}
+                                {!! Form::label('detglosa', 'Glosa:') !!}
+                                {!! Form::text('detglosa', null, ['class'=>'form-control mayuscula','id'=>'detglosa']) !!}
                             </div>
                         </div>
                         {!! Form::close() !!}
@@ -338,8 +334,8 @@
         $('#editarsi').click(function(){
             var det = {
 				'id' : $('#detsolcompra_id').val(),
-				'catendida' : $('#catendida').val(),
-				'motivo' : $('#motivo').val(),
+				'cantidad' : $('#detcantidad').val(),
+				'glosa' : $('#detglosa').val(),
 			};
 			var envio = JSON.stringify(det);
             $.get(url_global+"/admin/solcompras/"+envio+"/editdetsolcompra/",function(response){
@@ -357,7 +353,7 @@
         $('#enviar').click(function(){
             var id = $('#id').val();
             Swal.fire({
-            title: 'Está Seguro que desea Realizar la Solocitud de Compra?',
+            title: 'Está Seguro que desea Realizar la Solicitud de Compra?',
             text: "",
             icon: 'warning',
             showCancelButton: true,
@@ -475,16 +471,6 @@
         //     })            
         // });
 
-        $('#catendida').blur(function(){
-            if (this.value > Number($('#detstock').val()) && $('#ctrlstock').val() == 1){
-                Swal.fire(
-                    'Error, Saldo Insuficiente',
-                    'Cantidad es mayor al Stock',
-                    'error'
-                    )
-                this.value = $('#detstock').val();
-            }
-        });
     });
 
     function veritems(){
@@ -524,12 +510,11 @@
         $.get(url_global+"/admin/solcompras/"+id+"/detsolcompra/",function(response){
             $('#detsolcompra_id').val(response['id']);
             $('#detproducto_id').val(response['producto']);
+            $('#detsolicitado').val(response['solicitado']);
             $('#detcantidad').val(response['cantidad']);
             $('#detglosa').val(response['glosa']);
             $('#detstock').val(response['stock']);
             $('#ctrlstock').val(response['ctrlstock']);
-            $('#catendida').val(response['catendida']);
-            $('#motivo').val(response['motivo']);
         });
         $('#editaritem').show();
         $('#detalles').hide();

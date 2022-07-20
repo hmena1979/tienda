@@ -27,6 +27,7 @@ use App\Models\Rcompra;
 use App\Models\Residuo;
 use App\Models\Salcamara;
 use App\Models\Sede;
+use App\Models\Solcompra;
 use App\Models\Tesoreria;
 use App\Models\TipoComprobante;
 use App\Models\User;
@@ -403,6 +404,28 @@ class PDFController extends Controller
         ];
         $pdf = PDF::loadView('pdf.pedido', $data)->setPaper('A4', 'portrait');
         return $pdf->stream($pedido->id.'.pdf', array('Attachment'=>false));
+    }
+
+    public function solcompra(Solcompra $solcompra)
+    {
+        $empresa = Empresa::findOrFail(session('empresa'));
+        $sede = Sede::findOrFail(session('sede'));
+        $estados = [
+            1 => 'PENDIENTE',
+            2 => 'SOLICITADO',
+            3 => 'RECEPCIONADO',
+            4 => 'ATENDIDO',
+            5 => 'RECHAZADO',
+            6 => 'FINALIZADO',
+        ];
+        $data = [
+            'solcompra' => $solcompra,
+            'empresa' => $empresa,
+            'sede' => $sede,
+            'estados' => $estados,
+        ];
+        $pdf = PDF::loadView('pdf.solcompra', $data)->setPaper('A4', 'portrait');
+        return $pdf->stream($solcompra->id.'.pdf', array('Attachment'=>false));
     }
 
 }

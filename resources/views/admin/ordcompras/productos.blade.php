@@ -16,9 +16,9 @@
 					<div class="headercontent">
 						<h2 class="title"><i class="fas fa-window-restore"></i> Busqueda de Producto</h2>
 						<ul>
-							<li>
+							{{-- <li>
                                 {!! Form::submit('Mostrar', ['class'=>'btn btn-convertir mt-2', 'id'=>'mostrar']) !!}
-                            </li>
+                            </li> --}}
 						</ul>
 					</div>
 					<div class="inside">

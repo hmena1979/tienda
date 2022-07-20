@@ -46,6 +46,7 @@ use App\Http\Controllers\Admin\ParteController;
 use App\Http\Controllers\Admin\PDFController;
 use App\Http\Controllers\Admin\PedidoController;
 use App\Http\Controllers\Admin\PprocesoController;
+use App\Http\Controllers\Admin\ProductoterminadoController;
 use App\Http\Controllers\Admin\RcompraController;
 use App\Http\Controllers\Admin\ResiduoController;
 use App\Http\Controllers\Admin\RventaController;
@@ -429,17 +430,19 @@ Route::delete('/catembarques/{catembarque}/destroy',[CatembarqueController::clas
 Route::post('/solcompras/change', [SolcompraController::class,'change'])->name('admin.solcompras.change');
 Route::get('solcompras/{solcompra}/tablaitem', [SolcompraController::class,'tablaitem'])->name('admin.solcompras.tablaitem');
 Route::get('solcompras/{solcompra}/buscapedidos', [SolcompraController::class,'buscapedidos'])->name('admin.solcompras.buscapedidos');
-// Route::get('/solcompras/{detsolcompra}/destroyitem', [SolcompraController::class,'destroyitem'])->name('admin.solcompras.destroyitem');
+Route::get('/solcompras/{detsolcompra}/detsolcompra', [SolcompraController::class,'detsolcompra'])->name('admin.solcompras.detsolcompra');
+Route::get('/solcompras/{envio}/editdetsolcompra', [SolcompraController::class,'editdetsolcompra'])->name('admin.solcompras.editdetsolcompra');
+Route::get('/solcompras/{detsolcompra}/destroyitem', [SolcompraController::class,'destroyitem'])->name('admin.solcompras.destroyitem');
 Route::post('/solcompras/additem', [SolcompraController::class,'additem'])->name('admin.solcompras.additem');
 // Route::get('/solcompras/{solcompra}/enviar', [SolcompraController::class,'enviar'])->name('admin.solcompras.enviar');
 // Route::get('/solcompras/{envio}/recepcionado', [SolcompraController::class,'recepcionado'])->name('admin.solcompras.recepcionado');
 // Route::get('/solcompras/{envio}/rechazar', [SolcompraController::class,'rechazar'])->name('admin.solcompras.rechazar');
 // Route::get('/solcompras/{envio}/atender', [SolcompraController::class,'atender'])->name('admin.solcompras.atender');
-// Route::get('/solcompras/{detsolcompra}/detsolcompra', [SolcompraController::class,'detsolcompra'])->name('admin.solcompras.detsolcompra');
-// Route::get('/solcompras/{envio}/editdetsolcompra', [SolcompraController::class,'editdetsolcompra'])->name('admin.solcompras.editdetsolcompra');
 Route::resource('solcompras', SolcompraController::class)->names('admin.solcompras');
 Route::get('/solcompras/{periodo?}', [SolcompraController::class,'index'])->name('admin.solcompras.index');
 
+//Saldo Inicial Producto Terminado
+Route::resource('productoterminados', ProductoterminadoController::class)->names('admin.productoterminados');
 
 //Regenera Saldos de Productos
 Route::get('/saldos/gregenera', [SaldoController::class,'gregenera'])->name('admin.saldos.gregenera');
@@ -486,6 +489,7 @@ Route::get('/pdf/{ingcamara}/ingcamara', [PDFController::class,'ingcamara'])->na
 Route::get('/pdf/{salcamara}/salcamara', [PDFController::class,'salcamara'])->name('admin.pdf.salcamara');
 Route::get('/pdf/{residuo}/residuo', [PDFController::class,'residuo'])->name('admin.pdf.residuo');
 Route::get('/pdf/{pedido}/pedido', [PDFController::class,'pedido'])->name('admin.pdf.pedido');
+Route::get('/pdf/{solcompra}/solcompra', [PDFController::class,'solcompra'])->name('admin.pdf.solcompra');
 
 //EXCEL
 Route::get('/excel/{desde}/{hasta}/materiaprima', [ExcelController::class,'materiaprima'])->name('admin.excel.materiaprima');
@@ -522,3 +526,5 @@ Route::post('/import/catembarque', [ImportController::class,'catembarque'])->nam
 Route::get('/busquedas/departamento', [BusquedaController::class,'departamento'])->name('admin.busquedas.departamento');
 Route::get('/busquedas/{departamento}/provincia', [BusquedaController::class,'provincia'])->name('admin.busquedas.provincia');
 Route::get('/busquedas/{provincia}/ubigeo', [BusquedaController::class,'ubigeo'])->name('admin.busquedas.ubigeo');
+Route::get('/busquedas/{pproceso}/trazabilidad', [BusquedaController::class,'trazabilidad'])->name('admin.busquedas.trazabilidad');
+Route::get('/busquedas/{trazabilidad}/dettrazabilidad', [BusquedaController::class,'dettrazabilidad'])->name('admin.busquedas.dettrazabilidad');
