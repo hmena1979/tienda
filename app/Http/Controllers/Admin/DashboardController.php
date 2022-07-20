@@ -32,12 +32,13 @@ class DashboardController extends Controller
     public function getDashboard()
     {
         if(Empresa::count() <> 0 && Sede::count() <> 0){
-			$productoterminado = '';
-			$parte = '';
-			$detparte = '';
-			$productos = '';
-			$rcompras = '';
-			return view('admin.dashboard',compact('productoterminado','parte','detparte','productos','rcompras'));
+			// $productoterminado = '';
+			// $parte = '';
+			// $detparte = '';
+			// $productos = '';
+			// $rcompras = '';
+			// return view('admin.dashboard',compact('productoterminado','parte','detparte','productos','rcompras'));
+			
 			//Producto Terminado
 			$verproductoterminado = User::permission('admin.dashboard.productoterminado')->where('id',Auth::user()->id)->count();
 			if($verproductoterminado > 0) {
