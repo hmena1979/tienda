@@ -25,12 +25,12 @@
 						<h2 class="title"><i class="fas fa-home"></i><strong> Stock Producto Terminado</strong></h2>
 						<ul>
 							<li>
-								<a class="btn mt-1" href="{{ route('admin.excel.resumentrazabilidad') }}">
+								<a class="btn mt-1 btn-seleccionado" href="{{ route('admin.excel.resumentrazabilidad') }}">
                                     <i class="far fa-file-excel"></i> T
                                 </a>
 							</li>
 							<li>
-								<a class="btn mt-1" href="{{ route('admin.excel.resumencodigo') }}">
+								<a class="btn mt-1 btn-seleccionado" href="{{ route('admin.excel.resumencodigo') }}">
                                     <i class="far fa-file-excel"></i> C
                                 </a>
 							</li>

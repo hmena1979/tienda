@@ -501,6 +501,7 @@ Route::post('/excel/residuos', [ExcelController::class,'residuos'])->name('admin
 Route::get('/excel/{parte}/parte', [ExcelController::class,'parte'])->name('admin.excel.parte');
 Route::get('/excel/resumentrazabilidad', [ExcelController::class,'resumentrazabilidad'])->name('admin.excel.resumentrazabilidad');
 Route::get('/excel/resumencodigo', [ExcelController::class,'resumencodigo'])->name('admin.excel.resumencodigo');
+Route::post('/excel/detalladoproductoterminado', [ExcelController::class,'detalladoproductoterminado'])->name('admin.excel.detalladoproductoterminado');
 
 //Modulo importaciones
 Route::get('/import', [ImportController::class,'index'])->name('admin.imports.index');

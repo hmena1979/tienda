@@ -11,7 +11,7 @@
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-md-7 d-flex">
-                {!! Form::open(['route'=>'admin.excel.tolvasview']) !!}
+                {!! Form::open(['route'=>'admin.excel.detalladoproductoterminado']) !!}
 				<div class="panelprin shadow">
 					<div class="headercontent">
 						<h2 class="title"><i class="fas fa-print"></i> Productos Terminados - Detallado</h2>

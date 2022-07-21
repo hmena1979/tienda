@@ -15,6 +15,7 @@ use App\Models\Detenvasado;
 use App\Models\Detingcamara;
 use App\Models\Detparte;
 use App\Models\Detpartecamara;
+use App\Models\Detparteproducto;
 use App\Models\Detrventa;
 use App\Models\Dettrazabilidad;
 use App\Models\Envasado;
@@ -83,6 +84,15 @@ class ParteController extends Controller
                         $fail(__('Ya se encuentra registrado'));
                     }
                 }],
+            'lote' => ['required',
+                function($attribute, $value, $fail) {
+                    $contador = Parte::where('lote',$value)
+                        ->where('empresa_id',session('empresa'))
+                        ->count();
+                    if ($contador > 0) {
+                        $fail(__('Parte ya se encuentra registrado'));
+                    }
+                }],
         ];
         $messages = [
             'lote.required' => 'Seleccione Lote',
@@ -144,6 +154,13 @@ class ParteController extends Controller
                         ->where('empresa_id',session('empresa'));
                 }),
             ],
+            'lote' => ['required',
+                Rule::unique('partes')->where(function ($query) use ($parte) {
+                    return $query->where('id','<>',$parte->id)
+                        ->whereNull('deleted_at')
+                        ->where('empresa_id',session('empresa'));
+                }),
+            ],
         ];
 
         $messages = [
@@ -176,9 +193,10 @@ class ParteController extends Controller
 
     public function destroy(Parte $parte)
     {
-        // if (Detenvasado::where('envasado_id',$envasado->id)->count() > 0) {
-        //     return back()->with('message', 'Se ha producido un error, Ya contiene detalles')->with('typealert', 'danger');
-        // }
+        Detparte::where('parte_id', $parte->id)->delete();
+        Detpartecamara::where('parte_id', $parte->id)->delete();
+        Detparteproducto::where('parte_id', $parte->id)->delete();
+        Productoterminado::where('parte_id', $parte->id)->delete();
         $parte->delete();
         return redirect()->route('admin.partes.index')->with('destroy', 'Registro Eliminado');
     }

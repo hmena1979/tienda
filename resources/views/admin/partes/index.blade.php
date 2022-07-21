@@ -63,7 +63,7 @@
 											<a class="" href="{{ route('admin.partes.edit',$parte) }}"datatoggle="tooltip" data-placement="top" title="Editar"><i class="fas fa-edit"></i></a>
 											@endcan
 											@can('admin.partes.destroy')
-											@if ($parte->detpartes->count() == 0)
+											{{-- @if ($parte->detpartes->count() == 0) --}}
 											<form action="{{ route('admin.partes.destroy',$parte) }}" method="POST" class="formulario_eliminars">
 												@csrf
 												@method('delete')
@@ -72,7 +72,7 @@
 												</button>
 											</form>
                                             @endcan
-											@endif
+											{{-- @endif --}}
 											<a class="" href="{{ route('admin.excel.parte',$parte) }}" datatoggle="tooltip" data-placement="top" title="Imprimir"><i class="fas fa-print"></i></a>
 										</div>
 									</td>
