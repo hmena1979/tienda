@@ -38,7 +38,7 @@ class DashboardController extends Controller
 			// $productos = '';
 			// $rcompras = '';
 			// return view('admin.dashboard',compact('productoterminado','parte','detparte','productos','rcompras'));
-			
+
 			//Producto Terminado
 			$verproductoterminado = User::permission('admin.dashboard.productoterminado')->where('id',Auth::user()->id)->count();
 			if($verproductoterminado > 0) {
@@ -57,6 +57,7 @@ class DashboardController extends Controller
 					->where('parte_id',$parte->id)
 					->groupBy('trazabilidad_id')
 					->selectRaw('trazabilidad_id, sum(parcial) as rendimiento')
+					->orderBy('trazabilidad_id')
 					->get();
 			} else {
 				$parte = '';

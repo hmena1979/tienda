@@ -28,6 +28,7 @@ use App\Models\Empresa;
 use App\Models\Mpobtenida;
 use App\Models\Parte;
 use App\Models\Pproceso;
+use App\Models\Productoterminado;
 use App\Models\Residuo;
 use App\Models\Trazabilidad;
 use App\Models\User;
@@ -300,6 +301,12 @@ class ExcelController extends Controller
     public function tolvasindex()
     {
         return view('admin.reportes.tolvasindex');
+    }
+
+    public function procesoindex()
+    {
+        $pprocesos = Pproceso::where('empresa_id',session('empresa'))->pluck('nombre','id');
+        return view('admin.reportes.procesoindex', compact('pprocesos'));
     }
 
     public function tolvasview(Request $request)
@@ -1333,7 +1340,6 @@ class ExcelController extends Controller
         $writer->save('php://output');
         
     }
-
     
     public function residuos(Request $request)
     {
@@ -1483,6 +1489,307 @@ class ExcelController extends Controller
 
         //Envio de Archivo para Descarga
         $fileName= 'RESIDUOS-'.getMes($request->input('mes')).'-'.$request->input('anio').".xlsx";
+        # Crear un "escritor"
+        $writer = new Xlsx($excel);
+        # Le pasamos la ruta de guardado
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="'. urlencode($fileName).'"');
+        $writer->save('php://output');
+    }
+    
+    public function resumentrazabilidad()
+    {
+        $productoterminado = Productoterminado::with(['pproceso:id,nombre'])
+            ->groupBy('pproceso_id')
+            ->selectRaw('pproceso_id,sum(saldo) as sacos')
+            ->get();
+        // $trazabilidad = Productoterminado::with('trazabilidad')
+        //     ->groupBy('trazabilidad_id')
+        //     ->selectRaw('trazabilidad_id, sum(saldo) as sacos')
+        //     ->orderBy('trazabilidad_id')
+        //     ->get();
+
+        $empresa = Empresa::findOrFail(session('empresa'));
+        //Creación de Excel
+        $excel = new Spreadsheet();
+
+        //Información del Archivo
+        $excel
+            ->getProperties()
+            ->setCreator($empresa->razsoc)
+            ->setLastModifiedBy('Proceso')
+            ->setTitle('Resumen Trazabilidad')
+            ->setSubject('Resumen Trazabilidad')
+            ->setDescription('Resumen Trazabilidad')
+            ->setKeywords('Trazabilidad')
+            ->setCategory('Categoría Excel');
+
+        //Fuente y Tamaño por defecto
+        $excel
+            ->getDefaultStyle()
+            ->getFont()
+            ->setName('Calibri')
+            ->setSize(9);
+
+        //Creación de Hoja y Llenado de Información
+        $sheet = $excel->getActiveSheet();
+        $sheet->setTitle("RESUMEN TRAZABILIDAD");
+        $linea = 1;
+        // Logo
+        $logo = new Drawing();
+        $logo->setName('Logo');
+        $logo->setDescription('Logo');
+        $logo->setPath('./static/images/logopesquera.jpeg');
+        $logo->setCoordinates('A'.$linea);
+        $logo->setHeight(60);
+        $logo->setWorksheet($excel->getActiveSheet());
+
+        $linea++;$linea++;
+        $linea++;$linea++;
+        $salto = "\r\n";
+
+        $sheet->setCellValue('A'.$linea,'RESUMEN TRAZABILIDAD');
+        $sheet->getStyle('A'.$linea)->getFont()->getColor()->setARGB('FF000080');
+        $sheet->mergeCells('A'.$linea.':D'.$linea);
+        $sheet->getStyle('A'.$linea)->getFont()->setSize(12)->setBold(true);
+        $sheet->getStyle('A'.$linea)
+            ->getAlignment()
+            ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+        $linea++;$linea++;
+        // $sheet->getStyle('I')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_NUMBER);
+        // $sheet->getStyle('E')->getNumberFormat()->setFormatCode('#,##0.0000');
+        $sheet->getStyle('C')->getNumberFormat()->setFormatCode('#,##0.00');
+        $sheet->getStyle('D')->getNumberFormat()->setFormatCode('#,##0.00');
+
+        $sheet->setCellValue('A'.$linea,'PRODUCTO');
+        $sheet->setCellValue('B'.$linea,'TRAZABILIDAD');
+        $sheet->setCellValue('C'.$linea,'SACOS');
+        $sheet->setCellValue('D'.$linea,'KILOS');
+        $sheet->getStyle('A'.$linea.':D'.$linea)
+            ->getAlignment()
+            ->setVertical(StyleAlignment::VERTICAL_CENTER)
+            ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A'.$linea.':D'.$linea)->getFont()->setBold(true);
+        $sheet->getStyle('A'.$linea.':D'.$linea)->getAlignment()->setWrapText(true);
+        $sheet->getStyle('A'.$linea.':D'.$linea)->getFont()->getColor()->setARGB('FFFFFFFF');
+        $sheet->getStyle('A'.$linea.':D'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF000080');
+
+        $cuadroInicio = $linea + 1;
+        foreach ($productoterminado as $producto) {
+            $linea++;
+            $sheet->setCellValue('A'.$linea,$producto->pproceso->nombre);
+            $trazabilidad = Productoterminado::with('trazabilidad')
+                ->where('pproceso_id',$producto->pproceso_id)
+                ->groupBy('trazabilidad_id')
+                ->selectRaw('trazabilidad_id, sum(saldo) as sacos')
+                ->orderBy('trazabilidad_id')
+                ->get();
+            //Detalles
+            $conteo = 0;
+            $lineaInicio = $linea;
+            foreach($trazabilidad as $det) {
+                $sheet->setCellValue('B'.$linea,$det->trazabilidad->nombre);
+                $sheet->setCellValue('C'.$linea,$det->sacos);
+                $sheet->setCellValue('D'.$linea,$det->sacos*20);
+                $linea++;
+                $conteo++;
+            }
+            if ($conteo > 1) {
+                $sheet->mergeCells('A'.$lineaInicio.':A'.($lineaInicio+$conteo-1));
+                $sheet->getStyle('A'.$lineaInicio.':A'.($lineaInicio+$conteo-1))
+                    ->getAlignment()
+                    ->setVertical(StyleAlignment::VERTICAL_CENTER);
+            }
+            $linea--;
+        }
+        
+        $linea++;
+        $sheet->setCellValue('B'.$linea, 'TOTAL');
+        $sheet->setCellValue('C'.$linea, $productoterminado->sum('sacos'));
+        $sheet->setCellValue('D'.$linea, $productoterminado->sum('sacos')*20);
+        $sheet->getStyle('A'.$linea.':D'.$linea)
+            ->getFill()
+            ->setFillType(Fill::FILL_SOLID)
+            ->getStartColor()
+            ->setARGB('FFEDE739');
+        $sheet->getStyle('A'.$linea.':D'.$linea)->getFont()->setBold(true);
+        
+        $estiloBorde = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                ],
+            ],
+        ];
+        $sheet->getStyle('A'.$cuadroInicio.':D'.$linea)->applyFromArray($estiloBorde);
+          
+        // Ancho de Columnas
+        $sheet->getColumnDimension('A')->setWidth(36);
+        $sheet->getColumnDimension('B')->setWidth(20);
+        $sheet->getColumnDimension('C')->setWidth(10);
+        $sheet->getColumnDimension('D')->setWidth(10);
+
+        //Envio de Archivo para Descarga
+        $fileName= 'Resumen-Trazabilidad'.".xlsx";
+        # Crear un "escritor"
+        $writer = new Xlsx($excel);
+        # Le pasamos la ruta de guardado
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="'. urlencode($fileName).'"');
+        $writer->save('php://output');
+    }
+
+    public function resumencodigo()
+    {
+        $productoterminado = Productoterminado::with(['pproceso:id,nombre'])
+            ->groupBy('pproceso_id')
+            ->selectRaw('pproceso_id,sum(saldo) as sacos')
+            ->get();
+
+        $empresa = Empresa::findOrFail(session('empresa'));
+        //Creación de Excel
+        $excel = new Spreadsheet();
+
+        //Información del Archivo
+        $excel
+            ->getProperties()
+            ->setCreator($empresa->razsoc)
+            ->setLastModifiedBy('Proceso')
+            ->setTitle('Resumen Trazabilidad')
+            ->setSubject('Resumen Trazabilidad')
+            ->setDescription('Resumen Trazabilidad')
+            ->setKeywords('Trazabilidad')
+            ->setCategory('Categoría Excel');
+
+        //Fuente y Tamaño por defecto
+        $excel
+            ->getDefaultStyle()
+            ->getFont()
+            ->setName('Calibri')
+            ->setSize(9);
+
+        //Creación de Hoja y Llenado de Información
+        $sheet = $excel->getActiveSheet();
+        $sheet->setTitle("RESUMEN TRAZABILIDAD");
+        $linea = 1;
+        // Logo
+        $logo = new Drawing();
+        $logo->setName('Logo');
+        $logo->setDescription('Logo');
+        $logo->setPath('./static/images/logopesquera.jpeg');
+        $logo->setCoordinates('A'.$linea);
+        $logo->setHeight(60);
+        $logo->setWorksheet($excel->getActiveSheet());
+
+        $linea++;$linea++;
+        $linea++;$linea++;
+        $salto = "\r\n";
+
+        $sheet->setCellValue('A'.$linea,'RESUMEN X CÓDIGO');
+        $sheet->getStyle('A'.$linea)->getFont()->getColor()->setARGB('FF000080');
+        $sheet->mergeCells('A'.$linea.':E'.$linea);
+        $sheet->getStyle('A'.$linea)->getFont()->setSize(12)->setBold(true);
+        $sheet->getStyle('A'.$linea)
+            ->getAlignment()
+            ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+        $linea++;$linea++;
+        // $sheet->getStyle('I')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_NUMBER);
+        // $sheet->getStyle('E')->getNumberFormat()->setFormatCode('#,##0.0000');
+        $sheet->getStyle('D')->getNumberFormat()->setFormatCode('#,##0.00');
+        $sheet->getStyle('E')->getNumberFormat()->setFormatCode('#,##0.00');
+
+        $sheet->setCellValue('A'.$linea,'PRODUCTO');
+        $sheet->setCellValue('B'.$linea,'TRAZABILIDAD');
+        $sheet->setCellValue('C'.$linea,'CÓDIGO');
+        $sheet->setCellValue('D'.$linea,'SACOS');
+        $sheet->setCellValue('E'.$linea,'KILOS');
+        $sheet->getStyle('A'.$linea.':E'.$linea)
+            ->getAlignment()
+            ->setVertical(StyleAlignment::VERTICAL_CENTER)
+            ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A'.$linea.':E'.$linea)->getFont()->setBold(true);
+        $sheet->getStyle('A'.$linea.':E'.$linea)->getAlignment()->setWrapText(true);
+        $sheet->getStyle('A'.$linea.':E'.$linea)->getFont()->getColor()->setARGB('FFFFFFFF');
+        $sheet->getStyle('A'.$linea.':E'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF000080');
+
+        $cuadroInicio = $linea + 1;
+        foreach ($productoterminado as $producto) {
+            $linea++;
+            $sheet->setCellValue('A'.$linea,$producto->pproceso->nombre);
+            $trazabilidad = Productoterminado::with('trazabilidad')
+                ->where('pproceso_id',$producto->pproceso_id)
+                ->groupBy('trazabilidad_id')
+                ->selectRaw('trazabilidad_id, sum(saldo) as sacos')
+                ->orderBy('trazabilidad_id')
+                ->get();
+            //Detalles
+            $conteo = 0;
+            $lineaInicio = $linea;
+            foreach($trazabilidad as $det) {
+                $sheet->setCellValue('B'.$linea,$det->trazabilidad->nombre);
+                $dettrazabilidad = Productoterminado::with('dettrazabilidad')
+                    ->where('trazabilidad_id',$det->trazabilidad_id)
+                    ->groupBy('dettrazabilidad_id')
+                    ->selectRaw('dettrazabilidad_id, sum(saldo) as sacos')
+                    ->orderBy('dettrazabilidad_id')
+                    ->get();
+                $conteo2 = 0;
+                $lineaInicio2 = $linea;
+                foreach ($dettrazabilidad as $detalle) {
+                    $sheet->setCellValue('C'.$linea,$detalle->dettrazabilidad->mpd_codigo);
+                    $sheet->setCellValue('D'.$linea,$detalle->sacos);
+                    $sheet->setCellValue('E'.$linea,$detalle->sacos*20);
+                    $linea++;
+                    $conteo++;
+                    $conteo2++;
+                }
+                if ($conteo2 > 1) {
+                    $sheet->mergeCells('B'.$lineaInicio2.':B'.($lineaInicio2+$conteo2-1));
+                    $sheet->getStyle('B'.$lineaInicio2.':B'.($lineaInicio2+$conteo2-1))
+                        ->getAlignment()
+                        ->setVertical(StyleAlignment::VERTICAL_CENTER);
+                }
+                // $linea++;
+                // $conteo++;
+            }
+            if ($conteo > 1) {
+                $sheet->mergeCells('A'.$lineaInicio.':A'.($lineaInicio+$conteo-1));
+                $sheet->getStyle('A'.$lineaInicio.':A'.($lineaInicio+$conteo-1))
+                    ->getAlignment()
+                    ->setVertical(StyleAlignment::VERTICAL_CENTER);
+            }
+            $linea--;
+        }
+        
+        $linea++;
+        $sheet->setCellValue('B'.$linea, 'TOTAL');
+        $sheet->setCellValue('D'.$linea, $productoterminado->sum('sacos'));
+        $sheet->setCellValue('E'.$linea, $productoterminado->sum('sacos')*20);
+        $sheet->getStyle('A'.$linea.':E'.$linea)
+            ->getFill()
+            ->setFillType(Fill::FILL_SOLID)
+            ->getStartColor()
+            ->setARGB('FFEDE739');
+        $sheet->getStyle('A'.$linea.':E'.$linea)->getFont()->setBold(true);
+        
+        $estiloBorde = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                ],
+            ],
+        ];
+        $sheet->getStyle('A'.$cuadroInicio.':E'.$linea)->applyFromArray($estiloBorde);
+          
+        // Ancho de Columnas
+        $sheet->getColumnDimension('A')->setWidth(36);
+        $sheet->getColumnDimension('B')->setWidth(20);
+        $sheet->getColumnDimension('C')->setWidth(24);
+        $sheet->getColumnDimension('D')->setWidth(10);
+        $sheet->getColumnDimension('E')->setWidth(10);
+
+        //Envio de Archivo para Descarga
+        $fileName= 'Resumen-Codigo'.".xlsx";
         # Crear un "escritor"
         $writer = new Xlsx($excel);
         # Le pasamos la ruta de guardado

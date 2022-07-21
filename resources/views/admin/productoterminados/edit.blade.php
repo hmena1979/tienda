@@ -90,7 +90,7 @@
                 $('#dettrazabilidad_id').empty();
                 for(i=0;i<response.length;i++){
                     $('#dettrazabilidad_id').append("<option value='"+response[i].id+"'>"
-                        + response[i].codigo
+                        + response[i].mpd_codigo
                         + "</option>");
                 }
                 $('#dettrazabilidad_id').val(null);

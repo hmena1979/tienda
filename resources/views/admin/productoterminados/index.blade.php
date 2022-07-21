@@ -43,7 +43,7 @@
 									<td>{{ $productoterminado->lote }}</td>
 									<td>{{ $productoterminado->pproceso->nombre }}</td>
 									<td>{{ $productoterminado->trazabilidad->nombre }}</td>
-									<td>{{ $productoterminado->dettrazabilidad->codigo }}</td>
+									<td>{{ $productoterminado->dettrazabilidad->mpd_codigo }}</td>
 									<td>{{ $productoterminado->entradas }}</td>
 									<td>
 										<div class="opts">

@@ -495,9 +495,12 @@ Route::get('/pdf/{solcompra}/solcompra', [PDFController::class,'solcompra'])->na
 Route::get('/excel/{desde}/{hasta}/materiaprima', [ExcelController::class,'materiaprima'])->name('admin.excel.materiaprima');
 Route::get('/excel/{desde}/{hasta}/materiaprimaii', [ExcelController::class,'materiaprimaii'])->name('admin.excel.materiaprimaii');
 Route::get('/excel/tolvasindex', [ExcelController::class,'tolvasindex'])->name('admin.excel.tolvasindex');
+Route::get('/excel/procesoindex', [ExcelController::class,'procesoindex'])->name('admin.excel.procesoindex');
 Route::post('/excel/tolvasview', [ExcelController::class,'tolvasview'])->name('admin.excel.tolvasview');
 Route::post('/excel/residuos', [ExcelController::class,'residuos'])->name('admin.excel.residuos');
 Route::get('/excel/{parte}/parte', [ExcelController::class,'parte'])->name('admin.excel.parte');
+Route::get('/excel/resumentrazabilidad', [ExcelController::class,'resumentrazabilidad'])->name('admin.excel.resumentrazabilidad');
+Route::get('/excel/resumencodigo', [ExcelController::class,'resumencodigo'])->name('admin.excel.resumencodigo');
 
 //Modulo importaciones
 Route::get('/import', [ImportController::class,'index'])->name('admin.imports.index');

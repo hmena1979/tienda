@@ -23,6 +23,18 @@
 				<div class="panelprin shadow">
 					<div class="headercontent">
 						<h2 class="title"><i class="fas fa-home"></i><strong> Stock Producto Terminado</strong></h2>
+						<ul>
+							<li>
+								<a class="btn mt-1" href="{{ route('admin.excel.resumentrazabilidad') }}">
+                                    <i class="far fa-file-excel"></i> T
+                                </a>
+							</li>
+							<li>
+								<a class="btn mt-1" href="{{ route('admin.excel.resumencodigo') }}">
+                                    <i class="far fa-file-excel"></i> C
+                                </a>
+							</li>
+						</ul>
 					</div>
 					<div class="inside">
 						<div class="row">
@@ -31,7 +43,8 @@
 									<thead>
 										<tr>
 											<th>Producto</th>
-											<th>Sacos</th>
+											<th class="text-center">Sacos</th>
+											<th class="text-center">Kilos</th>
 											<th></th>
 										</tr>
 									</thead>
@@ -39,10 +52,16 @@
 										@foreach ($productoterminado as $det)
 										<tr>
 											<td>{{ $det->pproceso->nombre }}</td>
-											<td>{{ $det->saldo }}</td>
+											<td class="text-center">{{ number_format($det->saldo) }}</td>
+											<td class="text-center">{{ number_format($det->saldo*20) }}</td>
 											<td></td>
 										</tr>
 										@endforeach
+										<tr>
+											<th>TOTAL</th>
+											<th class="text-center">{{ number_format($productoterminado->sum('saldo')) }}</th>
+											<th class="text-center">{{ number_format($productoterminado->sum('saldo')*20) }}</th>
+										</tr>
 									</tbody>
 								</table>
 							</div>

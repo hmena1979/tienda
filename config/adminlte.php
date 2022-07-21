@@ -323,7 +323,7 @@ return [
                             'active' => ['admin/excel/tolvasindex'],
                         ],
                     ],
-                ]
+                ],
             ],
         ],
         // ['header' => 'VEMTAS'],
@@ -504,6 +504,21 @@ return [
                     'can'  => 'admin.embarques.index',
                     'active' => ['admin/embarques','admin/embarques/*','admin/embarques/create'
                                 ,'admin/embarques/*/edit'],
+                ],
+                [
+                    'text' => 'Reportes',
+                    'icon'    => 'fas fa-print',
+                    'icon_color' => 'cyan',
+                    'submenu' => [
+                        [
+                            'text' => 'Reportes Proceso',
+                            'icon'    => 'fas fa-print',
+                            'icon_color' => 'white',
+                            'route'  => 'admin.excel.procesoindex',
+                            // 'can'  => 'admin.rcompras.index',
+                            'active' => ['admin/excel/procesoindex'],
+                        ],
+                    ],
                 ],
             ],
         ],
