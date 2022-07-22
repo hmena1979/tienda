@@ -231,6 +231,7 @@ class PedidoController extends Controller
         $pedido->update(['estado' => 2]);
         $mensajeria = new MensajeriaController();
         $mensajeria->pedido($pedido);
+        $pedido->update(['estado' => 2]);
         return true;
     }
 

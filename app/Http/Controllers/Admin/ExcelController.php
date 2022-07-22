@@ -1839,17 +1839,29 @@ class ExcelController extends Controller
         $linea++;$linea++;$linea++;$linea++;
         $salto = "\r\n";
 
+         $estiloBorde = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                ],
+            ],
+        ];
+
         $sheet->setCellValue('A'.$linea,'PRODUCTO TERMINADO - REPORTE DETALLADO');
         $sheet->getStyle('A'.$linea)->getFont()->getColor()->setARGB('FF000080');
-        $sheet->mergeCells('A'.$linea.':N'.$linea);
+        $sheet->mergeCells('A'.$linea.':I'.$linea);
         $sheet->getStyle('A'.$linea)->getFont()->setSize(12)->setBold(true);
         $sheet->getStyle('A'.$linea)
             ->getAlignment()
             ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
         $linea++;$linea++;
         // $sheet->getStyle('I')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_NUMBER);
-        $sheet->getStyle('E')->getNumberFormat()->setFormatCode('#,##0.0000');
-        $sheet->getStyle('M')->getNumberFormat()->setFormatCode('#,##0.00');
+        $sheet->getStyle('D')->getNumberFormat()->setFormatCode('#,##0.00');
+        $sheet->getStyle('E')->getNumberFormat()->setFormatCode('#,##0.00');
+        $sheet->getStyle('F')->getNumberFormat()->setFormatCode('#,##0.00');
+        $sheet->getStyle('G')->getNumberFormat()->setFormatCode('#,##0.00');
+        $sheet->getStyle('H')->getNumberFormat()->setFormatCode('#,##0.00');
+        $sheet->getStyle('I')->getNumberFormat()->setFormatCode('#,##0.00');
 
         if ($pproceso_id)
             $productoTerminados = Productoterminado::with(['pproceso:id,nombre'])
@@ -1865,6 +1877,7 @@ class ExcelController extends Controller
         }
         foreach ($productoTerminados as $pTerminado) {
             $sheet->setCellValue('A'.$linea,'PRODUCTO: '.$pTerminado->pproceso->nombre);
+            $sheet->mergeCells('A'.$linea.':I'.$linea);
             $sheet->getStyle('A'.$linea)->getFont()->setBold(true);
             $sheet->getStyle('A'.$linea)->getFont()->getColor()->setARGB('FFFFFFFF');
             $sheet->getStyle('A'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF000080');
@@ -1884,11 +1897,74 @@ class ExcelController extends Controller
             }
             foreach ($trazabilidades as $trazabilidad) {
                 $sheet->setCellValue('A'.$linea,'TRAZABILIDAD: '.$trazabilidad->trazabilidad->nombre);
+                $sheet->mergeCells('A'.$linea.':I'.$linea);
                 $sheet->getStyle('A'.$linea)->getFont()->setBold(true);
                 $sheet->getStyle('A'.$linea)->getFont()->getColor()->setARGB('FFFFFFFF');
-                $sheet->getStyle('A'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF000080');
+                $sheet->getStyle('A'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF31869B');
+                $linea++;
+                if ($dettrazabilidad_id) {
+                    $dettrazabilidades = Productoterminado::with(['dettrazabilidad'])
+                        ->groupBy('dettrazabilidad_id')
+                        ->selectRaw('dettrazabilidad_id,sum(saldo) as sacos')
+                        ->where('dettrazabilidad_id',$dettrazabilidad_id)
+                        ->get();
+                } else {
+                    $dettrazabilidades = Productoterminado::with(['dettrazabilidad'])
+                        ->groupBy('dettrazabilidad_id')
+                        ->selectRaw('dettrazabilidad_id,sum(saldo) as sacos')
+                        ->where('trazabilidad_id',$trazabilidad->trazabilidad_id)
+                        ->get();
+                }
+                foreach ($dettrazabilidades as $dettrazabilidad) {
+                    $sheet->setCellValue('A'.$linea,'CÓDIGO: '.$dettrazabilidad->dettrazabilidad->mpd_codigo);
+                    $sheet->mergeCells('A'.$linea.':I'.$linea);
+                    $sheet->getStyle('A'.$linea)->getFont()->setBold(true);
+                    $sheet->getStyle('A'.$linea)->getFont()->getColor()->setARGB('FFFFFFFF');
+                    $sheet->getStyle('A'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF0D0D0D');
+                    $linea++;
+                    $cuadroInicio = $linea;
+                    $sheet->setCellValue('A'.$linea,'LOTE');
+                    $sheet->setCellValue('B'.$linea,'FECHA'.$salto.'EMPAQUE');
+                    $sheet->setCellValue('C'.$linea,'FECHA'.$salto.'VENCIMIENTO');
+                    $sheet->setCellValue('D'.$linea,'ENTRADAS'.$salto.'SACOS');
+                    $sheet->setCellValue('E'.$linea,'SALIDAS'.$salto.'SACOS');
+                    $sheet->setCellValue('F'.$linea,'SALDO'.$salto.'SACOS');
+                    $sheet->setCellValue('G'.$linea,'ENTRADAS'.$salto.'KILOS');
+                    $sheet->setCellValue('H'.$linea,'SALIDAS'.$salto.'KILOS');
+                    $sheet->setCellValue('I'.$linea,'SALDO'.$salto.'KILOS');
+                    $sheet->getStyle('A'.$linea.':I'.$linea)
+                        ->getAlignment()
+                        ->setVertical(StyleAlignment::VERTICAL_CENTER)
+                        ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+                    $sheet->getStyle('A'.$linea.':I'.$linea)->getFont()->setBold(true);
+                    $sheet->getStyle('A'.$linea.':I'.$linea)->getAlignment()->setWrapText(true);
+                    // $sheet->getStyle('A'.$linea.':I'.$linea)->getFont()->getColor()->setARGB('FFFFFFFF');
+                    // $sheet->getStyle('A'.$linea.':I'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF000080');
+                    $linea++;
+                    $detalle = Productoterminado::where('dettrazabilidad_id',$dettrazabilidad->dettrazabilidad_id)
+                        ->orderBy('lote')
+                        ->get();
+                    foreach ($detalle as $det) {
+                        $sheet->setCellValue('A'.$linea, $det->lote);
+                        $sheet->setCellValue('B'.$linea, $det->empaque);
+                        $sheet->setCellValue('C'.$linea, $det->vencimiento);
+                        $sheet->setCellValue('D'.$linea, $det->entradas);
+                        $sheet->setCellValue('E'.$linea, $det->salidas);
+                        $sheet->setCellValue('F'.$linea, $det->saldo);
+                        $sheet->setCellValue('G'.$linea, $det->entradas*20);
+                        $sheet->setCellValue('H'.$linea, $det->salidas*20);
+                        $sheet->setCellValue('I'.$linea, $det->saldo*20);
+                        $linea++;
+                    }
+                    $sheet->setCellValue('F'.$linea, $dettrazabilidad->sacos);
+                    $sheet->setCellValue('I'.$linea, $dettrazabilidad->sacos*20);
+                    $sheet->getStyle('A'.$cuadroInicio.':I'.$linea)->applyFromArray($estiloBorde);
+                    $linea++;
+                    $linea++;
+                }
                 $linea++;
             }
+            $linea++;
         }
 
         // $sheet->setCellValue('A'.$linea,'N°');
@@ -1967,20 +2043,15 @@ class ExcelController extends Controller
         // $sheet->getStyle('A'.$cuadroInicio.':N'.$linea)->applyFromArray($estiloBorde);
           
         // Ancho de Columnas
-        $sheet->getColumnDimension('A')->setWidth(30);
-        // $sheet->getColumnDimension('B')->setWidth(11);
-        // $sheet->getColumnDimension('C')->setWidth(13);
-        // $sheet->getColumnDimension('D')->setWidth(8);
-        // $sheet->getColumnDimension('E')->setWidth(10);
-        // $sheet->getColumnDimension('F')->setWidth(20);
-        // $sheet->getColumnDimension('G')->setWidth(24);
-        // $sheet->getColumnDimension('H')->setWidth(10);
-        // $sheet->getColumnDimension('I')->setWidth(11);
-        // $sheet->getColumnDimension('J')->setWidth(11);
-        // $sheet->getColumnDimension('K')->setWidth(11);
-        // $sheet->getColumnDimension('L')->setWidth(15);
-        // $sheet->getColumnDimension('M')->setWidth(10);
-        // $sheet->getColumnDimension('N')->setWidth(10);
+        $sheet->getColumnDimension('A')->setWidth(15);
+        $sheet->getColumnDimension('B')->setWidth(12);
+        $sheet->getColumnDimension('C')->setWidth(13);
+        $sheet->getColumnDimension('D')->setWidth(12);
+        $sheet->getColumnDimension('E')->setWidth(12);
+        $sheet->getColumnDimension('F')->setWidth(12);
+        $sheet->getColumnDimension('G')->setWidth(12);
+        $sheet->getColumnDimension('H')->setWidth(12);
+        $sheet->getColumnDimension('I')->setWidth(12);
 
         //Envio de Archivo para Descarga
         $fileName= 'DETALLADO-'.".xlsx";
