@@ -351,11 +351,13 @@ class PDFController extends Controller
         $empresa = Empresa::findOrFail(session('empresa'));
         $sede = Sede::findOrFail(session('sede'));
         $users = User::orderBy('name')->pluck('name','id');
+        $motivo = [1=>'EXPORTACIÓN', 2=>'MUESTREO', 3=>'TRASLADO', 4=>'REPROCESO'];
         $data = [
             'salcamara' => $salcamara,
             'empresa' => $empresa,
             'sede' => $sede,
             'users' => $users,
+            'motivo' => $motivo,
         ];
         $pdf = PDF::loadView('pdf.salcamara', $data)->setPaper('A4', 'portrait');
         return $pdf->stream(

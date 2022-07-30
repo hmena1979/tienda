@@ -45,7 +45,7 @@
                     <td width="10%" class="negrita">FECHA</td>
                     <td width="25%">: {{ date('d-m-Y',strtotime($salcamara->fecha)) }}</td>
                     <td width="8%" class="negrita">MOTIVO</td>
-                    <td width="15%">: {{ $salcamara->motivo==1?'EXPORTACIÓN':'MUESTREO' }}</td>
+                    <td width="15%">: {{ $motivo[$salcamara->motivo] }}</td>
                     <td width="15%" class="negrita">SUPERVISOR</td>
                     <td width="25%">: {{ $salcamara->supervisor->nombre }}</td>
                 </tr>

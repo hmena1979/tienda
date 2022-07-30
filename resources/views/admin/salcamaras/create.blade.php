@@ -44,7 +44,7 @@
                             </div>
                             <div class="col-md-2 form-group">
                                 {!! Form::label('motivo', 'Motivo Retiro:') !!}
-                                {!! Form::select('motivo',[1=>'EXPORTACIÓN', 2=>'MUESTREO'],null,['class'=>'custom-select']) !!}
+                                {!! Form::select('motivo',[1=>'EXPORTACIÓN', 2=>'MUESTREO', 3=>'TRASLADO', 4=>'REPROCESO'],null,['class'=>'custom-select']) !!}
                             </div>
                             <div class="col-md-2">
                                 {!! Form::label('contenedor', 'Contenedor:') !!}

@@ -134,7 +134,7 @@
                             <div class="row">
                                 <div class="col-md-2 form-group">
                                     {!! Form::label('envase', 'Envase:') !!}
-                                    {!! Form::select('envase',[1=>'SACO',2=>'BLOCK'],null,['class'=>'custom-select']) !!}
+                                    {!! Form::select('envase',[1=>'SACO',2=>'BLOCK',3=>'CAJAS'],null,['class'=>'custom-select']) !!}
                                 </div>
                                 <div class="col-md-2 form-group">
                                     {!! Form::label('codigo', 'Código:') !!}

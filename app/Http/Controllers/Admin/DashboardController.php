@@ -43,6 +43,7 @@ class DashboardController extends Controller
 			$verproductoterminado = User::permission('admin.dashboard.productoterminado')->where('id',Auth::user()->id)->count();
 			if($verproductoterminado > 0) {
 				$productoterminado = Productoterminado::with(['pproceso:id,nombre'])
+					->where('trazabilidad_id','!=', 4)
 					->groupBy('pproceso_id')
 					->selectRaw('pproceso_id,sum(saldo) as saldo')
 					->get();
