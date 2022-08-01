@@ -1496,15 +1496,15 @@ class ExcelController extends Controller
     
     public function resumentrazabilidad()
     {
-        $productoterminado = Productoterminado::with(['pproceso:id,nombre'])
-            ->groupBy('pproceso_id')
-            ->selectRaw('pproceso_id,sum(saldo) as sacos')
-            ->get();
-        // $trazabilidad = Productoterminado::with('trazabilidad')
-        //     ->groupBy('trazabilidad_id')
-        //     ->selectRaw('trazabilidad_id, sum(saldo) as sacos')
-        //     ->orderBy('trazabilidad_id')
+        // $productoterminado = Productoterminado::with(['pproceso:id,nombre'])
+        //     ->groupBy('pproceso_id')
+        //     ->selectRaw('pproceso_id,sum(saldo) as sacos')
         //     ->get();
+        $productoterminado = Productoterminado::with(['pproceso:id,nombre','dettrazabilidad'])
+            ->join('dettrazabilidads','productoterminados.dettrazabilidad_id','dettrazabilidads.id')
+            ->groupBy(['productoterminados.pproceso_id'])
+            ->selectRaw('productoterminados.pproceso_id,sum(productoterminados.saldo) as saldo,sum(productoterminados.saldo*dettrazabilidads.peso) as kilos')
+            ->get();
 
         $empresa = Empresa::findOrFail(session('empresa'));
         //Creación de Excel
@@ -1575,11 +1575,17 @@ class ExcelController extends Controller
         foreach ($productoterminado as $producto) {
             $linea++;
             $sheet->setCellValue('A'.$linea,$producto->pproceso->nombre);
-            $trazabilidad = Productoterminado::with('trazabilidad')
+            // $trazabilidad = Productoterminado::with('trazabilidad')
+            //     ->where('pproceso_id',$producto->pproceso_id)
+            //     ->groupBy('trazabilidad_id')
+            //     ->selectRaw('trazabilidad_id, sum(saldo) as sacos')
+            //     ->orderBy('trazabilidad_id')
+            //     ->get();
+            $trazabilidad = Productoterminado::with(['trazabilidad','dettrazabilidad'])
+                ->join('dettrazabilidads','productoterminados.dettrazabilidad_id','dettrazabilidads.id')
                 ->where('pproceso_id',$producto->pproceso_id)
-                ->groupBy('trazabilidad_id')
-                ->selectRaw('trazabilidad_id, sum(saldo) as sacos')
-                ->orderBy('trazabilidad_id')
+                ->groupBy(['productoterminados.trazabilidad_id','dettrazabilidads.envase','dettrazabilidads.peso'])
+                ->selectRaw('productoterminados.trazabilidad_id,dettrazabilidads.envase,dettrazabilidads.peso,sum(productoterminados.saldo) as saldo,sum(productoterminados.saldo*dettrazabilidads.peso) as kilos')
                 ->get();
             //Detalles
             $conteo = 0;
@@ -1602,8 +1608,8 @@ class ExcelController extends Controller
         
         $linea++;
         $sheet->setCellValue('B'.$linea, 'TOTAL');
-        $sheet->setCellValue('C'.$linea, $productoterminado->sum('sacos'));
-        $sheet->setCellValue('D'.$linea, $productoterminado->sum('sacos')*20);
+        $sheet->setCellValue('C'.$linea, $productoterminado->sum('saldo'));
+        $sheet->setCellValue('D'.$linea, $productoterminado->sum('kilos'));
         $sheet->getStyle('A'.$linea.':D'.$linea)
             ->getFill()
             ->setFillType(Fill::FILL_SOLID)
@@ -1642,6 +1648,12 @@ class ExcelController extends Controller
             ->groupBy('pproceso_id')
             ->selectRaw('pproceso_id,sum(saldo) as sacos')
             ->get();
+        
+        // $productoterminado = Productoterminado::with(['pproceso:id,nombre','dettrazabilidad'])
+        //     ->join('dettrazabilidads','productoterminados.dettrazabilidad_id','dettrazabilidads.id')
+        //     ->groupBy(['productoterminados.pproceso_id'])
+        //     ->selectRaw('productoterminados.pproceso_id,sum(productoterminados.saldo) as saldo,sum(productoterminados.saldo*dettrazabilidads.peso) as kilos')
+        //     ->get();
 
         $empresa = Empresa::findOrFail(session('empresa'));
         //Creación de Excel
@@ -1760,8 +1772,8 @@ class ExcelController extends Controller
         
         $linea++;
         $sheet->setCellValue('B'.$linea, 'TOTAL');
-        $sheet->setCellValue('D'.$linea, $productoterminado->sum('sacos'));
-        $sheet->setCellValue('E'.$linea, $productoterminado->sum('sacos')*20);
+        $sheet->setCellValue('D'.$linea, $productoterminado->sum('saldo'));
+        $sheet->setCellValue('E'.$linea, $productoterminado->sum('kilos'));
         $sheet->getStyle('A'.$linea.':E'.$linea)
             ->getFill()
             ->setFillType(Fill::FILL_SOLID)

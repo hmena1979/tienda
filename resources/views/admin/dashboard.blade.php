@@ -43,7 +43,8 @@
 									<thead>
 										<tr>
 											<th>Producto</th>
-											<th class="text-center">Sacos</th>
+											<th class="text-center">Envase</th>
+											<th class="text-center">Cantidad</th>
 											<th class="text-center">Kilos</th>
 											<th></th>
 										</tr>
@@ -52,15 +53,16 @@
 										@foreach ($productoterminado as $det)
 										<tr>
 											<td>{{ $det->pproceso->nombre }}</td>
+											<td>{{ $envase[$det->envase] }}</td>
 											<td class="text-center">{{ number_format($det->saldo) }}</td>
-											<td class="text-center">{{ number_format($det->saldo*20) }}</td>
+											<td class="text-center">{{ number_format($det->kilos) }}</td>
 											<td></td>
 										</tr>
 										@endforeach
 										<tr>
-											<th>TOTAL</th>
+											<th colspan="2">TOTAL</th>
 											<th class="text-center">{{ number_format($productoterminado->sum('saldo')) }}</th>
-											<th class="text-center">{{ number_format($productoterminado->sum('saldo')*20) }}</th>
+											<th class="text-center">{{ number_format($productoterminado->sum('kilos')) }}</th>
 										</tr>
 									</tbody>
 								</table>

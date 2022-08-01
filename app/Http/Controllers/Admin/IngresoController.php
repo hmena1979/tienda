@@ -80,6 +80,7 @@ class IngresoController extends Controller
         $ordcompras = Ordcompra::where('empresa_id',session('empresa'))
             ->where('cliente_id', $ingreso->cliente_id)
             ->take(15)
+            ->orderBy('id','desc')
             ->get()
             ->pluck('fecha_id','id');
 

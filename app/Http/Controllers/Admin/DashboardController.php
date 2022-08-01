@@ -42,14 +42,21 @@ class DashboardController extends Controller
 			//Producto Terminado
 			$verproductoterminado = User::permission('admin.dashboard.productoterminado')->where('id',Auth::user()->id)->count();
 			if($verproductoterminado > 0) {
-				$productoterminado = Productoterminado::with(['pproceso:id,nombre'])
-					->where('trazabilidad_id','!=', 4)
-					->groupBy('pproceso_id')
-					->selectRaw('pproceso_id,sum(saldo) as saldo')
+				// $productoterminado = Productoterminado::with(['pproceso:id,nombre'])
+				// 	->where('trazabilidad_id','!=', 4)
+				// 	->groupBy('pproceso_id')
+				// 	->selectRaw('pproceso_id,sum(saldo) as saldo')
+				// 	->get();
+				$productoterminado = Productoterminado::with(['pproceso:id,nombre','dettrazabilidad'])
+					->join('dettrazabilidads','productoterminados.dettrazabilidad_id','dettrazabilidads.id')
+					->where('productoterminados.trazabilidad_id','!=', 4)
+					->groupBy(['productoterminados.pproceso_id','dettrazabilidads.envase','dettrazabilidads.peso'])
+					->selectRaw('productoterminados.pproceso_id,dettrazabilidads.envase,dettrazabilidads.peso,sum(productoterminados.saldo) as saldo,sum(productoterminados.saldo*dettrazabilidads.peso) as kilos')
 					->get();
 			} else {
 				$productoterminado = '';
 			}
+			// return $productoterminado;
 			//Rendimiento Ultimo Lote
 			$verrendimiento = User::permission('admin.dashboard.rendimiento')->where('id',Auth::user()->id)->count();
 			if ($verrendimiento > 0) {
@@ -92,7 +99,8 @@ class DashboardController extends Controller
 				$rcompras = '';
 			}
 			// return $rcompras;
-            return view('admin.dashboard',compact('productoterminado','parte','detparte','productos','rcompras'));
+			$envase = [1=>'SACO',2=>'BLOCK',3=>'CAJAS'];
+            return view('admin.dashboard',compact('productoterminado','parte','detparte','productos','rcompras','envase'));
         }else{
             return view('admin.cargainicial');
         }
