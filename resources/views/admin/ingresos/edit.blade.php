@@ -105,7 +105,7 @@
                                 {!! Form::label('ordencompra', 'Orden de Compra:', ['class' => 'adddetalle']) !!}
                                 <div class="row no-gutters">
                                     <div class="col-md-10">
-                                        {!! Form::select('ordencompra',$ordcompras,null,['class'=>'custom-select adddetalle','placeholder'=>'']) !!}
+                                        {!! Form::select('ordencompra',$ordcompras,$ingreso->ordcompra_id,['class'=>'custom-select adddetalle','placeholder'=>'']) !!}
                                     </div>
                                     <div class="col-md-2">
                                         <button class="btn btn-block btn-convertir adddetalle" type="button" id="addordencompra" title="Agregar Productos"><i class="fas fa-plus"></i></button>

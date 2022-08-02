@@ -1500,6 +1500,7 @@ class ExcelController extends Controller
         //     ->groupBy('pproceso_id')
         //     ->selectRaw('pproceso_id,sum(saldo) as sacos')
         //     ->get();
+        $envase = [1=>'SACO',2=>'BLOCK',3=>'CAJAS'];
         $productoterminado = Productoterminado::with(['pproceso:id,nombre','dettrazabilidad'])
             ->join('dettrazabilidads','productoterminados.dettrazabilidad_id','dettrazabilidads.id')
             ->groupBy(['productoterminados.pproceso_id'])
@@ -1547,7 +1548,7 @@ class ExcelController extends Controller
 
         $sheet->setCellValue('A'.$linea,'RESUMEN TRAZABILIDAD');
         $sheet->getStyle('A'.$linea)->getFont()->getColor()->setARGB('FF000080');
-        $sheet->mergeCells('A'.$linea.':D'.$linea);
+        $sheet->mergeCells('A'.$linea.':E'.$linea);
         $sheet->getStyle('A'.$linea)->getFont()->setSize(12)->setBold(true);
         $sheet->getStyle('A'.$linea)
             ->getAlignment()
@@ -1555,21 +1556,22 @@ class ExcelController extends Controller
         $linea++;$linea++;
         // $sheet->getStyle('I')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_NUMBER);
         // $sheet->getStyle('E')->getNumberFormat()->setFormatCode('#,##0.0000');
-        $sheet->getStyle('C')->getNumberFormat()->setFormatCode('#,##0.00');
         $sheet->getStyle('D')->getNumberFormat()->setFormatCode('#,##0.00');
+        $sheet->getStyle('E')->getNumberFormat()->setFormatCode('#,##0.00');
 
         $sheet->setCellValue('A'.$linea,'PRODUCTO');
         $sheet->setCellValue('B'.$linea,'TRAZABILIDAD');
-        $sheet->setCellValue('C'.$linea,'SACOS');
-        $sheet->setCellValue('D'.$linea,'KILOS');
-        $sheet->getStyle('A'.$linea.':D'.$linea)
+        $sheet->setCellValue('C'.$linea,'ENVASE');
+        $sheet->setCellValue('D'.$linea,'CANTIDAD');
+        $sheet->setCellValue('E'.$linea,'KILOS');
+        $sheet->getStyle('A'.$linea.':E'.$linea)
             ->getAlignment()
             ->setVertical(StyleAlignment::VERTICAL_CENTER)
             ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('A'.$linea.':D'.$linea)->getFont()->setBold(true);
-        $sheet->getStyle('A'.$linea.':D'.$linea)->getAlignment()->setWrapText(true);
-        $sheet->getStyle('A'.$linea.':D'.$linea)->getFont()->getColor()->setARGB('FFFFFFFF');
-        $sheet->getStyle('A'.$linea.':D'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF000080');
+        $sheet->getStyle('A'.$linea.':E'.$linea)->getFont()->setBold(true);
+        $sheet->getStyle('A'.$linea.':E'.$linea)->getAlignment()->setWrapText(true);
+        $sheet->getStyle('A'.$linea.':E'.$linea)->getFont()->getColor()->setARGB('FFFFFFFF');
+        $sheet->getStyle('A'.$linea.':E'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF000080');
 
         $cuadroInicio = $linea + 1;
         foreach ($productoterminado as $producto) {
@@ -1592,8 +1594,9 @@ class ExcelController extends Controller
             $lineaInicio = $linea;
             foreach($trazabilidad as $det) {
                 $sheet->setCellValue('B'.$linea,$det->trazabilidad->nombre);
-                $sheet->setCellValue('C'.$linea,$det->sacos);
-                $sheet->setCellValue('D'.$linea,$det->sacos*20);
+                $sheet->setCellValue('C'.$linea,$envase[$det->envase]);
+                $sheet->setCellValue('D'.$linea,$det->saldo);
+                $sheet->setCellValue('E'.$linea,$det->kilos);
                 $linea++;
                 $conteo++;
             }
@@ -1608,14 +1611,14 @@ class ExcelController extends Controller
         
         $linea++;
         $sheet->setCellValue('B'.$linea, 'TOTAL');
-        $sheet->setCellValue('C'.$linea, $productoterminado->sum('saldo'));
-        $sheet->setCellValue('D'.$linea, $productoterminado->sum('kilos'));
-        $sheet->getStyle('A'.$linea.':D'.$linea)
+        $sheet->setCellValue('D'.$linea, $productoterminado->sum('saldo'));
+        $sheet->setCellValue('E'.$linea, $productoterminado->sum('kilos'));
+        $sheet->getStyle('A'.$linea.':E'.$linea)
             ->getFill()
             ->setFillType(Fill::FILL_SOLID)
             ->getStartColor()
             ->setARGB('FFEDE739');
-        $sheet->getStyle('A'.$linea.':D'.$linea)->getFont()->setBold(true);
+        $sheet->getStyle('A'.$linea.':E'.$linea)->getFont()->setBold(true);
         
         $estiloBorde = [
             'borders' => [
@@ -1624,13 +1627,14 @@ class ExcelController extends Controller
                 ],
             ],
         ];
-        $sheet->getStyle('A'.$cuadroInicio.':D'.$linea)->applyFromArray($estiloBorde);
+        $sheet->getStyle('A'.$cuadroInicio.':E'.$linea)->applyFromArray($estiloBorde);
           
         // Ancho de Columnas
         $sheet->getColumnDimension('A')->setWidth(36);
         $sheet->getColumnDimension('B')->setWidth(20);
         $sheet->getColumnDimension('C')->setWidth(10);
         $sheet->getColumnDimension('D')->setWidth(10);
+        $sheet->getColumnDimension('E')->setWidth(10);
 
         //Envio de Archivo para Descarga
         $fileName= 'Resumen-Trazabilidad'.".xlsx";
@@ -1644,16 +1648,17 @@ class ExcelController extends Controller
 
     public function resumencodigo()
     {
-        $productoterminado = Productoterminado::with(['pproceso:id,nombre'])
-            ->groupBy('pproceso_id')
-            ->selectRaw('pproceso_id,sum(saldo) as sacos')
-            ->get();
-        
-        // $productoterminado = Productoterminado::with(['pproceso:id,nombre','dettrazabilidad'])
-        //     ->join('dettrazabilidads','productoterminados.dettrazabilidad_id','dettrazabilidads.id')
-        //     ->groupBy(['productoterminados.pproceso_id'])
-        //     ->selectRaw('productoterminados.pproceso_id,sum(productoterminados.saldo) as saldo,sum(productoterminados.saldo*dettrazabilidads.peso) as kilos')
+        $envase = [1=>'SACO',2=>'BLOCK',3=>'CAJAS'];
+        // $productoterminado = Productoterminado::with(['pproceso:id,nombre'])
+        //     ->groupBy('pproceso_id')
+        //     ->selectRaw('pproceso_id,sum(saldo) as sacos')
         //     ->get();
+
+        $productoterminado = Productoterminado::with(['pproceso:id,nombre','dettrazabilidad'])
+            ->join('dettrazabilidads','productoterminados.dettrazabilidad_id','dettrazabilidads.id')
+            ->groupBy(['productoterminados.pproceso_id'])
+            ->selectRaw('productoterminados.pproceso_id,sum(productoterminados.saldo) as saldo,sum(productoterminados.saldo*dettrazabilidads.peso) as kilos')
+            ->get();
 
         $empresa = Empresa::findOrFail(session('empresa'));
         //Creación de Excel
@@ -1696,7 +1701,7 @@ class ExcelController extends Controller
 
         $sheet->setCellValue('A'.$linea,'RESUMEN X CÓDIGO');
         $sheet->getStyle('A'.$linea)->getFont()->getColor()->setARGB('FF000080');
-        $sheet->mergeCells('A'.$linea.':E'.$linea);
+        $sheet->mergeCells('A'.$linea.':F'.$linea);
         $sheet->getStyle('A'.$linea)->getFont()->setSize(12)->setBold(true);
         $sheet->getStyle('A'.$linea)
             ->getAlignment()
@@ -1704,22 +1709,23 @@ class ExcelController extends Controller
         $linea++;$linea++;
         // $sheet->getStyle('I')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_NUMBER);
         // $sheet->getStyle('E')->getNumberFormat()->setFormatCode('#,##0.0000');
-        $sheet->getStyle('D')->getNumberFormat()->setFormatCode('#,##0.00');
         $sheet->getStyle('E')->getNumberFormat()->setFormatCode('#,##0.00');
+        $sheet->getStyle('F')->getNumberFormat()->setFormatCode('#,##0.00');
 
         $sheet->setCellValue('A'.$linea,'PRODUCTO');
         $sheet->setCellValue('B'.$linea,'TRAZABILIDAD');
         $sheet->setCellValue('C'.$linea,'CÓDIGO');
-        $sheet->setCellValue('D'.$linea,'SACOS');
-        $sheet->setCellValue('E'.$linea,'KILOS');
-        $sheet->getStyle('A'.$linea.':E'.$linea)
+        $sheet->setCellValue('D'.$linea,'ENVASE');
+        $sheet->setCellValue('E'.$linea,'CANTIDAD');
+        $sheet->setCellValue('F'.$linea,'KILOS');
+        $sheet->getStyle('A'.$linea.':F'.$linea)
             ->getAlignment()
             ->setVertical(StyleAlignment::VERTICAL_CENTER)
             ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('A'.$linea.':E'.$linea)->getFont()->setBold(true);
-        $sheet->getStyle('A'.$linea.':E'.$linea)->getAlignment()->setWrapText(true);
-        $sheet->getStyle('A'.$linea.':E'.$linea)->getFont()->getColor()->setARGB('FFFFFFFF');
-        $sheet->getStyle('A'.$linea.':E'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF000080');
+        $sheet->getStyle('A'.$linea.':F'.$linea)->getFont()->setBold(true);
+        $sheet->getStyle('A'.$linea.':F'.$linea)->getAlignment()->setWrapText(true);
+        $sheet->getStyle('A'.$linea.':F'.$linea)->getFont()->getColor()->setARGB('FFFFFFFF');
+        $sheet->getStyle('A'.$linea.':F'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF000080');
 
         $cuadroInicio = $linea + 1;
         foreach ($productoterminado as $producto) {
@@ -1736,18 +1742,25 @@ class ExcelController extends Controller
             $lineaInicio = $linea;
             foreach($trazabilidad as $det) {
                 $sheet->setCellValue('B'.$linea,$det->trazabilidad->nombre);
-                $dettrazabilidad = Productoterminado::with('dettrazabilidad')
-                    ->where('trazabilidad_id',$det->trazabilidad_id)
-                    ->groupBy('dettrazabilidad_id')
-                    ->selectRaw('dettrazabilidad_id, sum(saldo) as sacos')
-                    ->orderBy('dettrazabilidad_id')
+                // $dettrazabilidad = Productoterminado::with('dettrazabilidad')
+                //     ->where('trazabilidad_id',$det->trazabilidad_id)
+                //     ->groupBy('dettrazabilidad_id')
+                //     ->selectRaw('dettrazabilidad_id, sum(saldo) as sacos')
+                //     ->orderBy('dettrazabilidad_id')
+                //     ->get();
+                $dettrazabilidad = Productoterminado::with(['dettrazabilidad'])
+                    ->join('dettrazabilidads','productoterminados.dettrazabilidad_id','dettrazabilidads.id')
+                    ->where('productoterminados.trazabilidad_id',$det->trazabilidad_id)
+                    ->groupBy(['productoterminados.dettrazabilidad_id','dettrazabilidads.envase','dettrazabilidads.peso'])
+                    ->selectRaw('productoterminados.dettrazabilidad_id,dettrazabilidads.envase,dettrazabilidads.peso,sum(productoterminados.saldo) as saldo,sum(productoterminados.saldo*dettrazabilidads.peso) as kilos')
                     ->get();
                 $conteo2 = 0;
                 $lineaInicio2 = $linea;
                 foreach ($dettrazabilidad as $detalle) {
                     $sheet->setCellValue('C'.$linea,$detalle->dettrazabilidad->mpd_codigo);
-                    $sheet->setCellValue('D'.$linea,$detalle->sacos);
-                    $sheet->setCellValue('E'.$linea,$detalle->sacos*20);
+                    $sheet->setCellValue('D'.$linea,$envase[$detalle->envase]);
+                    $sheet->setCellValue('E'.$linea,$detalle->saldo);
+                    $sheet->setCellValue('F'.$linea,$detalle->kilos);
                     $linea++;
                     $conteo++;
                     $conteo2++;
@@ -1772,14 +1785,14 @@ class ExcelController extends Controller
         
         $linea++;
         $sheet->setCellValue('B'.$linea, 'TOTAL');
-        $sheet->setCellValue('D'.$linea, $productoterminado->sum('saldo'));
-        $sheet->setCellValue('E'.$linea, $productoterminado->sum('kilos'));
-        $sheet->getStyle('A'.$linea.':E'.$linea)
+        $sheet->setCellValue('E'.$linea, $productoterminado->sum('saldo'));
+        $sheet->setCellValue('F'.$linea, $productoterminado->sum('kilos'));
+        $sheet->getStyle('A'.$linea.':F'.$linea)
             ->getFill()
             ->setFillType(Fill::FILL_SOLID)
             ->getStartColor()
             ->setARGB('FFEDE739');
-        $sheet->getStyle('A'.$linea.':E'.$linea)->getFont()->setBold(true);
+        $sheet->getStyle('A'.$linea.':F'.$linea)->getFont()->setBold(true);
         
         $estiloBorde = [
             'borders' => [
@@ -1788,7 +1801,7 @@ class ExcelController extends Controller
                 ],
             ],
         ];
-        $sheet->getStyle('A'.$cuadroInicio.':E'.$linea)->applyFromArray($estiloBorde);
+        $sheet->getStyle('A'.$cuadroInicio.':F'.$linea)->applyFromArray($estiloBorde);
           
         // Ancho de Columnas
         $sheet->getColumnDimension('A')->setWidth(36);
@@ -1796,6 +1809,7 @@ class ExcelController extends Controller
         $sheet->getColumnDimension('C')->setWidth(24);
         $sheet->getColumnDimension('D')->setWidth(10);
         $sheet->getColumnDimension('E')->setWidth(10);
+        $sheet->getColumnDimension('F')->setWidth(10);
 
         //Envio de Archivo para Descarga
         $fileName= 'Resumen-Codigo'.".xlsx";
@@ -1812,6 +1826,7 @@ class ExcelController extends Controller
         $pproceso_id = $request->input('pproceso_id');
         $trazabilidad_id = $request->input('trazabilidad_id');
         $dettrazabilidad_id = $request->input('dettrazabilidad_id');
+        $envase = [1=>'SACO',2=>'BLOCK',3=>'CAJAS'];
 
         $empresa = Empresa::findOrFail(session('empresa'));
         //Creación de Excel
@@ -1861,75 +1876,111 @@ class ExcelController extends Controller
 
         $sheet->setCellValue('A'.$linea,'PRODUCTO TERMINADO - REPORTE DETALLADO');
         $sheet->getStyle('A'.$linea)->getFont()->getColor()->setARGB('FF000080');
-        $sheet->mergeCells('A'.$linea.':I'.$linea);
+        $sheet->mergeCells('A'.$linea.':J'.$linea);
         $sheet->getStyle('A'.$linea)->getFont()->setSize(12)->setBold(true);
         $sheet->getStyle('A'.$linea)
             ->getAlignment()
             ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
         $linea++;$linea++;
         // $sheet->getStyle('I')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_NUMBER);
-        $sheet->getStyle('D')->getNumberFormat()->setFormatCode('#,##0.00');
+        // $sheet->getStyle('D')->getNumberFormat()->setFormatCode('#,##0.00');
         $sheet->getStyle('E')->getNumberFormat()->setFormatCode('#,##0.00');
         $sheet->getStyle('F')->getNumberFormat()->setFormatCode('#,##0.00');
         $sheet->getStyle('G')->getNumberFormat()->setFormatCode('#,##0.00');
         $sheet->getStyle('H')->getNumberFormat()->setFormatCode('#,##0.00');
         $sheet->getStyle('I')->getNumberFormat()->setFormatCode('#,##0.00');
+        $sheet->getStyle('J')->getNumberFormat()->setFormatCode('#,##0.00');
 
         if ($pproceso_id)
-            $productoTerminados = Productoterminado::with(['pproceso:id,nombre'])
-                ->groupBy('pproceso_id')
-                ->selectRaw('pproceso_id,sum(saldo) as sacos')
-                ->where('pproceso_id',$pproceso_id)
+            // $productoTerminados = Productoterminado::with(['pproceso:id,nombre'])
+            //     ->groupBy('pproceso_id')
+            //     ->selectRaw('pproceso_id,sum(saldo) as sacos')
+            //     ->where('pproceso_id',$pproceso_id)
+            //     ->get();
+            $productoTerminados = Productoterminado::with(['pproceso:id,nombre','dettrazabilidad'])
+                ->join('dettrazabilidads','productoterminados.dettrazabilidad_id','dettrazabilidads.id')
+                ->where('productoterminados.pproceso_id',$pproceso_id)
+                ->groupBy(['productoterminados.pproceso_id'])
+                ->selectRaw('productoterminados.pproceso_id,sum(productoterminados.saldo) as saldo,sum(productoterminados.saldo*dettrazabilidads.peso) as kilos')
                 ->get();
         else {
-            $productoTerminados = Productoterminado::with(['pproceso:id,nombre'])
-                ->groupBy('pproceso_id')
-                ->selectRaw('pproceso_id,sum(saldo) as sacos')
+            // $productoTerminados = Productoterminado::with(['pproceso:id,nombre'])
+            //     ->groupBy('pproceso_id')
+            //     ->selectRaw('pproceso_id,sum(saldo) as sacos')
+            //     ->get();
+            $productoTerminados = Productoterminado::with(['pproceso:id,nombre','dettrazabilidad'])
+                ->join('dettrazabilidads','productoterminados.dettrazabilidad_id','dettrazabilidads.id')
+                ->groupBy(['productoterminados.pproceso_id'])
+                ->selectRaw('productoterminados.pproceso_id,sum(productoterminados.saldo) as saldo,sum(productoterminados.saldo*dettrazabilidads.peso) as kilos')
                 ->get();
         }
         foreach ($productoTerminados as $pTerminado) {
             $sheet->setCellValue('A'.$linea,'PRODUCTO: '.$pTerminado->pproceso->nombre);
-            $sheet->mergeCells('A'.$linea.':I'.$linea);
+            $sheet->mergeCells('A'.$linea.':J'.$linea);
             $sheet->getStyle('A'.$linea)->getFont()->setBold(true);
             $sheet->getStyle('A'.$linea)->getFont()->getColor()->setARGB('FFFFFFFF');
             $sheet->getStyle('A'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF000080');
             $linea++;
             if ($trazabilidad_id)
-                $trazabilidades = Productoterminado::with(['trazabilidad:id,nombre'])
-                    ->groupBy('trazabilidad_id')
-                    ->selectRaw('trazabilidad_id,sum(saldo) as sacos')
-                    ->where('trazabilidad_id',$trazabilidad_id)
+                // $trazabilidades = Productoterminado::with(['trazabilidad:id,nombre'])
+                //     ->groupBy('trazabilidad_id')
+                //     ->selectRaw('trazabilidad_id,sum(saldo) as sacos')
+                //     ->where('trazabilidad_id',$trazabilidad_id)
+                //     ->get();
+                $trazabilidades = Productoterminado::with(['dettrazabilidad','trazabilidad:id,nombre'])
+                    ->join('dettrazabilidads','productoterminados.dettrazabilidad_id','dettrazabilidads.id')
+                    ->where('productoterminados.trazabilidad_id',$trazabilidad_id)
+                    ->groupBy(['productoterminados.trazabilidad_id','dettrazabilidads.envase','dettrazabilidads.peso'])
+                    ->selectRaw('productoterminados.trazabilidad_id,dettrazabilidads.envase,dettrazabilidads.peso,sum(productoterminados.saldo) as saldo,sum(productoterminados.saldo*dettrazabilidads.peso) as kilos')
                     ->get();
             else {
-                $trazabilidades = Productoterminado::with(['trazabilidad:id,nombre'])
-                    ->groupBy('trazabilidad_id')
-                    ->selectRaw('trazabilidad_id,sum(saldo) as sacos')
-                    ->where('pproceso_id',$pTerminado->pproceso_id)
+                // $trazabilidades = Productoterminado::with(['trazabilidad:id,nombre'])
+                //     ->groupBy('trazabilidad_id')
+                //     ->selectRaw('trazabilidad_id,sum(saldo) as sacos')
+                //     ->where('pproceso_id',$pTerminado->pproceso_id)
+                //     ->get();
+                $trazabilidades = Productoterminado::with(['dettrazabilidad','trazabilidad:id,nombre'])
+                    ->join('dettrazabilidads','productoterminados.dettrazabilidad_id','dettrazabilidads.id')
+                    ->where('productoterminados.pproceso_id', $pTerminado->pproceso_id)
+                    ->groupBy(['productoterminados.trazabilidad_id','dettrazabilidads.envase','dettrazabilidads.peso'])
+                    ->selectRaw('productoterminados.trazabilidad_id,dettrazabilidads.envase,dettrazabilidads.peso,sum(productoterminados.saldo) as saldo,sum(productoterminados.saldo*dettrazabilidads.peso) as kilos')
                     ->get();
             }
             foreach ($trazabilidades as $trazabilidad) {
                 $sheet->setCellValue('A'.$linea,'TRAZABILIDAD: '.$trazabilidad->trazabilidad->nombre);
-                $sheet->mergeCells('A'.$linea.':I'.$linea);
+                $sheet->mergeCells('A'.$linea.':J'.$linea);
                 $sheet->getStyle('A'.$linea)->getFont()->setBold(true);
                 $sheet->getStyle('A'.$linea)->getFont()->getColor()->setARGB('FFFFFFFF');
                 $sheet->getStyle('A'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF31869B');
                 $linea++;
                 if ($dettrazabilidad_id) {
+                    // $dettrazabilidades = Productoterminado::with(['dettrazabilidad'])
+                    //     ->groupBy('dettrazabilidad_id')
+                    //     ->selectRaw('dettrazabilidad_id,sum(saldo) as sacos')
+                    //     ->where('dettrazabilidad_id',$dettrazabilidad_id)
+                    //     ->get();
                     $dettrazabilidades = Productoterminado::with(['dettrazabilidad'])
-                        ->groupBy('dettrazabilidad_id')
-                        ->selectRaw('dettrazabilidad_id,sum(saldo) as sacos')
-                        ->where('dettrazabilidad_id',$dettrazabilidad_id)
+                        ->join('dettrazabilidads','productoterminados.dettrazabilidad_id','dettrazabilidads.id')
+                        ->where('productoterminados.dettrazabilidad_id',$dettrazabilidad_id)
+                        ->groupBy(['productoterminados.dettrazabilidad_id','dettrazabilidads.envase','dettrazabilidads.peso'])
+                        ->selectRaw('productoterminados.dettrazabilidad_id,dettrazabilidads.envase,dettrazabilidads.peso,sum(productoterminados.saldo) as saldo,sum(productoterminados.saldo*dettrazabilidads.peso) as kilos')
                         ->get();
                 } else {
+                    // $dettrazabilidades = Productoterminado::with(['dettrazabilidad'])
+                    //     ->groupBy('dettrazabilidad_id')
+                    //     ->selectRaw('dettrazabilidad_id,sum(saldo) as sacos')
+                    //     ->where('trazabilidad_id',$trazabilidad->trazabilidad_id)
+                    //     ->get();
                     $dettrazabilidades = Productoterminado::with(['dettrazabilidad'])
-                        ->groupBy('dettrazabilidad_id')
-                        ->selectRaw('dettrazabilidad_id,sum(saldo) as sacos')
-                        ->where('trazabilidad_id',$trazabilidad->trazabilidad_id)
+                        ->join('dettrazabilidads','productoterminados.dettrazabilidad_id','dettrazabilidads.id')
+                        ->where('productoterminados.trazabilidad_id',$trazabilidad->trazabilidad_id)
+                        ->groupBy(['productoterminados.dettrazabilidad_id','dettrazabilidads.envase','dettrazabilidads.peso'])
+                        ->selectRaw('productoterminados.dettrazabilidad_id,dettrazabilidads.envase,dettrazabilidads.peso,sum(productoterminados.saldo) as saldo,sum(productoterminados.saldo*dettrazabilidads.peso) as kilos')
                         ->get();
                 }
                 foreach ($dettrazabilidades as $dettrazabilidad) {
                     $sheet->setCellValue('A'.$linea,'CÓDIGO: '.$dettrazabilidad->dettrazabilidad->mpd_codigo);
-                    $sheet->mergeCells('A'.$linea.':I'.$linea);
+                    $sheet->mergeCells('A'.$linea.':J'.$linea);
                     $sheet->getStyle('A'.$linea)->getFont()->setBold(true);
                     $sheet->getStyle('A'.$linea)->getFont()->getColor()->setARGB('FFFFFFFF');
                     $sheet->getStyle('A'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF0D0D0D');
@@ -1938,39 +1989,40 @@ class ExcelController extends Controller
                     $sheet->setCellValue('A'.$linea,'LOTE');
                     $sheet->setCellValue('B'.$linea,'FECHA'.$salto.'EMPAQUE');
                     $sheet->setCellValue('C'.$linea,'FECHA'.$salto.'VENCIMIENTO');
-                    $sheet->setCellValue('D'.$linea,'ENTRADAS'.$salto.'SACOS');
-                    $sheet->setCellValue('E'.$linea,'SALIDAS'.$salto.'SACOS');
-                    $sheet->setCellValue('F'.$linea,'SALDO'.$salto.'SACOS');
-                    $sheet->setCellValue('G'.$linea,'ENTRADAS'.$salto.'KILOS');
-                    $sheet->setCellValue('H'.$linea,'SALIDAS'.$salto.'KILOS');
-                    $sheet->setCellValue('I'.$linea,'SALDO'.$salto.'KILOS');
-                    $sheet->getStyle('A'.$linea.':I'.$linea)
+                    $sheet->setCellValue('D'.$linea,'ENVASE');
+                    $sheet->setCellValue('E'.$linea,'ENTRADAS'.$salto.'SACOS');
+                    $sheet->setCellValue('F'.$linea,'SALIDAS'.$salto.'SACOS');
+                    $sheet->setCellValue('G'.$linea,'SALDO'.$salto.'SACOS');
+                    $sheet->setCellValue('H'.$linea,'ENTRADAS'.$salto.'KILOS');
+                    $sheet->setCellValue('I'.$linea,'SALIDAS'.$salto.'KILOS');
+                    $sheet->setCellValue('J'.$linea,'SALDO'.$salto.'KILOS');
+                    $sheet->getStyle('A'.$linea.':J'.$linea)
                         ->getAlignment()
                         ->setVertical(StyleAlignment::VERTICAL_CENTER)
                         ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
-                    $sheet->getStyle('A'.$linea.':I'.$linea)->getFont()->setBold(true);
-                    $sheet->getStyle('A'.$linea.':I'.$linea)->getAlignment()->setWrapText(true);
-                    // $sheet->getStyle('A'.$linea.':I'.$linea)->getFont()->getColor()->setARGB('FFFFFFFF');
-                    // $sheet->getStyle('A'.$linea.':I'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF000080');
+                    $sheet->getStyle('A'.$linea.':J'.$linea)->getFont()->setBold(true);
+                    $sheet->getStyle('A'.$linea.':J'.$linea)->getAlignment()->setWrapText(true);
                     $linea++;
-                    $detalle = Productoterminado::where('dettrazabilidad_id',$dettrazabilidad->dettrazabilidad_id)
+                    $detalle = Productoterminado::with(['dettrazabilidad'])
+                        ->where('dettrazabilidad_id',$dettrazabilidad->dettrazabilidad_id)
                         ->orderBy('lote')
                         ->get();
                     foreach ($detalle as $det) {
                         $sheet->setCellValue('A'.$linea, $det->lote);
                         $sheet->setCellValue('B'.$linea, $det->empaque);
                         $sheet->setCellValue('C'.$linea, $det->vencimiento);
-                        $sheet->setCellValue('D'.$linea, $det->entradas);
-                        $sheet->setCellValue('E'.$linea, $det->salidas);
-                        $sheet->setCellValue('F'.$linea, $det->saldo);
-                        $sheet->setCellValue('G'.$linea, $det->entradas*20);
-                        $sheet->setCellValue('H'.$linea, $det->salidas*20);
-                        $sheet->setCellValue('I'.$linea, $det->saldo*20);
+                        $sheet->setCellValue('D'.$linea, $envase[$det->dettrazabilidad->envase]);
+                        $sheet->setCellValue('E'.$linea, $det->entradas);
+                        $sheet->setCellValue('F'.$linea, $det->salidas);
+                        $sheet->setCellValue('G'.$linea, $det->saldo);
+                        $sheet->setCellValue('H'.$linea, $det->entradas*$det->dettrazabilidad->peso);
+                        $sheet->setCellValue('I'.$linea, $det->salidas*$det->dettrazabilidad->peso);
+                        $sheet->setCellValue('J'.$linea, $det->saldo*$det->dettrazabilidad->peso);
                         $linea++;
                     }
-                    $sheet->setCellValue('F'.$linea, $dettrazabilidad->sacos);
-                    $sheet->setCellValue('I'.$linea, $dettrazabilidad->sacos*20);
-                    $sheet->getStyle('A'.$cuadroInicio.':I'.$linea)->applyFromArray($estiloBorde);
+                    $sheet->setCellValue('G'.$linea, $dettrazabilidad->saldo);
+                    $sheet->setCellValue('J'.$linea, $dettrazabilidad->kilos);
+                    $sheet->getStyle('A'.$cuadroInicio.':J'.$linea)->applyFromArray($estiloBorde);
                     $linea++;
                     $linea++;
                 }
@@ -1979,81 +2031,6 @@ class ExcelController extends Controller
             $linea++;
         }
 
-        // $sheet->setCellValue('A'.$linea,'N°');
-        // $sheet->setCellValue('B'.$linea,'FECHA'.$salto.'RECEPCIÓN');
-        // $sheet->setCellValue('C'.$linea,'LOTE');
-        // $sheet->setCellValue('D'.$linea,'ESPECIE');
-        // $sheet->setCellValue('E'.$linea,'TM');
-        // $sheet->setCellValue('F'.$linea,'EMPRESA');
-        // $sheet->setCellValue('G'.$linea,'EMPRESA RESIDUOS');
-        // $sheet->setCellValue('H'.$linea,'REPORTE DE'.$salto.'PESAJE N°');
-        // $sheet->setCellValue('I'.$linea,'FECHA'.$salto.'EMISIÓN');
-        // $sheet->setCellValue('J'.$linea,'N° GUÍA'.$salto.'MPS');
-        // $sheet->setCellValue('K'.$linea,'N° GUÍA'.$salto.'HL');
-        // $sheet->setCellValue('L'.$linea,'N° GUÍA'.$salto.'TRANSPORTISTA');
-        // $sheet->setCellValue('M'.$linea,'TOTAL KGS');
-        // $sheet->setCellValue('N'.$linea,'N° DE'.$salto.'PLACA');
-        // $sheet->getStyle('A'.$linea.':N'.$linea)
-        //     ->getAlignment()
-        //     ->setVertical(StyleAlignment::VERTICAL_CENTER)
-        //     ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
-        // $sheet->getStyle('A'.$linea.':N'.$linea)->getFont()->setBold(true);
-        // $sheet->getStyle('A'.$linea.':N'.$linea)->getAlignment()->setWrapText(true);
-        // $sheet->getStyle('A'.$linea.':N'.$linea)->getFont()->getColor()->setARGB('FFFFFFFF');
-        // $sheet->getStyle('A'.$linea.':N'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF000080');
-
-
-        // //Detalles
-        // $color = 1;
-        // $pesoMateriaPrima = 0;
-        // $pesoAcumulado = 0;
-        // $cuadroInicio = $linea + 1;
-        // foreach($residuos as $residuo) {
-        //     $linea++;
-        //     $parte = Parte::where('lote',$residuo->lote)->first();
-        //     $pesoMateriaPrima += $parte?$parte->materiaprima:0;
-        //     $pesoAcumulado += $residuo->peso;
-        //     $sheet->setCellValue('A'.$linea,$color);
-        //     $sheet->setCellValue('B'.$linea,$parte?$parte->recepcion:'');
-        //     $sheet->setCellValue('C'.$linea,$parte?$parte->lote:'');
-        //     $sheet->setCellValue('D'.$linea,$residuo->especie);
-        //     $sheet->setCellValue('E'.$linea,$parte?$parte->materiaprima/1000:'');
-        //     $sheet->setCellValue('F'.$linea,$empresa->razsoc);
-        //     $sheet->setCellValue('G'.$linea,$residuo->cliente->razsoc);
-        //     $sheet->setCellValue('H'.$linea,$residuo->ticket_balanza);
-        //     $sheet->setCellValue('I'.$linea,$residuo->emision);
-        //     $sheet->setCellValue('J'.$linea,$residuo->guiamps);
-        //     $sheet->setCellValue('K'.$linea,$residuo->guiahl);
-        //     $sheet->setCellValue('L'.$linea,$residuo->guiatrasporte);
-        //     $sheet->setCellValue('M'.$linea,$residuo->peso);
-        //     $sheet->setCellValue('N'.$linea,$residuo->placa);
-        //     $color++;
-        // }
-        // $linea++;
-        // $sheet->mergeCells('A'.$linea.':D'.$linea);
-        // $sheet->setCellValue('E'.$linea, $pesoMateriaPrima/1000);
-        // $sheet->setCellValue('F'.$linea, 'TOTAL');
-        // $sheet->mergeCells('F'.$linea.':L'.$linea);
-        // $sheet->setCellValue('M'.$linea, $pesoAcumulado);
-        // $sheet->getStyle('A'.$linea.':N'.$linea)
-        //     ->getFill()
-        //     ->setFillType(Fill::FILL_SOLID)
-        //     ->getStartColor()
-        //     ->setARGB('FFEDE739');
-        // $sheet->getStyle('F'.$linea.':L'.$linea)
-        //         ->getAlignment()
-        //         ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
-        // $sheet->getStyle('A'.$linea.':N'.$linea)->getFont()->setBold(true);
-        
-        // $estiloBorde = [
-        //     'borders' => [
-        //         'allBorders' => [
-        //             'borderStyle' => Border::BORDER_THIN,
-        //         ],
-        //     ],
-        // ];
-        // $sheet->getStyle('A'.$cuadroInicio.':N'.$linea)->applyFromArray($estiloBorde);
-          
         // Ancho de Columnas
         $sheet->getColumnDimension('A')->setWidth(15);
         $sheet->getColumnDimension('B')->setWidth(12);
@@ -2064,6 +2041,7 @@ class ExcelController extends Controller
         $sheet->getColumnDimension('G')->setWidth(12);
         $sheet->getColumnDimension('H')->setWidth(12);
         $sheet->getColumnDimension('I')->setWidth(12);
+        $sheet->getColumnDimension('J')->setWidth(12);
 
         //Envio de Archivo para Descarga
         $fileName= 'DETALLADO-'.".xlsx";

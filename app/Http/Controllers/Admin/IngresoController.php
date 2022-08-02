@@ -298,6 +298,7 @@ class IngresoController extends Controller
 
     public function cargaoc(Rcompra $ingreso, Ordcompra $ordcompra)
     {
+        $ingreso->update(['ordcompra_id' => $ordcompra->id]);
         foreach ($ordcompra->detordcompras as $det) {
             //Agregar registro en Detalle de Ingresos
             if ($det->producto->lotevencimiento == 2) {

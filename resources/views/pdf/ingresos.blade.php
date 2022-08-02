@@ -33,7 +33,8 @@
                 </td>
                 <td width="40%" valign='top'>
                     <div class="numero text-center">
-                        INGRESO DE ALMACÉN
+                        INGRESO DE ALMACÉN<br>
+                        {{ $rcompra->serie_numero }}
                     </div>
                 </td>
             </tr>
