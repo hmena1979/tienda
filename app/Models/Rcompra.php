@@ -14,11 +14,16 @@ class Rcompra extends Model
     protected $table = 'rcompras';
     protected $hidden = ['created_at','updated_at'];
     protected $guarded = [];
-    protected $appends = ['serie_numero'];
+    protected $appends = ['serie_numero','pbusqueda'];
 
     public function getSerieNumeroAttribute()
     {
         return $this->serie. '-'.$this->numero;
+    }
+
+    public function getPbusquedaAttribute()
+    {
+        return substr($this->periodo,2,4).substr($this->periodo,0,2);
     }
 
     public function detingresos()

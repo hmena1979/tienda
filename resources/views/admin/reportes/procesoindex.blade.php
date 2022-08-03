@@ -66,6 +66,42 @@
                 </div>
             </div>
         </div>
+        <div class="row mt-3">
+            <div class="col-md-7 d-flex">
+                {!! Form::open(['route'=>'admin.excel.resumenparte']) !!}
+				<div class="panelprin shadow">
+					<div class="headercontent">
+						<h2 class="title"><i class="fas fa-print"></i> Resumen x Fecha de Empaque</h2>
+						<ul>
+							<li>
+                                {!! Form::submit('Mostrar', ['class'=>'btn btn-convertir mt-1', 'id'=>'mostrar']) !!}
+                            </li>
+						</ul>
+					</div>
+					<div class="inside">
+                        <div class="row">
+                            <div class="col-md-4">
+								{!! Form::label('moneda', 'Moneda:') !!}
+								{!! Form::select('moneda',['PEN'=>'SOLES','USD'=>'DÓLARES'],null,['class'=>'custom-select']) !!}
+							</div>
+							<div class="col-md-8">
+								<div class="row">
+									<div class="col-md-6 form-group">
+										{!! Form::label('desde', 'Desde:') !!}
+										{!! Form::date('desde', primerDiaPeriodo(session('periodo')), ['class'=>'form-control activo']) !!}
+									</div>
+									<div class="col-md-6 form-group">
+										{!! Form::label('hasta', 'Hasta:') !!}
+										{!! Form::date('hasta', Carbon\Carbon::now(), ['class'=>'form-control activo']) !!}
+									</div>
+								</div>
+							</div>
+                        </div>
+                    </div>
+                </div>
+                {!! Form::close() !!}
+            </div>
+        </div>
     </div>
 @endsection
 @section('script')

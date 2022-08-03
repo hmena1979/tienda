@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -19,6 +20,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 use App\Models\Materiaprima;
 use App\Exports\MateriaPrimaExport;
+use App\Models\Cliente;
 use App\Models\Despiece;
 use App\Models\Detdespiece;
 use App\Models\Detparte;
@@ -29,6 +31,7 @@ use App\Models\Mpobtenida;
 use App\Models\Parte;
 use App\Models\Pproceso;
 use App\Models\Productoterminado;
+use App\Models\Rcompra;
 use App\Models\Residuo;
 use App\Models\Trazabilidad;
 use App\Models\User;
@@ -1337,6 +1340,282 @@ class ExcelController extends Controller
         $writer->save('php://output');
         
     }
+
+    public function partecontrata(Parte $parte)
+    {
+        $materiaPrimas = Materiaprima::whereIn('lote',json_decode($parte->lotes))->orderBy('ticket_balanza')->get();
+        $mpObtenidas = Mpobtenida::get();
+        $empresa = Empresa::findOrFail($parte->empresa_id);
+        $enombre = Embarcacion::pluck('nombre','id');
+        $ematricula = Embarcacion::pluck('matricula','id');
+        $eprotocolo = Embarcacion::pluck('protocolo','id');
+        $ecapacidad = Embarcacion::pluck('capacidad','id');
+        $totalMateriaPrima = $materiaPrimas->sum('pplanta');
+        $salto = "\r\n";
+        //Creación de Excel
+        $excel = new Spreadsheet();
+
+        //Información del Archivo
+        $excel
+            ->getProperties()
+            ->setCreator("Pesquera HL")
+            ->setLastModifiedBy('Proceso')
+            ->setTitle('Parte de Producción')
+            ->setSubject('Parte de Producción')
+            ->setDescription('Reporte de Parte de Producción')
+            ->setKeywords('Parte')
+            ->setCategory('Categoría Excel');
+
+        //Fuente y Tamaño por defecto
+        $excel
+            ->getDefaultStyle()
+            ->getFont()
+            ->setName('Arial')
+            ->setSize(8);
+        
+        $estiloBorde = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                ],
+            ],
+        ];
+        //Creación de Hoja y Llenado de Información
+        $sheet = $excel->getActiveSheet();
+        $sheet->setTitle("Parte de Producción");
+        $linea = 1;
+        // Logo
+        $logo = new Drawing();
+        $logo->setName('Logo');
+        $logo->setDescription('Logo');
+        $logo->setPath('./static/images/logopesquera.jpeg');
+        $logo->setCoordinates('A'.$linea);
+        $logo->setHeight(60);
+        // $logo->setOffsetX(110);
+        // $logo->setRotation(25);
+        // $logo->getShadow()->setVisible(true);
+        // $logo->getShadow()->setDirection(45);
+        $logo->setWorksheet($excel->getActiveSheet());
+        $sheet->setCellValue('P'.$linea, 'N°');
+        $sheet->setCellValue('Q'.$linea, $parte->lote);
+        $sheet->mergeCells('Q'.$linea .':R'.$linea);
+        $sheet->getStyle('P'.$linea.':R'.$linea)->applyFromArray($estiloBorde);
+        $sheet->getStyle('P'.$linea.':R'.$linea)->getFont()->setSize(10)->setBold(true);
+        $linea++;
+        $sheet->setCellValue('P'.$linea, 'TURNO');
+        $sheet->setCellValue('Q'.$linea, $parte->turno==1?'DIA':'NOCHE');
+        $sheet->mergeCells('Q'.$linea .':R'.$linea);
+        $sheet->getStyle('P'.$linea.':R'.$linea)->applyFromArray($estiloBorde);
+        $sheet->getStyle('P'.$linea.':R'.$linea)->getFont()->setSize(10)->setBold(true);
+        $linea++;
+        $linea++;
+        $linea++;
+        $sheet->setCellValue('A'.$linea,'PARTE DE PRODUCCIÓN DE CONGELADOS DE POTA');
+        $sheet->mergeCells('A'.$linea .':R'.$linea);
+        $sheet->getStyle('A'.$linea)->getFont()->setSize(16)->setBold(true);
+        $sheet->getStyle('A'.$linea)
+            ->getAlignment()
+            ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+ 
+        // $sheet->getStyle('I')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_NUMBER);
+        $sheet->getStyle('K:O')->getNumberFormat()->setFormatCode('#,##0');
+        $sheet->getStyle('P:S')->getNumberFormat()->setFormatCode('#,##0.00');
+        
+        // Productos Terminados ------------------------------------------------------------------------
+        $linea++;$linea++;
+        $cuadroInicio = $linea;
+        $sheet->setCellValue('A'.$linea, 'PRODUCTOS TERMINADOS');
+        $sheet->mergeCells('A'.$linea .':E'.$linea);
+        $sheet->getStyle('A'.$linea.':E'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF0070C0');
+        $sheet->getStyle('A'.$linea.':E'.$linea)->getFont()->getColor()->setARGB('FFFFFFFF');
+        $sheet->setCellValue('F'.$linea, 'DETALLES');
+        $sheet->mergeCells('F'.$linea .':H'.$linea);
+        $sheet->setCellValue('I'.$linea, 'PRESENTACIÓN');
+        $sheet->mergeCells('I'.$linea .':K'.$linea);
+        $sheet->setCellValue('L'.$linea, 'PRODUCCIÓN');
+        $sheet->mergeCells('L'.$linea .':O'.$linea);
+        $sheet->setCellValue('P'.$linea, 'CONTRATA');
+        $sheet->mergeCells('P'.$linea .':S'.$linea);
+        $sheet->getStyle('A'.$linea.':S'.$linea)->getFont()->setSize(9)->setBold(true);
+        $sheet->getStyle('A'.$linea.':S'.$linea)
+            ->getAlignment()
+            ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A'.$linea.':S'.$linea)
+            ->getAlignment()
+            ->setVertical(StyleAlignment::VERTICAL_CENTER);
+
+        $linea++;
+        $sheet->setCellValue('A'.$linea, 'Código Trazabilidad');
+        $sheet->mergeCells('A'.$linea .':B'.$linea);
+        $sheet->setCellValue('C'.$linea, 'Descripción del Producto');
+        $sheet->mergeCells('C'.$linea .':E'.$linea);
+        $sheet->setCellValue('F'.$linea, 'Mat. Prima y/o Destinos');
+        $sheet->setCellValue('G'.$linea, 'Calidad');
+        $sheet->setCellValue('H'.$linea, 'Sobre peso');
+        $sheet->setCellValue('I'.$linea, 'Envase');
+        $sheet->setCellValue('J'.$linea, 'Códigos');
+        $sheet->setCellValue('K'.$linea, 'Peso unit.');
+        $sheet->setCellValue('L'.$linea, 'Sacos');
+        $sheet->setCellValue('M'.$linea, 'Blocks');
+        $sheet->setCellValue('N'.$linea, 'O/Weight');
+        $sheet->setCellValue('O'.$linea, 'Kilos');
+        $sheet->setCellValue('P'.$linea, 'Precio US$');
+        $sheet->setCellValue('Q'.$linea, 'Monto US$');
+        $sheet->setCellValue('R'.$linea, 'Precio S/');
+        $sheet->setCellValue('S'.$linea, 'Monto S/');
+        // $sheet->mergeCells('Q'.$linea .':R'.$linea);
+        // $sheet->mergeCells('S'.($linea-1) .':U'.$linea);
+        $sheet->getStyle('A'.$linea.':S'.$linea)->getFont()->setSize(9)->setBold(true);
+        $sheet->getStyle('A'.$linea.':S'.$linea)
+        ->getAlignment()
+        ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A'.$linea.':S'.$linea)
+        ->getAlignment()
+        ->setVertical(StyleAlignment::VERTICAL_CENTER);
+        $sheet->getStyle('A'.$linea.':S'.$linea)->getAlignment()->setWrapText(true);
+
+        $pProceso = Detpartecamara::with('trazabilidad')
+            ->join('trazabilidads','detpartecamaras.trazabilidad_id','trazabilidads.id')
+            ->where('detpartecamaras.parte_id',$parte->id)
+            ->groupBy('trazabilidads.pproceso_id')
+            ->selectRaw('trazabilidads.pproceso_id, count(trazabilidads.pproceso_id) as cantidad, sum(detpartecamaras.parcial) as total')
+            ->orderBy('trazabilidads.pproceso_id')
+            ->get();
+
+        foreach ($pProceso as $pp) {
+            $linea++;
+            $inicioPP = $linea;
+            $pProcesoNombre = Pproceso::where('id',$pp->pproceso_id)->value('nombre');
+            $sheet->setCellValue('C'.$linea, $pProcesoNombre);
+            // $sheet->setCellValue('Q'.$linea, $pp->total);
+            $productos = Detpartecamara::whereRelation('trazabilidad','pproceso_id','=',$pp->pproceso_id)
+                ->where('parte_id', $parte->id)
+                ->groupBy('trazabilidad_id')
+                ->selectRaw('trazabilidad_id, count(trazabilidad_id) as cantidad,sum(parcial) as total')
+                ->orderBy('trazabilidad_id')
+                ->get();
+            $linea--;
+            foreach($productos as $det) {
+                $trazabilidad = Trazabilidad::find($det->trazabilidad_id);
+                $linea++;
+                $sheet->setCellValue('A'.$linea, $trazabilidad->nombre);
+                $lineaInicio = $linea;
+                $codigos = Detpartecamara::with(['dettrazabilidad'])
+                    ->where('parte_id', $parte->id)
+                    ->where('trazabilidad_id',$trazabilidad->id)
+                    ->get();
+                foreach($codigos as $codigo){
+                    $sheet->setCellValue('F'.$linea, $codigo->dettrazabilidad->mpd->nombre);
+                    $sheet->setCellValue('G'.$linea, $codigo->dettrazabilidad->calidad == 1?'Export':'M.N.');
+                    $sheet->setCellValue('H'.$linea, $codigo->dettrazabilidad->sobrepeso.'%');
+                    $sheet->setCellValue('I'.$linea, $codigo->dettrazabilidad->envase == 1?'Sacos':'Blocks');
+                    $sheet->setCellValue('J'.$linea, $codigo->dettrazabilidad->codigo);
+                    $sheet->setCellValue('K'.$linea, $codigo->dettrazabilidad->peso);
+                    $sheet->setCellValue('L'.$linea, $codigo->sacos);
+                    $sheet->setCellValue('M'.$linea, $codigo->blocks);
+                    $sheet->setCellValue('N'.$linea, $codigo->sobrepeso);
+                    $sheet->setCellValue('O'.$linea, $codigo->total);
+                    $sheet->setCellValue('P'.$linea, $codigo->dettrazabilidad->precio);
+                    $sheet->setCellValue('Q'.$linea, round($codigo->dettrazabilidad->precio*$codigo->total,2));
+                    $sheet->setCellValue('R'.$linea, round($codigo->dettrazabilidad->precio*$parte->tc,2));
+                    $sheet->setCellValue('S'.$linea, round(($codigo->dettrazabilidad->precio*$codigo->total)*$parte->tc,2));
+                    // $sheet->setCellValue('S'.$linea, $codigo->observaciones);
+                    // $sheet->mergeCells('S'.$linea .':U'.$linea);
+                    $sheet->getStyle('F'.$lineaInicio.':S'.$linea)
+                        ->getAlignment()
+                        ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+                    $sheet->getStyle('F'.$lineaInicio.':S'.$linea)
+                        ->getAlignment()
+                        ->setVertical(StyleAlignment::VERTICAL_CENTER);
+                    $linea++;
+                }
+                $linea--;
+                $sheet->mergeCells('A'.$lineaInicio.':B'.$linea);
+                $sheet->getStyle('A'.$lineaInicio.':B'.$linea)
+                    ->getAlignment()
+                    ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('A'.$lineaInicio.':B'.$linea)
+                    ->getAlignment()
+                    ->setVertical(StyleAlignment::VERTICAL_CENTER);
+            }
+            $sheet->mergeCells('C'.$inicioPP.':E'.$linea);
+            $sheet->getStyle('C'.$inicioPP.':E'.$linea)
+                ->getAlignment()
+                ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+            $sheet->getStyle('C'.$inicioPP.':E'.$linea)
+                ->getAlignment()
+                ->setVertical(StyleAlignment::VERTICAL_CENTER);
+            
+            // $sheet->mergeCells('Q'.$inicioPP.':R'.$linea);
+            // $sheet->getStyle('Q'.$inicioPP.':R'.$linea)
+            //     ->getAlignment()
+            //     ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+            // $sheet->getStyle('Q'.$inicioPP.':R'.$linea)
+            //     ->getAlignment()
+            //     ->setVertical(StyleAlignment::VERTICAL_CENTER);
+        }
+        $linea++;
+        $sheet->setCellValue('A'.$linea, 'TOTAL PRODUCCION (KGS.)');
+        $sheet->mergeCells('A'.$linea .':K'.$linea);
+        $sheet->setCellValue('L'.$linea, $parte->detpartecamaras->sum('sacos'));
+        $sheet->setCellValue('M'.$linea, $parte->detpartecamaras->sum('blocks'));
+        $sheet->setCellValue('N'.$linea, $parte->detpartecamaras->sum('sobrepeso'));
+        $sheet->setCellValue('O'.$linea, $parte->detpartecamaras->sum('total'));
+        $sheet->setCellValue('Q'.$linea, round($parte->manoobra/$parte->tc,2));
+        $sheet->setCellValue('S'.$linea, $parte->manoobra);
+        // $sheet->setCellValue('P'.$linea, $parte->detpartecamaras->sum('parcial').'%');
+        // $sheet->mergeCells('P'.$linea .':R'.$linea);
+        // $sheet->mergeCells('S'.$linea .':U'.$linea);
+        $sheet->getStyle('A'.$lineaInicio.':S'.$linea)
+            ->getAlignment()
+            ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A'.$lineaInicio.':S'.$linea)
+            ->getAlignment()
+            ->setVertical(StyleAlignment::VERTICAL_CENTER);
+        $sheet->getStyle('A'.$linea.':S'.$linea)->getFont()->setSize(9)->setBold(true);
+        $sheet->getStyle('A'.$cuadroInicio.':S'.$linea)->applyFromArray($estiloBorde);
+
+        
+        // GUÍAS------------------------------------------------------------------------
+        $linea++;$linea++;
+        $cuadroInicio = $linea;
+        $sheet->setCellValue('A'.$linea, 'GUÍAS DE INGRESO A CÁMARAS');
+        $sheet->mergeCells('A'.$linea .':D'.$linea);
+        $sheet->setCellValue('E'.$linea, $parte->guias_camara);
+        $sheet->mergeCells('E'.$linea .':J'.$linea);
+
+        $sheet->getStyle('A'.$cuadroInicio.':J'.$linea)->applyFromArray($estiloBorde);
+        $sheet->getStyle('A'.$cuadroInicio.':A'.$linea)->getFont()->setSize(9)->setBold(true);
+
+        $sheet->getColumnDimension('A')->setWidth(12);
+        $sheet->getColumnDimension('B')->setWidth(12);
+        $sheet->getColumnDimension('C')->setWidth(12);
+        $sheet->getColumnDimension('D')->setWidth(12);
+        $sheet->getColumnDimension('E')->setWidth(12);
+        $sheet->getColumnDimension('F')->setWidth(12);
+        $sheet->getColumnDimension('G')->setWidth(12);
+        $sheet->getColumnDimension('H')->setWidth(14);
+        $sheet->getColumnDimension('I')->setWidth(12);
+        $sheet->getColumnDimension('J')->setWidth(12);
+        $sheet->getColumnDimension('K')->setWidth(12);
+        $sheet->getColumnDimension('L')->setWidth(12);
+        $sheet->getColumnDimension('M')->setWidth(12);
+        $sheet->getColumnDimension('N')->setWidth(12);
+        $sheet->getColumnDimension('O')->setWidth(12);
+        $sheet->getColumnDimension('P')->setWidth(12);
+        $sheet->getColumnDimension('Q')->setWidth(12);
+        $sheet->getColumnDimension('R')->setWidth(12);
+        $sheet->getColumnDimension('S')->setWidth(12);
+        //Envio de Archivo para Descarga
+        $fileName="Contrata-Lote".$parte->lote.".xlsx";
+        # Crear un "escritor"
+        $writer = new Xlsx($excel);
+        # Le pasamos la ruta de guardado
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="'. urlencode($fileName).'"');
+        $writer->save('php://output');
+        
+    }
     
     public function residuos(Request $request)
     {
@@ -2045,6 +2324,641 @@ class ExcelController extends Controller
 
         //Envio de Archivo para Descarga
         $fileName= 'DETALLADO-'.".xlsx";
+        # Crear un "escritor"
+        $writer = new Xlsx($excel);
+        # Le pasamos la ruta de guardado
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="'. urlencode($fileName).'"');
+        $writer->save('php://output');
+    }
+    
+    public function porpagar(Request $request)
+    {
+        $desde = $request->input('desde');
+        $hasta = $request->input('hasta');
+        
+        // return $proveedores;
+        $empresa = Empresa::findOrFail(session('empresa'));
+        //Creación de Excel
+        $excel = new Spreadsheet();
+
+        //Información del Archivo
+        $excel
+            ->getProperties()
+            ->setCreator($empresa->razsoc)
+            ->setLastModifiedBy('Tesorería')
+            ->setTitle('Cuentas por Pagar')
+            ->setSubject('Cuentas por Pagar')
+            ->setDescription('Reporte Cuentas por Pagar')
+            ->setKeywords('CtasXPagar')
+            ->setCategory('Categoría Excel');
+
+        //Fuente y Tamaño por defecto
+        $excel
+            ->getDefaultStyle()
+            ->getFont()
+            ->setName('Calibri')
+            ->setSize(9);
+
+        //Creación de Hoja y Llenado de Información
+        $sheet = $excel->getActiveSheet();
+        $sheet->setTitle("CUENTAS POR PAGAR");
+        $linea = 1;
+        // Logo
+        $logo = new Drawing();
+        $logo->setName('Logo');
+        $logo->setDescription('Logo');
+        $logo->setPath('./static/images/logopesquera.jpeg');
+        $logo->setCoordinates('A'.$linea);
+        $logo->setHeight(60);
+        $logo->setWorksheet($excel->getActiveSheet());
+
+        $salto = "\r\n";
+        $estiloBorde = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                ],
+            ],
+        ];
+        
+        $linea++;$linea++;
+        $sheet->setCellValue('A'.$linea,'CUENTAS POR PAGAR');
+        $sheet->getStyle('A'.$linea)->getFont()->getColor()->setARGB('FF000080');
+        $sheet->mergeCells('A'.$linea.':N'.$linea);
+        $sheet->getStyle('A'.$linea)->getFont()->setSize(12)->setBold(true);
+        $sheet->getStyle('A'.$linea)
+            ->getAlignment()
+            ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+        $linea++;
+        $sheet->setCellValue('A'.$linea,'DEL '.$desde.' AL '.$hasta);
+        $sheet->getStyle('A'.$linea)->getFont()->getColor()->setARGB('FF000080');
+        $sheet->mergeCells('A'.$linea.':N'.$linea);
+        $sheet->getStyle('A'.$linea)->getFont()->setSize(9)->setBold(true);
+        $sheet->getStyle('A'.$linea)
+            ->getAlignment()
+            ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+        $linea++;
+        // $sheet->getStyle('I')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_NUMBER);
+        $sheet->getStyle('G:N')->getNumberFormat()->setFormatCode('#,##0.00');
+        // $sheet->getStyle('M')->getNumberFormat()->setFormatCode('#,##0.00');
+
+        $proveedores = Rcompra::with('cliente:id,numdoc,razsoc')
+            ->orderBy(Cliente::select('razsoc')->whereColumn('rcompras.cliente_id','clientes.id'))
+            ->where('saldo','>',0)
+            ->select('cliente_id')
+            ->groupBy('cliente_id')
+            ->whereBetween('fecha',[$desde,$hasta])
+            ->get();
+        // return $proveedores;
+
+        foreach ($proveedores as $prov) {
+            $linea++;
+            $sheet->setCellValue('A'.$linea,$prov->cliente->numdoc_razsoc);
+            $sheet->mergeCells('A'.$linea.':N'.$linea);
+            // $sheet->getStyle('A'.$linea.':D'.$linea)
+            //     ->getAlignment()
+            //     ->setVertical(StyleAlignment::VERTICAL_CENTER)
+            //     ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+            $sheet->getStyle('A'.$linea.':N'.$linea)->getFont()->setBold(true);
+            $sheet->getStyle('A'.$linea.':N'.$linea)->getAlignment()->setWrapText(true);
+            $sheet->getStyle('A'.$linea.':N'.$linea)->getFont()->getColor()->setARGB('FFFFFFFF');
+            $sheet->getStyle('A'.$linea.':N'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF000080');
+            $cuadroInicio = $linea;
+            $rcompras = Rcompra::where('cliente_id',$prov->cliente_id)
+                ->where('saldo','>',0)
+                ->orderBy('fecha')
+                ->select(
+                    'fecha','vencimiento','moneda','tc','tipocomprobante_codigo',
+                    'serie','numero','total','pagado','saldo','detraccion_monto'
+                    )
+                ->get();
+            // return $rcompras;
+            $linea++;
+            $sheet->setCellValue('A'.$linea,'FECHA');
+            $sheet->setCellValue('B'.$linea,'VENCE');
+            $sheet->setCellValue('C'.$linea,'MONEDA');
+            $sheet->setCellValue('D'.$linea,'TC');
+            $sheet->setCellValue('E'.$linea,'TD');
+            $sheet->setCellValue('F'.$linea,'NÚMERO');
+            $sheet->setCellValue('G'.$linea,'TOTAL S/');
+            $sheet->setCellValue('H'.$linea,'DETRACCIÓN S/');
+            $sheet->setCellValue('I'.$linea,'PAGADO S/');
+            $sheet->setCellValue('J'.$linea,'SALDO S/');
+            $sheet->setCellValue('K'.$linea,'TOTAL US$');
+            $sheet->setCellValue('L'.$linea,'DETRACCIÓN US$');
+            $sheet->setCellValue('M'.$linea,'PAGADO US$');
+            $sheet->setCellValue('N'.$linea,'SALDO US$');
+            $sheet->getStyle('A'.$linea.':N'.$linea)
+                ->getAlignment()
+                ->setVertical(StyleAlignment::VERTICAL_CENTER)
+                ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+            $sheet->getStyle('A'.$linea.':N'.$linea)->getFont()->setBold(true);
+            $sheet->getStyle('A'.$linea.':N'.$linea)->getAlignment()->setWrapText(true);
+            $sheet->getStyle('A'.$linea.':N'.$linea)->getFont()->getColor()->setARGB('FFFFFFFF');
+            $sheet->getStyle('A'.$linea.':N'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF31869B');
+            foreach ($rcompras as $rcompra) {
+                $v1 = 0;
+                $v2 = 0;
+                $v3 = 0;
+                $v4 = 0;
+                $v5 = 0;
+                $v6 = 0;
+                $v7 = 0;
+                $v8 = 0;
+                $linea++;
+                $sheet->setCellValue('A'.$linea,$rcompra->fecha);
+                $sheet->setCellValue('B'.$linea,$rcompra->vencimiento);
+                $sheet->setCellValue('C'.$linea,$rcompra->moneda);
+                $sheet->setCellValue('D'.$linea,$rcompra->tc);
+                $sheet->setCellValue('E'.$linea,$rcompra->tipocomprobante_codigo);
+                $sheet->setCellValue('F'.$linea,$rcompra->serie_numero);
+                if ($rcompra->moneda == 'PEN') {
+                    $sheet->setCellValue('G'.$linea,$rcompra->total);
+                    $sheet->setCellValue('H'.$linea,$rcompra->detraccion_monto);
+                    $sheet->setCellValue('I'.$linea,$rcompra->pagado);
+                    $sheet->setCellValue('J'.$linea,$rcompra->saldo);
+                    $sheet->setCellValue('K'.$linea,round($rcompra->total/$rcompra->tc,2));
+                    $sheet->setCellValue('L'.$linea,round($rcompra->detraccion_monto/$rcompra->tc,2));
+                    $sheet->setCellValue('M'.$linea,round($rcompra->pagado/$rcompra->tc,2));
+                    $sheet->setCellValue('N'.$linea,round($rcompra->saldo/$rcompra->tc,2));
+                    $v1 += $rcompra->total;
+                    $v2 += $rcompra->detraccion_monto;
+                    $v3 += $rcompra->pagado;
+                    $v4 += $rcompra->saldo;
+                    $v5 += round($rcompra->total/$rcompra->tc,2);
+                    $v6 += round($rcompra->detraccion_monto/$rcompra->tc,2);
+                    $v7 += round($rcompra->pagado/$rcompra->tc,2);
+                    $v8 += round($rcompra->saldo/$rcompra->tc,2);
+                } else {
+                    $sheet->setCellValue('G'.$linea, round($rcompra->total*$rcompra->tc,2));
+                    $sheet->setCellValue('H'.$linea, round($rcompra->detraccion_monto*$rcompra->tc,2));
+                    $sheet->setCellValue('I'.$linea, round($rcompra->pagado*$rcompra->tc,2));
+                    $sheet->setCellValue('J'.$linea, round($rcompra->saldo*$rcompra->tc,2));
+                    $sheet->setCellValue('K'.$linea, $rcompra->total);
+                    $sheet->setCellValue('L'.$linea, $rcompra->detraccion_monto);
+                    $sheet->setCellValue('M'.$linea, $rcompra->pagado);
+                    $sheet->setCellValue('N'.$linea, $rcompra->saldo);
+                    $v1 += round($rcompra->total*$rcompra->tc,2);
+                    $v2 += round($rcompra->detraccion_monto*$rcompra->tc,2);
+                    $v3 += round($rcompra->pagado*$rcompra->tc,2);
+                    $v4 += round($rcompra->saldo*$rcompra->tc,2);
+                    $v5 += $rcompra->total;
+                    $v6 += $rcompra->detraccion_monto;
+                    $v7 += $rcompra->pagado;
+                    $v8 += $rcompra->saldo;
+                }
+            }
+            $linea++;
+            $sheet->setCellValue('A'.$linea,'TOTAL');
+            $sheet->mergeCells('A'.$linea.':F'.$linea);
+            $sheet->setCellValue('G'.$linea, $v1);
+            // $sheet->setCellValue('H'.$linea, $v2);
+            // $sheet->setCellValue('I'.$linea, $v3);
+            $sheet->setCellValue('J'.$linea, $v4);
+            $sheet->setCellValue('K'.$linea, $v5);
+            // $sheet->setCellValue('L'.$linea, $v6);
+            // $sheet->setCellValue('M'.$linea, $v7);
+            $sheet->setCellValue('N'.$linea, $v8);
+            $sheet->getStyle('A'.$linea.':N'.$linea)
+                ->getAlignment()
+                ->setVertical(StyleAlignment::VERTICAL_CENTER)
+                ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+            $sheet->getStyle('A'.$linea.':N'.$linea)->getFont()->setBold(true);
+
+            $sheet->getStyle('A'.$cuadroInicio.':N'.$linea)->applyFromArray($estiloBorde);
+            $linea++;
+            $linea++;
+        }
+
+        // Ancho de Columnas
+        $sheet->getColumnDimension('A')->setWidth(10);
+        $sheet->getColumnDimension('B')->setWidth(12);
+        $sheet->getColumnDimension('C')->setWidth(9);
+        $sheet->getColumnDimension('D')->setWidth(6);
+        $sheet->getColumnDimension('E')->setWidth(4);
+        $sheet->getColumnDimension('F')->setWidth(9);
+        $sheet->getColumnDimension('G')->setWidth(10);
+        $sheet->getColumnDimension('H')->setWidth(14);
+        $sheet->getColumnDimension('I')->setWidth(12);
+        $sheet->getColumnDimension('J')->setWidth(11);
+        $sheet->getColumnDimension('K')->setWidth(10);
+        $sheet->getColumnDimension('L')->setWidth(16);
+        $sheet->getColumnDimension('M')->setWidth(12);
+        $sheet->getColumnDimension('N')->setWidth(11);
+
+        //Envio de Archivo para Descarga
+        $fileName= 'CTASXPAGAR-'.$desde.'-'.$hasta.".xlsx";
+        # Crear un "escritor"
+        $writer = new Xlsx($excel);
+        # Le pasamos la ruta de guardado
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="'. urlencode($fileName).'"');
+        $writer->save('php://output');
+    }
+    
+    public function proveedor(Request $request)
+    {
+        $rules = [
+            'cliente_id' => 'required',
+        ];
+        $messages = [
+    		'cliente_id.required' => 'Seleccione Proveedor.',
+        ];
+        $validator = Validator::make($request->all(),$rules,$messages);
+    	if($validator->fails()){
+            return back()->withErrors($validator)->with('message', 'Se ha producido un error')->with('typealert', 'danger')->withinput();
+        }
+        $desde = $request->input('desde');
+        $hasta = $request->input('hasta');
+        $moneda = $request->input('moneda');
+        $proveedor = Cliente::findOrFail($request->input('cliente_id'));
+
+        $rcompras = Rcompra::where('cliente_id',$proveedor->id)
+            ->orderBy('fecha')
+            ->select(
+                'periodo','almacen','fecha','vencimiento','cancelacion','moneda','tc','tipocomprobante_codigo',
+                'serie','numero','total','pagado','saldo','detraccion_monto','detalle'
+                )
+            ->get();
+        if($rcompras->count() == 0){
+            return back()->with('message', 'No se encontraron registros')->with('typealert', 'danger')->withinput();
+        }
+        
+        $empresa = Empresa::findOrFail(session('empresa'));
+        //Creación de Excel
+        $excel = new Spreadsheet();
+
+        //Información del Archivo
+        $excel
+            ->getProperties()
+            ->setCreator($empresa->razsoc)
+            ->setLastModifiedBy('Tesorería')
+            ->setTitle('Detallado por Proveedor')
+            ->setSubject('Detallado por Proveedor')
+            ->setDescription('Reporte Detallado de Compras por Proveedor')
+            ->setKeywords('Proveedor')
+            ->setCategory('Categoría Excel');
+
+        //Fuente y Tamaño por defecto
+        $excel
+            ->getDefaultStyle()
+            ->getFont()
+            ->setName('Calibri')
+            ->setSize(9);
+
+        //Creación de Hoja y Llenado de Información
+        $sheet = $excel->getActiveSheet();
+        $sheet->setTitle("DETALLADO POR PROVEEDOR");
+        $linea = 1;
+        // Logo
+        $logo = new Drawing();
+        $logo->setName('Logo');
+        $logo->setDescription('Logo');
+        $logo->setPath('./static/images/logopesquera.jpeg');
+        $logo->setCoordinates('A'.$linea);
+        $logo->setHeight(60);
+        $logo->setWorksheet($excel->getActiveSheet());
+
+        $salto = "\r\n";
+        $estiloBorde = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                ],
+            ],
+        ];
+        // return $proveedor;
+        $linea++;$linea++;
+        $sheet->setCellValue('A'.$linea,'PROVEEDOR: '.$proveedor->numdoc_razsoc);
+        $sheet->getStyle('A'.$linea)->getFont()->getColor()->setARGB('FF000080');
+        $sheet->mergeCells('A'.$linea.':M'.$linea);
+        $sheet->getStyle('A'.$linea)->getFont()->setSize(12)->setBold(true);
+        $sheet->getStyle('A'.$linea)
+            ->getAlignment()
+            ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+        $linea++;
+        $dMoneda = $moneda == 'PEN'?'SOLES':'DOLARES AMERICANOS';
+        $sheet->setCellValue('A'.$linea,'MONEDA: '. $dMoneda .' | DEL '.$desde.' AL '.$hasta);
+        $sheet->getStyle('A'.$linea)->getFont()->getColor()->setARGB('FF000080');
+        $sheet->mergeCells('A'.$linea.':M'.$linea);
+        $sheet->getStyle('A'.$linea)->getFont()->setSize(9)->setBold(true);
+        $sheet->getStyle('A'.$linea)
+            ->getAlignment()
+            ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+        $linea++;
+        // $sheet->getStyle('I')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_NUMBER);
+        $sheet->getStyle('G:M')->getNumberFormat()->setFormatCode('#,##0.00');
+        // $sheet->getStyle('M')->getNumberFormat()->setFormatCode('#,##0.00');
+
+        $linea++;
+        $cuadroInicio = $linea;
+        $sheet->setCellValue('A'.$linea,'PERIODO');
+        $sheet->setCellValue('B'.$linea,'ALMACEN');
+        $sheet->setCellValue('C'.$linea,'FECHA');
+        $sheet->setCellValue('D'.$linea,'VENCE');
+        $sheet->setCellValue('E'.$linea,'MONEDA');
+        $sheet->setCellValue('F'.$linea,'TC');
+        $sheet->setCellValue('G'.$linea,'TD');
+        $sheet->setCellValue('H'.$linea,'NÚMERO');
+        $sheet->setCellValue('I'.$linea,'TOTAL');
+        $sheet->setCellValue('J'.$linea,'DETRACCIÓN');
+        $sheet->setCellValue('K'.$linea,'PAGADO');
+        $sheet->setCellValue('L'.$linea,'SALDO');
+        $sheet->setCellValue('M'.$linea,'DETALLE');
+        $sheet->getStyle('A'.$linea.':M'.$linea)
+            ->getAlignment()
+            ->setVertical(StyleAlignment::VERTICAL_CENTER)
+            ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A'.$linea.':M'.$linea)->getFont()->setBold(true);
+        $sheet->getStyle('A'.$linea.':M'.$linea)->getAlignment()->setWrapText(true);
+        $sheet->getStyle('A'.$linea.':M'.$linea)->getFont()->getColor()->setARGB('FFFFFFFF');
+        $sheet->getStyle('A'.$linea.':M'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF31869B');
+        $v1 = 0;
+        $v2 = 0;
+        $v3 = 0;
+        $v4 = 0;
+        foreach ($rcompras as $rcompra) {
+            $linea++;
+            $sheet->setCellValue('A'.$linea,$rcompra->periodo);
+            $sheet->setCellValue('B'.$linea,$rcompra->almacen==1?'SI':'NO');
+            $sheet->setCellValue('C'.$linea,$rcompra->fecha);
+            $sheet->setCellValue('D'.$linea,$rcompra->vencimiento);
+            $sheet->setCellValue('E'.$linea,$rcompra->moneda);
+            $sheet->setCellValue('F'.$linea,$rcompra->tc);
+            $sheet->setCellValue('G'.$linea,$rcompra->tipocomprobante_codigo);
+            $sheet->setCellValue('H'.$linea,$rcompra->serie_numero);
+            if ($moneda == 'PEN') {
+                if ($rcompra->moneda == 'PEN') {
+                    $sheet->setCellValue('I'.$linea,$rcompra->total);
+                    $sheet->setCellValue('J'.$linea,$rcompra->detraccion_monto);
+                    $sheet->setCellValue('K'.$linea,$rcompra->pagado);
+                    $sheet->setCellValue('L'.$linea,$rcompra->saldo);
+                    $v1 += $rcompra->total;
+                    $v2 += $rcompra->detraccion_monto;
+                    $v3 += $rcompra->pagado;
+                    $v4 += $rcompra->saldo;
+                } else {
+                    $sheet->setCellValue('I'.$linea, round($rcompra->total*$rcompra->tc,2));
+                    $sheet->setCellValue('J'.$linea, round($rcompra->detraccion_monto*$rcompra->tc,2));
+                    $sheet->setCellValue('K'.$linea, round($rcompra->pagado*$rcompra->tc,2));
+                    $sheet->setCellValue('L'.$linea, round($rcompra->saldo*$rcompra->tc,2));
+                    $v1 += round($rcompra->total*$rcompra->tc,2);
+                    $v2 += round($rcompra->detraccion_monto*$rcompra->tc,2);
+                    $v3 += round($rcompra->pagado*$rcompra->tc,2);
+                    $v4 += round($rcompra->saldo*$rcompra->tc,2);
+                }
+            } else {
+                if ($rcompra->moneda == 'PEN') {
+                    $sheet->setCellValue('I'.$linea,round($rcompra->total/$rcompra->tc,2));
+                    $sheet->setCellValue('J'.$linea,round($rcompra->detraccion_monto/$rcompra->tc,2));
+                    $sheet->setCellValue('K'.$linea,round($rcompra->pagado/$rcompra->tc,2));
+                    $sheet->setCellValue('L'.$linea,round($rcompra->saldo/$rcompra->tc,2));
+                    $v1 += round($rcompra->total/$rcompra->tc,2);
+                    $v2 += round($rcompra->detraccion_monto/$rcompra->tc,2);
+                    $v3 += round($rcompra->pagado/$rcompra->tc,2);
+                    $v4 += round($rcompra->saldo/$rcompra->tc,2);
+                } else {
+                    $sheet->setCellValue('I'.$linea, $rcompra->total);
+                    $sheet->setCellValue('J'.$linea, $rcompra->detraccion_monto);
+                    $sheet->setCellValue('K'.$linea, $rcompra->pagado);
+                    $sheet->setCellValue('L'.$linea, $rcompra->saldo);
+                    $v1 += $rcompra->total;
+                    $v2 += $rcompra->detraccion_monto;
+                    $v3 += $rcompra->pagado;
+                    $v4 += $rcompra->saldo;
+                }
+            }
+            $sheet->setCellValue('M'.$linea,$rcompra->detalle);
+        }
+        $linea++;
+        $sheet->setCellValue('A'.$linea,'TOTAL');
+        $sheet->mergeCells('A'.$linea.':H'.$linea);
+        $sheet->setCellValue('I'.$linea, $v1);
+        $sheet->setCellValue('J'.$linea, $v2);
+        $sheet->setCellValue('K'.$linea, $v3);
+        $sheet->setCellValue('L'.$linea, $v4);
+        $sheet->getStyle('A'.$linea.':M'.$linea)
+            ->getAlignment()
+            ->setVertical(StyleAlignment::VERTICAL_CENTER)
+            ->setHorizontal(StyleAlignment::HORIZONTAL_RIGHT);
+        $sheet->getStyle('A'.$linea.':M'.$linea)->getFont()->setBold(true);
+
+        $sheet->getStyle('A'.$cuadroInicio.':M'.$linea)->applyFromArray($estiloBorde);
+    
+        // Ancho de Columnas
+        $sheet->getColumnDimension('A')->setWidth(10);
+        $sheet->getColumnDimension('B')->setWidth(9);
+        $sheet->getColumnDimension('C')->setWidth(11);
+        $sheet->getColumnDimension('D')->setWidth(11);
+        $sheet->getColumnDimension('E')->setWidth(9);
+        $sheet->getColumnDimension('F')->setWidth(6);
+        $sheet->getColumnDimension('G')->setWidth(4);
+        $sheet->getColumnDimension('H')->setWidth(9);
+        $sheet->getColumnDimension('I')->setWidth(10);
+        $sheet->getColumnDimension('J')->setWidth(12);
+        $sheet->getColumnDimension('K')->setWidth(10);
+        $sheet->getColumnDimension('L')->setWidth(10);
+        $sheet->getColumnDimension('M')->setWidth(80);
+
+        //Envio de Archivo para Descarga
+        $fileName= $proveedor->numdoc_razsoc.'-'.$desde.'-'.$hasta.".xlsx";
+        # Crear un "escritor"
+        $writer = new Xlsx($excel);
+        # Le pasamos la ruta de guardado
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="'. urlencode($fileName).'"');
+        $writer->save('php://output');
+    }
+    
+    public function resumenparte(Request $request)
+    {
+        $desde = $request->input('desde');
+        $hasta = $request->input('hasta');
+        $moneda = $request->input('moneda');
+
+        $partes = Parte::whereBetween('empaque',[$desde,$hasta])->get();
+
+        if($partes->count() == 0){
+            return back()->with('message', 'No se encontraron registros')->with('typealert', 'danger')->withinput();
+        }
+        
+        $empresa = Empresa::findOrFail(session('empresa'));
+        //Creación de Excel
+        $excel = new Spreadsheet();
+
+        //Información del Archivo
+        $excel
+            ->getProperties()
+            ->setCreator($empresa->razsoc)
+            ->setLastModifiedBy('Proceso')
+            ->setTitle('Resumen por fechas')
+            ->setSubject('Resumen por fechas')
+            ->setDescription('Parte de Producción - Reporte Resumen')
+            ->setKeywords('PProduccion')
+            ->setCategory('Categoría Excel');
+
+        //Fuente y Tamaño por defecto
+        $excel
+            ->getDefaultStyle()
+            ->getFont()
+            ->setName('Calibri')
+            ->setSize(9);
+
+        //Creación de Hoja y Llenado de Información
+        $sheet = $excel->getActiveSheet();
+        $sheet->setTitle("RESUMEN");
+        $linea = 1;
+        // Logo
+        $logo = new Drawing();
+        $logo->setName('Logo');
+        $logo->setDescription('Logo');
+        $logo->setPath('./static/images/logopesquera.jpeg');
+        $logo->setCoordinates('A'.$linea);
+        $logo->setHeight(60);
+        $logo->setWorksheet($excel->getActiveSheet());
+
+        $salto = "\r\n";
+        $estiloBorde = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                ],
+            ],
+        ];
+        // return $proveedor;
+        $linea++;$linea++;
+        $sheet->setCellValue('A'.$linea,'PARTE DE PRODUCCIÓN - RESUMEN POR FECHA DE EMPAQUE');
+        $sheet->getStyle('A'.$linea)->getFont()->getColor()->setARGB('FF000080');
+        $sheet->mergeCells('A'.$linea.':R'.$linea);
+        $sheet->getStyle('A'.$linea)->getFont()->setSize(12)->setBold(true);
+        $sheet->getStyle('A'.$linea)
+            ->getAlignment()
+            ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+        $linea++;
+        $dMoneda = $moneda == 'PEN'?'SOLES':'DOLARES AMERICANOS';
+        $sheet->setCellValue('A'.$linea,'MONEDA: '. $dMoneda .' | DEL '.$desde.' AL '.$hasta);
+        $sheet->getStyle('A'.$linea)->getFont()->getColor()->setARGB('FF000080');
+        $sheet->mergeCells('A'.$linea.':R'.$linea);
+        $sheet->getStyle('A'.$linea)->getFont()->setSize(9)->setBold(true);
+        $sheet->getStyle('A'.$linea)
+            ->getAlignment()
+            ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+        $linea++;
+        // $sheet->getStyle('I')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_NUMBER);
+        $sheet->getStyle('C:K')->getNumberFormat()->setFormatCode('#,##0.00');
+        // $sheet->getStyle('M')->getNumberFormat()->setFormatCode('#,##0.00');
+
+        $linea++;
+        $cuadroInicio = $linea;
+        $sheet->setCellValue('A'.$linea,'LOTE');
+        $sheet->setCellValue('B'.$linea,'FECHA EMPAQUE');
+        $sheet->setCellValue('C'.$linea,'MATERIA PRIMA KG');
+        $sheet->setCellValue('D'.$linea,'SOBRE PESO KG');
+        $sheet->setCellValue('E'.$linea,'RESIDUOS KG');
+        $sheet->setCellValue('F'.$linea,'DESCARTE KG');
+        $sheet->setCellValue('G'.$linea,'MERMA KG');
+        $sheet->setCellValue('H'.$linea,'COSTO MATERIA PRIMA');
+        $sheet->setCellValue('I'.$linea,'COSTO CONTRATA');
+        $sheet->setCellValue('J'.$linea,'COSTO PRODUCTOS');
+        $sheet->setCellValue('K'.$linea,'VENTA RESIDUOS');
+        $sheet->setCellValue('L'.$linea,'HOMBRES');
+        $sheet->setCellValue('M'.$linea,'MUJERES');
+        $sheet->setCellValue('N'.$linea,'PLANILLAS DE ENVASADO');
+        $sheet->setCellValue('O'.$linea,'PLANILLAS DE ENVASADO CRUDO');
+        $sheet->setCellValue('P'.$linea,'GUÍAS DE INGRESO A CÁMARA');
+        $sheet->setCellValue('Q'.$linea,'CONSUMO ALMACÉN');
+        $sheet->setCellValue('R'.$linea,'GUÍAS DE RESIDUOS SÓLIDOS');
+        $sheet->getStyle('A'.$linea.':R'.$linea)
+            ->getAlignment()
+            ->setVertical(StyleAlignment::VERTICAL_CENTER)
+            ->setHorizontal(StyleAlignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A'.$linea.':R'.$linea)->getFont()->setBold(true);
+        $sheet->getStyle('A'.$linea.':R'.$linea)->getAlignment()->setWrapText(true);
+        $sheet->getStyle('A'.$linea.':R'.$linea)->getFont()->getColor()->setARGB('FFFFFFFF');
+        $sheet->getStyle('A'.$linea.':R'.$linea)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF31869B');
+        $v1 = 0;
+        $v2 = 0;
+        $v3 = 0;
+        $v4 = 0;
+        foreach ($partes as $parte) {
+            $linea++;
+            $sheet->setCellValue('A'.$linea, $parte->lote);
+            $sheet->setCellValue('B'.$linea, $parte->empaque);
+            $sheet->setCellValue('C'.$linea, $parte->materiaprima);
+            $sheet->setCellValue('D'.$linea, $parte->sobrepeso);
+            $sheet->setCellValue('E'.$linea, $parte->residuos);
+            $sheet->setCellValue('F'.$linea, $parte->descarte);
+            $sheet->setCellValue('G'.$linea, $parte->merma);
+            if ($moneda == 'PEN') {
+                $sheet->setCellValue('H'.$linea, $parte->costomateriaprima);
+                $sheet->setCellValue('I'.$linea, $parte->manoobra);
+                $sheet->setCellValue('J'.$linea, $parte->costoproductos);
+                $sheet->setCellValue('K'.$linea, $parte->costoresiduos);
+                $v1 += $parte->costomateriaprima;
+                $v2 += $parte->manoobra;
+                $v3 += $parte->costoproductos;
+                $v4 += $parte->costoresiduos;
+            } else {
+                $sheet->setCellValue('H'.$linea, round($parte->costomateriaprima/$parte->tc,2));
+                $sheet->setCellValue('I'.$linea, round($parte->manoobra/$parte->tc,2));
+                $sheet->setCellValue('J'.$linea, round($parte->costoproductos/$parte->tc,2));
+                $sheet->setCellValue('K'.$linea, round($parte->costoresiduos/$parte->tc,2));
+                $v1 += round($parte->costomateriaprima/$parte->tc,2);
+                $v2 += round($parte->manoobra/$parte->tc,2);
+                $v3 += round($parte->costoproductos/$parte->tc,2);
+                $v4 += round($parte->costoresiduos/$parte->tc,2);
+            }
+            $sheet->setCellValue('L'.$linea, $parte->hombres);
+            $sheet->setCellValue('M'.$linea, $parte->mujeres);
+            $sheet->setCellValue('N'.$linea, $parte->guias_envasado);
+            $sheet->setCellValue('O'.$linea, $parte->guias_envasado_crudo);
+            $sheet->setCellValue('P'.$linea, $parte->guias_camara);
+            $sheet->setCellValue('Q'.$linea, $parte->guias_almacen);
+            $sheet->setCellValue('R'.$linea, $parte->guias_residuos);
+        }
+        $linea++;
+        // $sheet->setCellValue('A'.$linea,'TOTAL');
+        // $sheet->mergeCells('A'.$linea.':G'.$linea);
+        $sheet->setCellValue('C'.$linea, $partes->sum('materiaprima'));
+        $sheet->setCellValue('D'.$linea, $partes->sum('sobrepeso'));
+        $sheet->setCellValue('E'.$linea, $partes->sum('residuos'));
+        $sheet->setCellValue('F'.$linea, $partes->sum('descarte'));
+        $sheet->setCellValue('G'.$linea, $partes->sum('merma'));
+        $sheet->setCellValue('H'.$linea, $v1);
+        $sheet->setCellValue('I'.$linea, $v2);
+        $sheet->setCellValue('J'.$linea, $v3);
+        $sheet->setCellValue('K'.$linea, $v4);
+        $sheet->getStyle('A'.$linea.':R'.$linea)
+            ->getAlignment()
+            ->setVertical(StyleAlignment::VERTICAL_CENTER)
+            ->setHorizontal(StyleAlignment::HORIZONTAL_RIGHT);
+        $sheet->getStyle('A'.$linea.':R'.$linea)->getFont()->setBold(true);
+
+        $sheet->getStyle('A'.$cuadroInicio.':R'.$linea)->applyFromArray($estiloBorde);
+    
+        // Ancho de Columnas
+        $sheet->getColumnDimension('A')->setWidth(12);
+        $sheet->getColumnDimension('B')->setWidth(10);
+        $sheet->getColumnDimension('C')->setWidth(10);
+        $sheet->getColumnDimension('D')->setWidth(10);
+        $sheet->getColumnDimension('E')->setWidth(10);
+        $sheet->getColumnDimension('F')->setWidth(10);
+        $sheet->getColumnDimension('G')->setWidth(10);
+        $sheet->getColumnDimension('H')->setWidth(11);
+        $sheet->getColumnDimension('I')->setWidth(11);
+        $sheet->getColumnDimension('J')->setWidth(12);
+        $sheet->getColumnDimension('K')->setWidth(11);
+        $sheet->getColumnDimension('L')->setWidth(10);
+        $sheet->getColumnDimension('M')->setWidth(10);
+        $sheet->getColumnDimension('N')->setWidth(40);
+        $sheet->getColumnDimension('O')->setWidth(40);
+        $sheet->getColumnDimension('P')->setWidth(40);
+        $sheet->getColumnDimension('Q')->setWidth(50);
+        $sheet->getColumnDimension('R')->setWidth(20);
+
+        //Envio de Archivo para Descarga
+        $fileName= 'Resumen'.'-'.$desde.'-'.$hasta.".xlsx";
         # Crear un "escritor"
         $writer = new Xlsx($excel);
         # Le pasamos la ruta de guardado

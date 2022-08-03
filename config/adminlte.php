@@ -315,7 +315,7 @@ return [
                     'icon_color' => 'cyan',
                     'submenu' => [
                         [
-                            'text' => 'Reportes Mensuales',
+                            'text' => 'Reportes',
                             'icon'    => 'fas fa-print',
                             'icon_color' => 'white',
                             'route'  => 'admin.excel.tolvasindex',
@@ -419,12 +419,12 @@ return [
                     'active' => ['admin/transferencias','admin/transferencias/*','admin/transferencias/create'
                                 ,'admin/transferencias/*/edit'],
                 ],
-                [
-                    'text' => 'Reportes',
-                    'icon'    => 'fas fa-print',
-                    'icon_color' => 'cyan',
-                    'url'  => '#',
-                ]
+                // [
+                //     'text' => 'Reportes',
+                //     'icon'    => 'fas fa-print',
+                //     'icon_color' => 'cyan',
+                //     'url'  => '#',
+                // ]
             ],
         ],
         [

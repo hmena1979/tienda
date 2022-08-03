@@ -35,6 +35,8 @@
                             </li>
                             @endif
                             @endcan
+                            <a class="btn btn-convertir mt-1" href="{{ route('admin.excel.parte',$parte) }}" datatoggle="tooltip" data-placement="top" title="Imprimir"><i class="fas fa-print"></i> Parte</a>
+                            <a class="btn btn-convertir mt-1" href="{{ route('admin.excel.partecontrata',$parte) }}" datatoggle="tooltip" data-placement="top" title="Imprimir"><i class="fas fa-print"></i> Contrata</a>
                         </ul>
                     </div>
 					<div class="inside">

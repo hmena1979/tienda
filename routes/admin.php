@@ -499,9 +499,13 @@ Route::get('/excel/procesoindex', [ExcelController::class,'procesoindex'])->name
 Route::post('/excel/tolvasview', [ExcelController::class,'tolvasview'])->name('admin.excel.tolvasview');
 Route::post('/excel/residuos', [ExcelController::class,'residuos'])->name('admin.excel.residuos');
 Route::get('/excel/{parte}/parte', [ExcelController::class,'parte'])->name('admin.excel.parte');
+Route::get('/excel/{parte}/partecontrata', [ExcelController::class,'partecontrata'])->name('admin.excel.partecontrata');
 Route::get('/excel/resumentrazabilidad', [ExcelController::class,'resumentrazabilidad'])->name('admin.excel.resumentrazabilidad');
 Route::get('/excel/resumencodigo', [ExcelController::class,'resumencodigo'])->name('admin.excel.resumencodigo');
 Route::post('/excel/detalladoproductoterminado', [ExcelController::class,'detalladoproductoterminado'])->name('admin.excel.detalladoproductoterminado');
+Route::post('/excel/resumenparte', [ExcelController::class,'resumenparte'])->name('admin.excel.resumenparte');
+Route::post('/excel/porpagar', [ExcelController::class,'porpagar'])->name('admin.excel.porpagar');
+Route::post('/excel/proveedor', [ExcelController::class,'proveedor'])->name('admin.excel.proveedor');
 
 //Modulo importaciones
 Route::get('/import', [ImportController::class,'index'])->name('admin.imports.index');

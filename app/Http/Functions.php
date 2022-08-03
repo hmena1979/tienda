@@ -187,6 +187,10 @@
 		return $n;
 	}
 
+	function primerDiaPeriodo($periodo) {
+		return substr($periodo, 2, 4).'-'.substr($periodo, 0, 2).'-01';
+	}
+
 	function generateRandomString($length = 10) { 
 		return substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, $length); 
 	}
